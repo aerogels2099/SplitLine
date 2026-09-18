@@ -1,7 +1,3 @@
-/**
- * Typed wrappers for every MCSR Ranked endpoint. Matches cache forever,
- * leaderboards 60s, live 0s.
- */
 import { RankedClient, STATUS_BASE } from "./client.js";
 import type {
   Leaderboard,
@@ -52,7 +48,6 @@ export class RankedApi {
   }
 
   getUserMatches(identifier: string, params: MatchListParams = {}): Promise<MatchInfo[]> {
-    // Paginated history is effectively immutable except the first page.
     const ttlMs = params.before !== undefined ? 10 * MINUTE : MINUTE;
     return this.client.get(`/users/${enc(identifier)}/matches${qs({ ...params })}`, { ttlMs });
   }
@@ -88,7 +83,6 @@ export class RankedApi {
   }
 
   getLive(): Promise<PublicLiveData> {
-    // Upstream caches /live for 5s, so a matching local TTL costs no freshness.
     return this.client.get(`/live`, { ttlMs: 5_000 });
   }
 
@@ -109,7 +103,6 @@ export class RankedApi {
 
   getWeeklyRace(id?: number): Promise<WeeklyRace> {
     const path = id === undefined ? `/weekly-race` : `/weekly-race/${id}`;
-    // Past races are frozen; the current one changes as runs land.
     return this.client.get(path, { ttlMs: id === undefined ? MINUTE : 10 * MINUTE });
   }
 

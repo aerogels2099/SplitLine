@@ -1,4 +1,3 @@
--- SplitLine local cache. Matches are immutable, so rows are written once.
 -- `date` columns are epoch SECONDS; `*_time` columns are MILLISECONDS.
 
 CREATE TABLE IF NOT EXISTS matches (
@@ -20,14 +19,12 @@ CREATE TABLE IF NOT EXISTS matches (
 CREATE INDEX IF NOT EXISTS idx_matches_date ON matches(date);
 CREATE INDEX IF NOT EXISTS idx_matches_season_type ON matches(season, type);
 
--- Advanced fields exist only on GET /matches/{id}, so they are stored here.
 CREATE TABLE IF NOT EXISTS match_details (
   id         INTEGER PRIMARY KEY REFERENCES matches(id),
   fetched_at INTEGER NOT NULL,             -- epoch seconds
   data       TEXT NOT NULL                 -- full MatchInfo JSON incl. timelines
 );
 
--- One row per (match, player) for fast per-player match queries.
 CREATE TABLE IF NOT EXISTS match_players (
   match_id   INTEGER NOT NULL REFERENCES matches(id),
   uuid       TEXT NOT NULL,

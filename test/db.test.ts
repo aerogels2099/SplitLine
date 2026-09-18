@@ -8,7 +8,6 @@ describe("sqlite store", () => {
     const matches = userAMatches();
     const added = store.upsertMatches(matches);
     expect(added).toBe(matches.length);
-    // Re-ingesting the same page adds nothing (matches are immutable).
     expect(store.upsertMatches(matches)).toBe(0);
     expect(store.matchCount()).toBe(matches.length);
     store.close();

@@ -1,8 +1,3 @@
-/**
- * The single HTTP gateway for SplitLine: rate limiting, retries, envelope
- * unwrapping and short-lived caching. Never call fetch() against the Ranked
- * API anywhere else.
- */
 import type { Envelope } from "../shared/types.js";
 
 export const PRIMARY_BASE = "https://api.mcsrranked.com";
@@ -42,7 +37,6 @@ export interface ClientOptions {
   baseUrl?: string;
   privateKey?: string | null;
   fetchImpl?: typeof fetch;
-  /** For tests: skip real sleeps. */
   sleepImpl?: (ms: number) => Promise<void>;
 }
 
@@ -54,7 +48,6 @@ export class RankedClient {
   private readonly fetchImpl: typeof fetch;
   private readonly sleep: (ms: number) => Promise<void>;
 
-  /** Timestamps of requests sent in the current sliding window. */
   private sent: number[] = [];
   private inFlight = 0;
   private waiters: Array<() => void> = [];
@@ -67,7 +60,6 @@ export class RankedClient {
     this.sleep = opts.sleepImpl ?? realSleep;
   }
 
-  /** Requests spent in the current 10-minute window. */
   budgetUsed(): number {
     this.pruneWindow();
     return this.sent.length;
@@ -101,7 +93,6 @@ export class RankedClient {
       const oldest = this.sent[0]!;
       const waitMs = oldest + WINDOW_MS - Date.now() + 50;
       if (waitMs > 60_000) {
-        // Don't silently stall callers for minutes; let them decide.
         throw new RateBudgetError(waitMs);
       }
       await this.sleep(Math.max(waitMs, 50));
@@ -109,10 +100,7 @@ export class RankedClient {
     }
   }
 
-  /**
-   * GET `path` and unwrap the {status,data} envelope. `ttlMs` caches
-   * successful responses: 0 for live endpoints, Infinity for immutable ones.
-   */
+  /** `ttlMs`: 0 for live endpoints, Infinity for immutable ones. */
   async get<T>(
     path: string,
     opts: { ttlMs?: number; baseUrl?: string; withKey?: boolean } = {},
@@ -139,7 +127,6 @@ export class RankedClient {
     }
   }
 
-  /** GET a JSON endpoint that does not use the {status,data} envelope. */
   async getRaw<T>(
     path: string,
     opts: { ttlMs?: number; baseUrl?: string } = {},
@@ -217,7 +204,7 @@ export class RankedClient {
       try {
         res = await this.fetchImpl(url, { headers });
       } catch (err) {
-        lastError = err; // network error: retry
+      lastError = err;
         continue;
       }
 

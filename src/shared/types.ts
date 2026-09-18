@@ -1,10 +1,4 @@
-/**
- * TypeScript mirrors of the MCSR Ranked API schemas. openapi.yaml is the
- * source of truth.
- */
 import type { EpochSeconds, Millis } from "./brand.js";
-
-// ---------------------------------------------------------------- envelope
 
 export interface SuccessEnvelope<T> {
   status: "success";
@@ -15,8 +9,6 @@ export interface ErrorEnvelope {
   data: string | Record<string, unknown> | null;
 }
 export type Envelope<T> = SuccessEnvelope<T> | ErrorEnvelope;
-
-// ------------------------------------------------------------------ users
 
 /** 1 casual, 2 ranked, 3 private, 4 event. */
 export type MatchType = 1 | 2 | 3 | 4;
@@ -96,8 +88,6 @@ export interface UserSeasonSummary extends UserProfile {
   seasonResults: Record<string, SeasonResultDetailed>;
 }
 
-// ---------------------------------------------------------------- matches
-
 export interface MatchSeed {
   /** All fields null / [] when the seed is not filtered (gotcha 7). */
   id: string | null;
@@ -173,8 +163,6 @@ export interface MatchInfo {
   bastionType?: string | null;
 }
 
-// ----------------------------------------------------------------- versus
-
 export type VersusResultMap = Record<string, number>;
 
 export interface VersusStats {
@@ -182,8 +170,6 @@ export interface VersusStats {
   results: { ranked: VersusResultMap; casual: VersusResultMap };
   changes: Record<string, number>;
 }
-
-// ------------------------------------------------------------------- live
 
 export type LiveStatus = "idle" | "counting" | "generate" | "ready" | "running" | "done";
 
@@ -218,8 +204,6 @@ export interface PublicLiveData {
   players: number;
   liveMatches: LiveMatch[];
 }
-
-// ----------------------------------------------------------- leaderboards
 
 export interface LeaderboardSeason {
   startsAt: EpochSeconds;
@@ -261,8 +245,6 @@ export interface RecordLeaderboardEntry {
   seed: MatchSeed;
 }
 
-// ------------------------------------------------------------ weekly race
-
 export interface WeeklyRaceSeed {
   overworld: string;
   nether: string;
@@ -284,8 +266,6 @@ export interface WeeklyRace {
   endsAt: EpochSeconds;
   leaderboard: WeeklyRaceEntry[];
 }
-
-// ----------------------------------------------------------------- status
 
 export interface StatusHeartbeat {
   /** 0 down, 1 up, 2 pending, 3 maintenance */

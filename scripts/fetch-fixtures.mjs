@@ -27,7 +27,6 @@ await mkdir(OUT, { recursive: true });
 const leaderboard = await get("/leaderboard");
 await save("leaderboard.json", leaderboard);
 
-// Two well-established players from the top of the leaderboard.
 const [a, b] = leaderboard.data.users.slice(0, 2).map((u) => u.nickname);
 console.log(`players: ${a} vs ${b}`);
 
@@ -36,7 +35,6 @@ await save("user-a.json", userA);
 await save("user-a-seasons.json", await get(`/users/${encodeURIComponent(a)}/seasons`));
 const matchesA = await get(`/users/${encodeURIComponent(a)}/matches?count=100&excludedecay=false`);
 await save("user-a-matches.json", matchesA);
-// second page via before-cursor, exercising pagination
 const lastId = matchesA.data[matchesA.data.length - 1].id;
 const matchesA2 = await get(`/users/${encodeURIComponent(a)}/matches?count=100&before=${lastId}`);
 await save("user-a-matches-p2.json", matchesA2);
@@ -47,7 +45,6 @@ await save("user-b-matches.json", await get(`/users/${encodeURIComponent(b)}/mat
 await save("versus.json", await get(`/users/${encodeURIComponent(a)}/versus/${encodeURIComponent(b)}`));
 await save("versus-matches.json", await get(`/users/${encodeURIComponent(a)}/versus/${encodeURIComponent(b)}/matches?count=100`));
 
-// A spread of matches: completed ranked games plus a forfeit and a draw.
 const pool = matchesA.data.filter((m) => m.type === 2 && !m.decayed);
 const completed = pool.filter((m) => !m.forfeited && m.result.uuid !== null).slice(0, 9);
 const forfeits = pool.filter((m) => m.forfeited).slice(0, 2);

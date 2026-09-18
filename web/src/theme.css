@@ -1,14 +1,6 @@
-/* ==================================================================
-   SplitLine — "LiveSplit × slab" theme. The visual language of a speedrun
-   timer built from chunky Minecraft-style slabs: pixel display type, zero
-   border-radius, beveled panels, hotbar nav, segmented meters. Chart series
-   colors remain the validated dark categorical palette.
-   ================================================================== */
-
 :root {
   color-scheme: dark;
 
-  /* cave surfaces */
   --void: #0b0a08;
   --page: #12100c;
   --surface-1: #171511;
@@ -20,25 +12,21 @@
   --bevel-light: rgba(255, 244, 214, 0.07);
   --bevel-dark: rgba(0, 0, 0, 0.55);
 
-  /* ink */
   --text-primary: #f4eedd;
   --text-secondary: #b5ac93;
   --text-muted: #7d7560;
   --grid: #241f18;
   --baseline: #3a3426;
 
-  /* the gold split — primary accent */
   --gold: #ffcc33;
   --gold-hot: #ffe28a;
   --gold-dim: #8a6d1d;
   --gold-glow: rgba(255, 204, 51, 0.25);
 
-  /* timer semantics */
   --ahead: #4ade80;
   --behind: #ff5d55;
   --diamond: #46c8ff;
 
-  /* validated dark categorical palette (chart data only) */
   --series-1: #3987e5;
   --series-2: #d95926;
   --series-3: #199e70;
@@ -47,18 +35,15 @@
   --series-red: #e66767;
   --de-emphasis: #5b5647;
 
-  /* status */
   --good: #0ca30c;
   --warning: #fab219;
   --critical: #d03b3b;
   --delta-up: #4ade80;
   --delta-down: #ff5d55;
 
-  /* meters */
   --seq-track: #23303f;
   --seq-fill: #3987e5;
 
-  /* rank tiers */
   --tier-coal: #9a9a94;
   --tier-iron: #d4d9dd;
   --tier-gold: #ffcc33;
@@ -94,8 +79,6 @@ html {
   scrollbar-gutter: stable;
 }
 
-/* ------------------------------------------------------- the cave */
-
 body {
   margin: 0;
   min-height: 100vh;
@@ -109,7 +92,6 @@ body {
   position: relative;
 }
 
-/* gold-strata top edge — the "world border" */
 body::before {
   content: "";
   position: fixed;
@@ -125,7 +107,6 @@ body::before {
   z-index: 60;
 }
 
-/* buried embers: square specks, not round stars */
 body::after {
   content: "";
   position: fixed;
@@ -173,8 +154,6 @@ a:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gold-dim);
 }
-
-/* ------------------------------------------------------------- layout */
 
 .shell {
   max-width: 1240px;
@@ -226,7 +205,6 @@ a:hover {
   color: var(--gold);
 }
 
-/* hotbar nav — each link is a slot; active = selected slot */
 .topnav {
   display: flex;
   gap: 0;
@@ -308,11 +286,8 @@ button:hover,
   border-color: var(--gold-dim);
   color: var(--gold-hot);
 }
-/*
- * The slab presses into its own drop shadow. The press is instant and the
- * release eases back out; transform and box-shadow share a duration so the
- * shadow cannot snap while the button is still travelling.
- */
+/* transform and box-shadow share a duration so the shadow cannot snap
+   while the button is still travelling. */
 button:active {
   transform: translate(2px, 2px);
   box-shadow: var(--bevel), 1px 1px 0 rgba(0, 0, 0, 0.45);
@@ -333,8 +308,6 @@ button.primary:hover {
   background: var(--gold-hot);
   color: #171205;
 }
-
-/* ------------------------------------------------------------- titles */
 
 h1,
 .page-title {
@@ -381,8 +354,6 @@ h2::after {
   max-width: 70ch;
 }
 
-/* ------------------------------------------------------------- slabs */
-
 .grid {
   display: grid;
   gap: 18px;
@@ -405,11 +376,8 @@ h2::after {
   box-shadow: var(--bevel), var(--slab-shadow);
 }
 
-/*
- * One fade on the route container per navigation. Per-card staggered
- * animations made page changes choppy; a single animation on the page root
- * stays at full frame rate however many slabs the page holds.
- */
+/* One fade on the route container per navigation: per-card staggered
+   animations made page changes choppy. */
 .shell > div {
   opacity: 1;
   transform: none;
@@ -422,8 +390,6 @@ h2::after {
   }
 }
 
-
-/* split-row header strip on chart cards */
 .card-head {
   display: flex;
   align-items: center;
@@ -484,8 +450,6 @@ h2::after {
   transition: opacity 0.15s;
 }
 
-/* ------------------------------------------------------------ stat tile */
-
 .stat-label {
   font-family: var(--font-pixel-sm);
   font-size: 9px;
@@ -518,8 +482,6 @@ h2::after {
 .stat-delta.down {
   color: var(--behind);
 }
-
-/* -------------------------------------------------------------- tables */
 
 table.data {
   width: 100%;
@@ -562,8 +524,6 @@ table.data tbody tr:hover {
   background: rgba(255, 204, 51, 0.07);
 }
 
-/* ---------------------------------------------- segmented meter (XP bar) */
-
 .meter {
   height: 10px;
   background: var(--slot);
@@ -577,7 +537,6 @@ table.data tbody tr:hover {
   background: var(--seq-fill);
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25);
 }
-/* notches every 10% — boss-bar style */
 .meter::after {
   content: "";
   position: absolute;
@@ -589,8 +548,6 @@ table.data tbody tr:hover {
   );
   pointer-events: none;
 }
-
-/* ------------------------------------------------------------- legend */
 
 .legend {
   display: flex;
@@ -613,8 +570,6 @@ table.data tbody tr:hover {
   box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
 }
 
-/* ------------------------------------------------------------- tooltip */
-
 .viz-tooltip {
   position: fixed;
   pointer-events: none;
@@ -633,8 +588,6 @@ table.data tbody tr:hover {
   font-weight: 700;
   margin-bottom: 2px;
 }
-
-/* --------------------------------------------------------------- tabs */
 
 .tabs {
   display: flex;
@@ -676,8 +629,6 @@ table.data tbody tr:hover {
   box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
 }
 
-/* -------------------------------------------------------------- pills */
-
 .pill {
   display: inline-block;
   border: 2px solid var(--border);
@@ -711,8 +662,6 @@ table.data tbody tr:hover {
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------------------------------------------------------- rank tiers */
-
 .tier-chip {
   display: inline-flex;
   align-items: center;
@@ -737,8 +686,6 @@ table.data tbody tr:hover {
   color: var(--tier-c);
 }
 
-/* ------------------------------------------------------------- avatars */
-
 .avatar {
   image-rendering: pixelated;
   display: block;
@@ -746,8 +693,6 @@ table.data tbody tr:hover {
   background: var(--slot);
   box-shadow: var(--bevel-in), 3px 3px 0 rgba(0, 0, 0, 0.45);
 }
-
-/* -------------------------------------------------------------- podium */
 
 .podium {
   display: grid;
@@ -815,8 +760,6 @@ table.data tbody tr:hover {
   margin-top: 4px;
 }
 
-/* --------------------------------------------------- player hero banner */
-
 .player-hero {
   position: relative;
   display: flex;
@@ -854,8 +797,6 @@ table.data tbody tr:hover {
   font-family: var(--font-mono);
 }
 
-/* --------------------------------------------------------- live tug bar */
-
 .tug {
   position: relative;
   display: flex;
@@ -865,11 +806,8 @@ table.data tbody tr:hover {
   box-shadow: var(--bevel-in);
   overflow: hidden;
 }
-/*
- * Both sides fill the bar; side A is scaled horizontally to the win
- * probability, which composites instead of re-running layout. Side A must
- * stay AFTER side B so the notch overlay paints over both.
- */
+/* Side A scales horizontally instead of resizing, and must stay AFTER side B
+   so the notch overlay paints over both. */
 .tug .side-a,
 .tug .side-b {
   position: absolute;
@@ -884,7 +822,6 @@ table.data tbody tr:hover {
   transform-origin: left;
   transition: transform 0.25s var(--ease-in-out);
 }
-/* boss-bar notches */
 .tug::after {
   content: "";
   position: absolute;
@@ -915,15 +852,11 @@ table.data tbody tr:hover {
   right: 10px;
 }
 
-/* --------------------------------------------------------- scroll areas */
-
 .scroll-x {
   overflow-x: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
 }
-
-/* --------------------------------------------------- command palette */
 
 .cmdk-backdrop {
   position: fixed;
@@ -935,11 +868,8 @@ table.data tbody tr:hover {
   justify-content: center;
   align-items: flex-start;
   padding-top: 12vh;
-  /*
-   * Deliberately no open/close animation. The palette is opened dozens of
-   * times a session from the keyboard, and any fade reads as lag. Do not
-   * add one back.
-   */
+  /* Deliberately no open/close animation: the palette is opened from the
+     keyboard dozens of times a session and any fade reads as lag. */
 }
 .cmdk {
   width: min(560px, 92vw);
@@ -1049,7 +979,6 @@ table.data tbody tr:hover {
   color: var(--text-secondary);
 }
 
-/* ⌘K affordance in the topbar search */
 .kbd-hint {
   display: inline-flex;
   align-items: center;
@@ -1068,15 +997,8 @@ table.data tbody tr:hover {
   border-color: var(--gold-dim);
 }
 
-/* =====================================================================
-   SECTION-A EFFECTS (21st.dev, re-skinned to the slab theme)
-   ===================================================================== */
-
-/* --- cursor-tracked glows ---
- * The pointer position is written to this childless <span>, never to the
- * card: a custom property on the card invalidates style for every node
- * inside it on every pointermove.
- */
+/* The pointer position is written to this childless <span>, never to the
+   card: a property on the card invalidates style for every node inside it. */
 .glow-card {
   position: relative;
 }
@@ -1105,12 +1027,9 @@ table.data tbody tr:hover {
   }
 }
 
-/* --- sliding tab selection ---
- * The row is duplicated: the copy is styled entirely active and clipped
- * to the selected tab, so background and label can never disagree. A
- * separate indicator would leave the label invisible mid-slide. The clip
- * rect is measured in Player.tsx.
- */
+/* The row is duplicated: the copy is styled active and clipped to the
+   selected tab, so background and label can never disagree. Clip rect is
+   measured in Player.tsx. */
 .tabs {
   position: relative;
 }
@@ -1133,23 +1052,18 @@ table.data tbody tr:hover {
 .tabs-copy button + button {
   border-left-color: var(--gold-hot);
 }
-/* the copy paints the active state, so the real row stays uniformly inactive */
 .tabs button.on {
   color: var(--text-muted);
   background: transparent;
   border-color: transparent;
   box-shadow: none;
 }
-/* the gold takes 180ms to arrive, so the label acknowledges the press now */
 .tabs button:active {
   color: var(--text-primary);
 }
 
-/* --- shimmer for live/loading states ---
- * A gold copy of the text revealed by a clip band sweeping across it.
- * Scrolling a gradient under background-clip: text re-rasterizes the
- * glyphs every frame; clip-path does not.
- */
+/* A gold copy of the text revealed by a sweeping clip band. Scrolling a
+   gradient under background-clip: text re-rasterizes the glyphs; this does not. */
 .shimmer-text {
   position: relative;
   display: inline-block;
@@ -1172,7 +1086,6 @@ table.data tbody tr:hover {
   }
 }
 
-/* --- live pulse dot + ticker (from "Number Ticker — real-time metrics") --- */
 .live-dot {
   position: relative;
   display: inline-block;
@@ -1209,7 +1122,6 @@ table.data tbody tr:hover {
   text-transform: uppercase;
 }
 
-/* --- 8-bit segmented progress (from "8-bit Stats Dashboard") --- */
 .meter {
   height: 12px;
   background: var(--slot);
@@ -1223,7 +1135,6 @@ table.data tbody tr:hover {
   height: 100%;
   background: var(--gold);
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.28);
-  /* chop the fill into discrete 8-bit blocks */
   -webkit-mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 10px);
   mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 10px);
 }
@@ -1231,27 +1142,194 @@ table.data tbody tr:hover {
   content: none;
 }
 
-/* =====================================================================
-   REDUCED MOTION
-   Fades that aid comprehension stay; anything that travels goes. Must stay
-   LAST in the file — these rules only win on source order.
-   ===================================================================== */
+.season-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 20px 0 16px;
+}
+.season-bar > button {
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1;
+}
+.season-list {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  border: 2px solid var(--border);
+  background: var(--surface-1);
+  box-shadow: var(--bevel), var(--slab-shadow);
+  padding: 3px;
+}
+.season-list button {
+  background: none;
+  border: 2px solid transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-family: var(--font-pixel-sm);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  padding: 8px 12px 7px;
+}
+.season-list button + button {
+  border-left: 2px solid var(--border);
+}
+.season-list button:hover {
+  color: var(--text-primary);
+  background: var(--surface-2);
+}
+.season-list button.on {
+  color: #171205;
+  background: var(--gold);
+  border-color: var(--gold-hot);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+}
+.season-tally {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.game-list {
+  display: grid;
+  gap: 6px;
+}
+.game {
+  border: 2px solid var(--border);
+  background: var(--surface-1);
+  box-shadow: var(--bevel), var(--slab-shadow);
+}
+.game.open {
+  border-color: var(--gold-dim);
+}
+/* the row is one wide button so the whole strip is a hit target */
+.game-head {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) 76px 52px 56px 86px 18px;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 9px 12px;
+  font-weight: 500;
+}
+.game-head:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+.game-outcome {
+  font-family: var(--font-pixel-sm);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 6px 3px;
+  text-align: center;
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+}
+.game-outcome.win {
+  color: var(--ahead);
+  border-color: var(--ahead);
+}
+.game-outcome.loss {
+  color: var(--behind);
+  border-color: var(--behind);
+}
+.game-opponent {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+.game-oppelo {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.game-time,
+.game-delta,
+.game-elo,
+.game-date {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-secondary);
+}
+.game-delta.up {
+  color: var(--delta-up);
+}
+.game-delta.down {
+  color: var(--delta-down);
+}
+.game-elo {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.game-date {
+  color: var(--text-muted);
+}
+.game-chevron {
+  color: var(--gold-dim);
+  text-align: center;
+}
+
+.split-card {
+  border-top: 2px solid var(--border);
+  background: var(--slot);
+  padding: 12px 14px;
+}
+.split-card.muted {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+.split-table {
+  width: auto;
+  min-width: min(420px, 100%);
+}
+.split-won {
+  color: var(--gold);
+}
+.split-meta {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 720px) {
+  .game-head {
+    grid-template-columns: 58px minmax(0, 1fr) 52px 48px 18px;
+  }
+  .game-time,
+  .game-date {
+    display: none;
+  }
+}
+
+/* Reduced motion. Must stay LAST — these rules only win on source order. */
 @media (prefers-reduced-motion: reduce) {
-  /* the page still fades in, it just doesn't rise */
   .shell > div {
     transition-property: opacity;
   }
-  /* ambient loops hold a static frame */
   .live-dot::after {
     animation-name: none;
     opacity: 0.3;
   }
-  /* data that would slide: snap it instead */
   .tug .side-a,
   .tabs-copy {
     transition: none;
   }
-  /* keep the shimmer legible as a solid color */
   .shimmer-text {
     color: var(--text-secondary);
   }

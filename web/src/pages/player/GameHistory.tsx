@@ -1,0 +1,183 @@
+import { useEffect, useState } from "react";
+import { apiGet, useApi, type GameRecord, type GameSplits, type PlayerHistory } from "../../api";
+import { fmtDate, fmtMs, fmtSigned } from "../../format";
+import { EloChart, type EloChartPoint } from "../../components/EloChart";
+import { ChartCard, ErrorBox } from "../../components/ui";
+
+export default function GameHistory({ id, initial }: { id: string; initial: PlayerHistory }) {
+  const [season, setSeason] = useState(initial.season);
+  // The page already loaded one season; re-fetch only when another is picked.
+  const path = `/api/players/${encodeURIComponent(id)}/history?season=${season}`;
+  const { data, error, stale } = useApi<PlayerHistory>(season === initial.season ? null : path);
+  const view = season === initial.season ? initial : data;
+
+  const seasons = initial.seasons;
+  const at = seasons.indexOf(season);
+
+  if (error) return <ErrorBox message={error} />;
+  if (!view) return <div className="card">Loading season {season}…</div>;
+
+  const games = view.games;
+  const points: EloChartPoint[] = games
+    .filter((g): g is GameRecord & { eloAfter: number } => g.eloAfter !== null)
+    .map((g) => ({ date: g.date, elo: g.eloAfter, change: g.eloChange ?? 0, decayed: g.decayed }));
+
+  const real = games.filter((g) => !g.decayed);
+  const wins = real.filter((g) => g.outcome === "win").length;
+  const losses = real.filter((g) => g.outcome === "loss").length;
+
+  return (
+    <div className={stale ? "stale" : ""}>
+      <div className="season-bar">
+        <button
+          type="button"
+          disabled={at >= seasons.length - 1}
+          onClick={() => setSeason(seasons[at + 1]!)}
+          aria-label="Earlier season"
+        >
+          ◂
+        </button>
+        <div className="season-list">
+          {seasons.map((s) => (
+            <button
+              key={s}
+              type="button"
+              className={s === season ? "on" : ""}
+              onClick={() => setSeason(s)}
+            >
+              S{s}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          disabled={at <= 0}
+          onClick={() => setSeason(seasons[at - 1]!)}
+          aria-label="Later season"
+        >
+          ▸
+        </button>
+        <span className="season-tally">
+          {wins}–{losses} in {real.length} ranked games
+        </span>
+      </div>
+
+      {points.length > 1 && (
+        <ChartCard
+          title={`Season ${season} rating`}
+          sub="post-match elo, one step per game"
+          table={{
+            headers: ["Date", "Elo", "Change"],
+            rows: points.map((p) => [fmtDate(p.date), p.elo, fmtSigned(p.change)]),
+            numeric: [1, 2],
+          }}
+        >
+          <EloChart points={points} height={260} />
+        </ChartCard>
+      )}
+
+      <h2>Games</h2>
+      {games.length === 0 ? (
+        <div className="card">No ranked games in season {season}.</div>
+      ) : (
+        <div className="game-list">
+          {games.map((g) => (
+            <GameRow key={g.matchId} id={id} game={g} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GameRow({ id, game }: { id: string; game: GameRecord }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className={`game${open ? " open" : ""}`}>
+      <button type="button" className="game-head" onClick={() => setOpen((o) => !o)}>
+        <span className={`game-outcome ${game.outcome}`}>
+          {game.decayed ? "decay" : game.outcome}
+        </span>
+        <span className="game-opponent">
+          {game.decayed ? "—" : (game.opponent?.nickname ?? "unknown")}
+          {game.opponent?.eloAtMatch != null && (
+            <span className="game-oppelo"> {game.opponent.eloAtMatch}</span>
+          )}
+        </span>
+        <span className="game-time">{game.forfeited ? "forfeit" : fmtMs(game.time)}</span>
+        <span className={`game-delta ${(game.eloChange ?? 0) >= 0 ? "up" : "down"}`}>
+          {fmtSigned(game.eloChange)}
+        </span>
+        <span className="game-elo">{game.eloAfter ?? "—"}</span>
+        <span className="game-date">{fmtDate(game.date)}</span>
+        <span className="game-chevron" aria-hidden>
+          {open ? "▴" : "▾"}
+        </span>
+      </button>
+      {open && <SplitCard id={id} matchId={game.matchId} />}
+    </div>
+  );
+}
+
+function SplitCard({ id, matchId }: { id: string; matchId: number }) {
+  const [state, setState] = useState<
+    { kind: "loading" } | { kind: "error"; message: string } | { kind: "ready"; data: GameSplits }
+  >({ kind: "loading" });
+
+  // Fetched on open: timelines are one upstream request per match.
+  useEffect(() => {
+    let live = true;
+    apiGet<GameSplits>(`/api/players/${encodeURIComponent(id)}/games/${matchId}`)
+      .then((d) => live && setState({ kind: "ready", data: d }))
+      .catch((e: unknown) => live && setState({ kind: "error", message: String(e) }));
+    return () => {
+      live = false;
+    };
+  }, [id, matchId]);
+
+  if (state.kind === "loading") return <div className="split-card muted">Loading splits…</div>;
+  if (state.kind === "error") return <div className="split-card muted">{state.message}</div>;
+  if (state.data.runs.length === 0) {
+    return <div className="split-card muted">This match has no timeline data.</div>;
+  }
+
+  const runs = state.data.runs;
+  return (
+    <div className="split-card">
+      <table className="data split-table">
+        <thead>
+          <tr>
+            <th>Split</th>
+            {runs.map((r) => (
+              <th key={r.uuid} className="num">
+                {r.nickname}
+                {r.won && <span className="split-won"> ✦</span>}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {runs[0]!.splits.map((s) => (
+            <tr key={s.key}>
+              <td className="strong">{s.label}</td>
+              {runs.map((r) => (
+                <td key={r.uuid} className="num">
+                  {fmtMs(r.splits.find((x) => x.key === s.key)?.time)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="split-meta">
+        {runs.map((r) => (
+          <span key={r.uuid}>
+            {r.nickname}: {r.deaths} deaths · {r.resets} resets
+            {r.forfeited && " · forfeited"}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}

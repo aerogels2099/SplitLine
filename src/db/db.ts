@@ -1,7 +1,3 @@
-/**
- * SQLite storage (node:sqlite, no native deps). Matches are immutable, so
- * writes are INSERT OR IGNORE and re-ingesting is idempotent.
- */
 import { DatabaseSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import { mkdirSync } from "node:fs";
@@ -25,8 +21,6 @@ export class Store {
   close() {
     this.db.close();
   }
-
-  // ---------------------------------------------------------------- matches
 
   upsertMatches(matches: MatchInfo[]): number {
     const insertMatch = this.db.prepare(
@@ -100,7 +94,6 @@ export class Store {
     return row ? (JSON.parse(row.data) as MatchInfo) : null;
   }
 
-  /** All stored details, optionally restricted to one player's matches. */
   getDetails(opts: { uuid?: string; season?: number; limit?: number } = {}): MatchInfo[] {
     let sql = `SELECT d.data FROM match_details d JOIN matches m ON m.id = d.id`;
     const where: string[] = [];
@@ -180,8 +173,6 @@ export class Store {
     const row = this.db.prepare(`SELECT MIN(id) AS id FROM matches`).get() as { id: number | null };
     return row.id;
   }
-
-  // ---------------------------------------------------------------- players
 
   upsertPlayer(user: UserDetails) {
     this.db

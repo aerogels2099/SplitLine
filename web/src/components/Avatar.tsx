@@ -1,4 +1,3 @@
-/** Minecraft head avatar with a graceful fallback block, + rank tier chip. */
 import { useState } from "react";
 import { tierOf } from "../tiers";
 

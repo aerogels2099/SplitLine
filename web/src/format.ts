@@ -14,7 +14,6 @@ export function fmtMs(ms: number | null | undefined): string {
   return neg ? `−${body}` : body;
 }
 
-/** Signed seconds for deltas: "+12.4s" / "−8.0s". */
 export function fmtDeltaMs(ms: number | null | undefined): string {
   if (ms === null || ms === undefined || !Number.isFinite(ms)) return "—";
   const s = ms / 1000;
@@ -53,7 +52,6 @@ export function fmtNum(n: number | null | undefined, digits = 0): string {
   return n.toLocaleString(undefined, { maximumFractionDigits: digits });
 }
 
-/** Country code -> flag emoji. */
 export function flag(country: string | null): string {
   if (!country || country.length !== 2) return "";
   const base = 0x1f1e6;

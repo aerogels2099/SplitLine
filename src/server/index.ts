@@ -1,4 +1,3 @@
-/** SplitLine HTTP server. The web frontend (Vite) proxies /api here. */
 import Fastify from "fastify";
 import fastifyCompress from "@fastify/compress";
 import fastifyStatic from "@fastify/static";
@@ -78,7 +77,15 @@ app.get("/api/record-leaderboard", async (req) => {
   );
 });
 
-// ------------------------------------------------- static frontend (build)
+app.get("/api/players/:id/history", async (req) => {
+  const { season } = req.query as { season?: string };
+  return ctx.playerHistory((req.params as { id: string }).id, season ? Number(season) : undefined);
+});
+
+app.get("/api/players/:id/games/:matchId", async (req) => {
+  const p = req.params as { id: string; matchId: string };
+  return ctx.gameSplits(p.id, Number(p.matchId));
+});
 
 const dist = join(ROOT, "web", "dist");
 if (existsSync(dist)) {

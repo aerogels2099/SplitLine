@@ -1,11 +1,9 @@
-/** Shared non-chart UI: cards with table-view twins, stat tiles, tooltips. */
 import { useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 /**
- * Cursor-tracked border glow. The pointer position is written to the
- * childless glow span, not the card: a custom property on the card would
- * invalidate style for every node inside it on each pointermove.
+ * The pointer position is written to the childless glow span, not the card:
+ * a property on the card would invalidate style for every node inside it.
  */
 function useCardGlow() {
   const ref = useRef<HTMLSpanElement>(null);
@@ -18,8 +16,6 @@ function useCardGlow() {
   };
   return { ref, onMouseMove };
 }
-
-// ------------------------------------------------------------- tooltip
 
 export interface TooltipState {
   x: number;
@@ -34,7 +30,6 @@ export function useTooltip() {
   const hide = () => setTip(null);
   let el = null;
   if (tip) {
-    // Sits beside the cursor, flipping sides near the viewport edges.
     // Positioned entirely by transform: `left` near the right edge would
     // shrink the box before the translate runs and wrap the text.
     const flipX = tip.x > window.innerWidth * 0.62;
@@ -53,16 +48,12 @@ export function useTooltip() {
   return { show, hide, el };
 }
 
-// ----------------------------------------------------------- chart card
-
 export interface TableSpec {
   headers: string[];
   rows: (string | number)[][];
-  /** Column indexes that are numeric (right-aligned, tabular figures). */
   numeric?: number[];
 }
 
-/** Card wrapper for every chart: title, subtitle, and a table twin behind a toggle. */
 export function ChartCard(props: {
   title: string;
   sub?: string;
@@ -126,8 +117,6 @@ export function DataTable({ spec }: { spec: TableSpec }) {
   );
 }
 
-// ------------------------------------------------------------ stat tile
-
 export function StatTile(props: {
   label: string;
   value: ReactNode;
@@ -160,7 +149,6 @@ export function Meter({ value, label }: { value: number; label?: string }) {
   );
 }
 
-/** Radial progress ring with centered content. `hot` = gold glow (close call). */
 export function Ring({
   value,
   size = 104,

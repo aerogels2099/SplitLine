@@ -1,5 +1,3 @@
-/** Rank tiers — elo thresholds with the theme's tier colors. */
-
 export interface Tier {
   key: string;
   label: string;

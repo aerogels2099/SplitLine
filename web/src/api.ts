@@ -1,7 +1,3 @@
-/**
- * Typed client for the SplitLine backend. Analysis types are imported
- * type-only from the backend source.
- */
 import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   Leaderboard,
@@ -12,8 +8,11 @@ import type {
   VersusStats,
   WeeklyRaceEntry,
 } from "../../src/shared/types.js";
+import type { GameRecord, LabelledRun } from "../../src/analysis/history.js";
 
 export type {
+  GameRecord,
+  LabelledRun,
   Leaderboard,
   MatchInfo,
   UserDetails,
@@ -25,6 +24,18 @@ export interface Overview {
   playersOnline: number;
   liveMatchCount: number;
   weekly: { id: number; endsAt: number; podium: WeeklyRaceEntry[]; entrants: number };
+}
+
+export interface PlayerHistory {
+  user: UserDetails;
+  seasons: number[];
+  season: number;
+  games: GameRecord[];
+}
+
+export interface GameSplits {
+  matchId: number;
+  runs: LabelledRun[];
 }
 
 export class HttpError extends Error {
@@ -67,9 +78,8 @@ export async function apiPost<T>(path: string, payload: unknown): Promise<T> {
 }
 
 /**
- * Fetch-on-mount hook with a stale-while-revalidate cache. A recently
- * fetched path renders instantly and revalidates silently; `loading` and
- * `stale` apply only to user-visible loads, never to background polls.
+ * Fetch-on-mount with a stale-while-revalidate cache. `loading` and `stale`
+ * apply only to user-visible loads, never to background polls.
  */
 const responseCache = new Map<string, { data: unknown; time: number }>();
 const RESPONSE_TTL = 60_000;

@@ -1,8 +1,9 @@
-import { Navigate, NavLink, Route, Routes } from "react-router-dom";
+import { useState, type FormEvent } from "react";
+import { Navigate, NavLink, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
+import Player from "./pages/Player";
 
 function Logo() {
-  // Pixel beacon: a base block with a beam rising from it.
   return (
     <span className="mark" aria-hidden>
       <svg width="20" height="20" viewBox="0 0 16 16" shapeRendering="crispEdges">
@@ -16,6 +17,18 @@ function Logo() {
 }
 
 export default function App() {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const onSearch = (e: FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (q) {
+      navigate(`/player/${encodeURIComponent(q)}`);
+      setQuery("");
+    }
+  };
+
   return (
     <div className="shell">
       <header className="topbar">
@@ -28,11 +41,21 @@ export default function App() {
         <nav className="topnav">
           <NavLink to="/dashboard">Dashboard</NavLink>
         </nav>
+        <form className="search" onSubmit={onSearch}>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Find a player… (nickname or UUID)"
+            aria-label="Find a player"
+          />
+          <button type="submit">Analyze</button>
+        </form>
       </header>
       <Routes>
         {/* the dashboard is the home page; normalize the URL so the nav highlights */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Home />} />
+        <Route path="/player/:id" element={<Player />} />
       </Routes>
     </div>
   );
