@@ -1,7 +1,8 @@
-import { useState, type FormEvent } from "react";
+import { Suspense, lazy, useState, type FormEvent } from "react";
 import { Navigate, NavLink, Route, Routes, useNavigate } from "react-router-dom";
-import Home from "./pages/Home";
-import Player from "./pages/Player";
+
+const Home = lazy(() => import("./pages/Home"));
+const Player = lazy(() => import("./pages/Player"));
 
 function Logo() {
   return (
@@ -51,12 +52,14 @@ export default function App() {
           <button type="submit">Analyze</button>
         </form>
       </header>
+      <Suspense fallback={<div className="card">Loading…</div>}>
       <Routes>
         {/* the dashboard is the home page; normalize the URL so the nav highlights */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Home />} />
         <Route path="/player/:id" element={<Player />} />
       </Routes>
+      </Suspense>
     </div>
   );
 }

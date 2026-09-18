@@ -15,7 +15,6 @@ import type {
 } from "../shared/types.js";
 
 const MINUTE = 60_000;
-const FOREVER = Number.MAX_SAFE_INTEGER;
 
 export interface MatchListParams {
   before?: number;
@@ -31,7 +30,7 @@ export interface MatchListParams {
 
 function qs(params: Record<string, string | number | boolean | undefined>): string {
   const parts: string[] = [];
-  for (const [k, v] of Object.entries(params)) {
+  for (const [k, v] of Object.entries(params).sort(([a], [b]) => (a < b ? -1 : 1))) {
     if (v === undefined) continue;
     parts.push(`${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`);
   }
@@ -77,9 +76,8 @@ export class RankedApi {
     return this.client.get(`/matches${qs({ ...params })}`, { ttlMs });
   }
 
-  /** Advanced fields (completions[], timelines[]) only exist here. */
   getMatch(matchId: number): Promise<MatchInfo> {
-    return this.client.get(`/matches/${matchId}`, { ttlMs: FOREVER });
+    return this.client.get(`/matches/${matchId}`, { ttlMs: 0 });
   }
 
   getLive(): Promise<PublicLiveData> {
@@ -107,7 +105,6 @@ export class RankedApi {
   }
 
   getStatus(): Promise<StatusHeartbeatResponse> {
-    // The status host returns its heartbeat object directly, with no envelope.
     return this.client.getRaw(`/api/status-page/heartbeat/mcsrranked`, {
       baseUrl: STATUS_BASE,
       ttlMs: MINUTE,

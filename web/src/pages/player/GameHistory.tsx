@@ -1,12 +1,21 @@
-import { useEffect, useState } from "react";
-import { apiGet, useApi, type GameRecord, type GameSplits, type PlayerHistory } from "../../api";
+import { memo, useMemo, useState } from "react";
+import { useApi, type GameRecord, type GameSplits, type PlayerHistory } from "../../api";
 import { fmtDate, fmtMs, fmtSigned } from "../../format";
 import { EloChart, type EloChartPoint } from "../../components/EloChart";
 import { ChartCard, ErrorBox } from "../../components/ui";
 
 const RANGES = [0, 100, 50, 25];
 
-export default function GameHistory({ id, initial }: { id: string; initial: PlayerHistory }) {
+export default function GameHistory({
+  id,
+  initial,
+  filling = false,
+}: {
+  id: string;
+  initial: PlayerHistory;
+  /** Older pages are still landing, so counts here are not yet final. */
+  filling?: boolean;
+}) {
   const [season, setSeason] = useState(initial.season);
   // The page already loaded one season; re-fetch only when another is picked.
   const path = `/api/players/${encodeURIComponent(id)}/history?season=${season}`;
@@ -18,20 +27,33 @@ export default function GameHistory({ id, initial }: { id: string; initial: Play
   const at = seasons.indexOf(season);
   const [range, setWindow] = useState(0);
 
-  if (error) return <ErrorBox message={error} />;
-  if (!view) return <div className="card">Loading season {season}…</div>;
-
-  const games = view.games;
-  const points: EloChartPoint[] = games
-    .filter((g): g is GameRecord & { eloAfter: number } => g.eloAfter !== null)
-    .map((g) => ({ date: g.date, elo: g.eloAfter, change: g.eloChange ?? 0, decayed: g.decayed }));
+  const games = view?.games;
+  // Above the early returns so the hook order stays stable.
+  const { points, wins, losses, played } = useMemo(() => {
+    const list = games ?? [];
+    const pts: EloChartPoint[] = list
+      .filter((g): g is GameRecord & { eloAfter: number } => g.eloAfter !== null)
+      .map((g) => ({
+        matchId: g.matchId,
+        date: g.date,
+        elo: g.eloAfter,
+        change: g.eloChange ?? 0,
+        decayed: g.decayed,
+      }));
+    const real = list.filter((g) => !g.decayed);
+    return {
+      points: pts,
+      wins: real.filter((g) => g.outcome === "win").length,
+      losses: real.filter((g) => g.outcome === "loss").length,
+      played: real.length,
+    };
+  }, [games]);
 
   // the range counts games back from the most recent, so 0 means the lot
-  const shown = range === 0 ? points : points.slice(-range);
+  const shown = useMemo(() => (range === 0 ? points : points.slice(-range)), [points, range]);
 
-  const real = games.filter((g) => !g.decayed);
-  const wins = real.filter((g) => g.outcome === "win").length;
-  const losses = real.filter((g) => g.outcome === "loss").length;
+  if (error) return <ErrorBox message={error} />;
+  if (!games) return <div className="card">Loading season {season}…</div>;
 
   return (
     <div className={stale ? "stale" : ""}>
@@ -65,7 +87,8 @@ export default function GameHistory({ id, initial }: { id: string; initial: Play
           ▸
         </button>
         <span className="season-tally">
-          {wins}–{losses} in {real.length} ranked games
+          {wins}–{losses} in {played} ranked games
+          {filling && <span className="muted"> · loading older games…</span>}
         </span>
       </div>
 
@@ -101,7 +124,7 @@ export default function GameHistory({ id, initial }: { id: string; initial: Play
   );
 }
 
-function GameRow({ id, game }: { id: string; game: GameRecord }) {
+const GameRow = memo(function GameRow({ id, game }: { id: string; game: GameRecord }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -129,31 +152,21 @@ function GameRow({ id, game }: { id: string; game: GameRecord }) {
       {open && <SplitCard id={id} matchId={game.matchId} />}
     </div>
   );
-}
+});
 
 function SplitCard({ id, matchId }: { id: string; matchId: number }) {
-  const [state, setState] = useState<
-    { kind: "loading" } | { kind: "error"; message: string } | { kind: "ready"; data: GameSplits }
-  >({ kind: "loading" });
-
   // Fetched on open: timelines are one upstream request per match.
-  useEffect(() => {
-    let live = true;
-    apiGet<GameSplits>(`/api/players/${encodeURIComponent(id)}/games/${matchId}`)
-      .then((d) => live && setState({ kind: "ready", data: d }))
-      .catch((e: unknown) => live && setState({ kind: "error", message: String(e) }));
-    return () => {
-      live = false;
-    };
-  }, [id, matchId]);
+  const { data, error } = useApi<GameSplits>(
+    `/api/players/${encodeURIComponent(id)}/games/${matchId}`,
+  );
 
-  if (state.kind === "loading") return <div className="split-card muted">Loading splits…</div>;
-  if (state.kind === "error") return <div className="split-card muted">{state.message}</div>;
-  if (state.data.runs.length === 0) {
+  if (error) return <div className="split-card muted">{error}</div>;
+  if (!data) return <div className="split-card muted">Loading splits…</div>;
+  if (data.runs.length === 0) {
     return <div className="split-card muted">This match has no timeline data.</div>;
   }
 
-  const runs = state.data.runs;
+  const runs = data.runs;
   return (
     <div className="split-card">
       <table className="data split-table">
@@ -169,12 +182,13 @@ function SplitCard({ id, matchId }: { id: string; matchId: number }) {
           </tr>
         </thead>
         <tbody>
-          {runs[0]!.splits.map((s) => (
+          {runs[0]!.splits.map((s, i) => (
             <tr key={s.key}>
               <td className="strong">{s.label}</td>
+              {/* labelRun emits splits in fixed milestone order. */}
               {runs.map((r) => (
                 <td key={r.uuid} className="num">
-                  {fmtMs(r.splits.find((x) => x.key === s.key)?.time)}
+                  {fmtMs(r.splits[i]?.time)}
                 </td>
               ))}
             </tr>

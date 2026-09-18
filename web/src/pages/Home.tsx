@@ -13,6 +13,8 @@ export default function Home() {
 
   const podium = data?.top.slice(0, 3) ?? [];
   const rest = data?.top.slice(3) ?? [];
+  // live and weekly can be null; the server degrades them independently.
+  const leader = data?.weekly?.podium[0] ?? null;
 
   return (
     <div className={stale ? "stale" : ""}>
@@ -22,7 +24,11 @@ export default function Home() {
         <StatTile
           label="Players online"
           value={data ? fmtNum(data.playersOnline) : "…"}
-          sub={data ? `${data.liveMatchCount} public live matches` : undefined}
+          sub={
+            data && data.liveMatchCount !== null
+              ? `${data.liveMatchCount} public live matches`
+              : undefined
+          }
         />
         <StatTile
           label="Season"
@@ -31,21 +37,25 @@ export default function Home() {
         />
         <StatTile
           label="Weekly race"
-          value={data ? `#${data.weekly.id}` : "…"}
-          sub={data ? `${data.weekly.entrants} entrants · ends ${fmtDate(data.weekly.endsAt)}` : undefined}
+          value={data ? (data.weekly ? `#${data.weekly.id}` : "—") : "…"}
+          sub={
+            data?.weekly
+              ? `${data.weekly.entrants} entrants · ends ${fmtDate(data.weekly.endsAt)}`
+              : undefined
+          }
         />
         <StatTile
           label="Race leader"
           value={
-            data && data.weekly.podium[0] ? (
-              <Link to={`/player/${encodeURIComponent(data.weekly.podium[0].player.nickname)}`}>
-                {data.weekly.podium[0].player.nickname}
+            leader ? (
+              <Link to={`/player/${encodeURIComponent(leader.player.nickname)}`}>
+                {leader.player.nickname}
               </Link>
             ) : (
               "—"
             )
           }
-          sub={data && data.weekly.podium[0] ? fmtMs(Number(data.weekly.podium[0].time)) : undefined}
+          sub={leader ? fmtMs(Number(leader.time)) : undefined}
         />
       </div>
 

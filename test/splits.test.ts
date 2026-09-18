@@ -26,6 +26,12 @@ describe("split extraction", () => {
     expect(extractRunSplits(listLevel, m.players[0]!.uuid)).toBeNull();
   });
 
+  it("treats an empty timelines array as absent, not as a run of nulls", () => {
+    const m = details[0]!;
+    // Array endpoints return [] rather than an error (gotcha 3).
+    expect(extractRunSplits({ ...m, timelines: [] }, m.players[0]!.uuid)).toBeNull();
+  });
+
   it("uses changes[].eloRate for elo at match time, not players[].eloRate", () => {
     const u = userA();
     for (const m of details) {

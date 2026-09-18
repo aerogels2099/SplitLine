@@ -1,101 +1,196 @@
-import { DatabaseSync } from "node:sqlite";
+import { DatabaseSync, type StatementSync } from "node:sqlite";
 import { readFileSync } from "node:fs";
 import { mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { nowEpochSeconds } from "../shared/brand.js";
-import type { MatchInfo, UserDetails } from "../shared/types.js";
+import type { CompletionEntry, MatchInfo, TimelineEntry, UserDetails } from "../shared/types.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
+/** Bumped when stored rows, not just the DDL, need rewriting. */
+const SCHEMA_VERSION = 2;
+
+const INSERT_MATCH = `INSERT OR IGNORE INTO matches
+   (id, season, type, date, forfeited, decayed, winner_uuid, result_time,
+    seed_type, bastion_type, category, tag, data)
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+const INSERT_PLAYER = `INSERT OR IGNORE INTO match_players
+   (match_id, uuid, nickname, elo_rate, elo_change, elo_after)
+   VALUES (?, ?, ?, ?, ?, ?)`;
+
+/** The fields only GET /matches/{id} returns (gotcha 5). */
+interface AdvancedFields {
+  completions?: CompletionEntry[];
+  timelines?: TimelineEntry[];
+  replayExist?: boolean;
+}
+
+/** Splits a match so each half is stored once; merging them reproduces it. */
+function splitAdvanced(m: MatchInfo): { list: MatchInfo; advanced: AdvancedFields } {
+  const { completions, timelines, replayExist, ...list } = m;
+  const advanced: AdvancedFields = {};
+  if (completions !== undefined) advanced.completions = completions;
+  if (timelines !== undefined) advanced.timelines = timelines;
+  if (replayExist !== undefined) advanced.replayExist = replayExist;
+  return { list: list as MatchInfo, advanced };
+}
+
 export class Store {
   readonly db: DatabaseSync;
+  private statements = new Map<string, StatementSync>();
 
   constructor(path: string = ":memory:") {
     if (path !== ":memory:") mkdirSync(dirname(path), { recursive: true });
     this.db = new DatabaseSync(path);
     this.db.exec("PRAGMA journal_mode = WAL;");
+    this.db.exec("PRAGMA synchronous = NORMAL;");
+    this.db.exec("PRAGMA temp_store = MEMORY;");
+    // Without this a concurrent writer fails immediately with SQLITE_BUSY.
+    this.db.exec("PRAGMA busy_timeout = 5000;");
     this.db.exec(readFileSync(join(HERE, "schema.sql"), "utf8"));
+    // An older cache may still carry an index this project no longer creates.
+    this.db.exec("DROP INDEX IF EXISTS idx_matches_type_date");
+    this.migrate();
+    this.optimize();
+  }
+
+  private optimize() {
+    this.db.exec("PRAGMA analysis_limit = 400;");
+    this.db.exec("PRAGMA optimize;");
   }
 
   close() {
+    this.optimize();
+    this.statements.clear();
     this.db.close();
   }
 
-  upsertMatches(matches: MatchInfo[]): number {
-    const insertMatch = this.db.prepare(
-      `INSERT OR IGNORE INTO matches
-       (id, season, type, date, forfeited, decayed, winner_uuid, result_time,
-        seed_type, bastion_type, category, tag, data)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    );
-    const insertPlayer = this.db.prepare(
-      `INSERT OR IGNORE INTO match_players
-       (match_id, uuid, nickname, elo_rate, elo_change, elo_after)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-    );
-    let added = 0;
+  /** Memoized by SQL text — never interpolate a value into the string. */
+  private stmt(sql: string): StatementSync {
+    let s = this.statements.get(sql);
+    if (!s) {
+      s = this.db.prepare(sql);
+      this.statements.set(sql, s);
+    }
+    return s;
+  }
+
+  /** Re-entrant transaction wrapper; SQLite rejects a nested BEGIN. */
+  private tx<T>(fn: () => T): T {
+    if (this.db.isTransaction) return fn();
     this.db.exec("BEGIN");
     try {
-      for (const m of matches) {
-        const res = insertMatch.run(
-          m.id,
-          m.season,
-          m.type,
-          m.date,
-          m.forfeited ? 1 : 0,
-          m.decayed ? 1 : 0,
-          m.result.uuid,
-          m.result.time,
-          m.seedType ?? m.seed?.overworld ?? null,
-          m.bastionType ?? m.seed?.nether ?? null,
-          m.category ?? null,
-          m.tag ?? null,
-          JSON.stringify(m),
-        );
-        if (res.changes > 0) added++;
-        for (const p of m.players) {
-          const change = m.changes.find((c) => c.uuid === p.uuid);
-          insertPlayer.run(
-            m.id,
-            p.uuid,
-            p.nickname,
-            p.eloRate,
-            change?.change ?? null,
-            change?.eloRate ?? null,
-          );
-        }
-      }
+      const out = fn();
       this.db.exec("COMMIT");
+      return out;
     } catch (err) {
-      this.db.exec("ROLLBACK");
+      if (this.db.isTransaction) this.db.exec("ROLLBACK");
       throw err;
+    }
+  }
+
+  /** Rewrites rows whose contents, not shape, are wrong. */
+  private migrate() {
+    const row = this.db.prepare("PRAGMA user_version").get() as { user_version: number };
+    if (row.user_version >= SCHEMA_VERSION) return;
+    const matches = this.db.prepare("SELECT data FROM matches").all() as { data: string }[];
+    this.tx(() => {
+      this.db.exec("DELETE FROM match_players");
+      for (const r of matches) this.insertPlayers(JSON.parse(r.data) as MatchInfo);
+      this.db.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);
+    });
+  }
+
+  /** Elo comes from changes[] (PRE-match), not players[].eloRate (gotcha 10). */
+  private insertPlayers(m: MatchInfo) {
+    const insert = this.stmt(INSERT_PLAYER);
+    for (const p of m.players) {
+      const change = m.changes.find((c) => c.uuid === p.uuid);
+      const before = change?.eloRate ?? null;
+      const delta = change?.change ?? null;
+      insert.run(
+        m.id,
+        p.uuid,
+        p.nickname,
+        before,
+        delta,
+        before !== null && delta !== null ? before + delta : null,
+      );
+    }
+  }
+
+  /** Writes the list-level rows. The caller owns the transaction. */
+  private insertMatches(matches: MatchInfo[]): number {
+    const insert = this.stmt(INSERT_MATCH);
+    let added = 0;
+    for (const m of matches) {
+      const { list } = splitAdvanced(m);
+      const res = insert.run(
+        m.id,
+        m.season,
+        m.type,
+        m.date,
+        m.forfeited ? 1 : 0,
+        m.decayed ? 1 : 0,
+        m.result.uuid,
+        m.result.time,
+        m.seedType ?? m.seed?.overworld ?? null,
+        m.bastionType ?? m.seed?.nether ?? null,
+        m.category ?? null,
+        m.tag ?? null,
+        JSON.stringify(list),
+      );
+      if (res.changes > 0) added++;
+      this.insertPlayers(m);
     }
     return added;
   }
 
+  upsertMatches(matches: MatchInfo[]): number {
+    return this.tx(() => this.insertMatches(matches));
+  }
+
+  /** Stores a batch of details and their list-level rows in one transaction. */
+  upsertDetails(details: MatchInfo[]) {
+    const insert = this.stmt(
+      `INSERT OR REPLACE INTO match_details (id, fetched_at, data) VALUES (?, ?, ?)`,
+    );
+    const now = nowEpochSeconds();
+    this.tx(() => {
+      this.insertMatches(details);
+      for (const d of details) {
+        insert.run(d.id, now, JSON.stringify(splitAdvanced(d).advanced));
+      }
+    });
+  }
+
   upsertDetail(detail: MatchInfo) {
-    this.upsertMatches([detail]);
-    this.db
-      .prepare(`INSERT OR REPLACE INTO match_details (id, fetched_at, data) VALUES (?, ?, ?)`)
-      .run(detail.id, nowEpochSeconds(), JSON.stringify(detail));
+    this.upsertDetails([detail]);
   }
 
   hasDetail(matchId: number): boolean {
-    return (
-      this.db.prepare(`SELECT 1 FROM match_details WHERE id = ?`).get(matchId) !== undefined
-    );
+    return this.stmt(`SELECT 1 FROM match_details WHERE id = ?`).get(matchId) !== undefined;
+  }
+
+  /** Advanced fields spread last, so rows written before the split still read. */
+  private mergeDetail(row: { list: string | null; adv: string }): MatchInfo {
+    const list = row.list ? (JSON.parse(row.list) as MatchInfo) : ({} as MatchInfo);
+    return { ...list, ...(JSON.parse(row.adv) as AdvancedFields) };
   }
 
   getDetail(matchId: number): MatchInfo | null {
-    const row = this.db.prepare(`SELECT data FROM match_details WHERE id = ?`).get(matchId) as
-      | { data: string }
-      | undefined;
-    return row ? (JSON.parse(row.data) as MatchInfo) : null;
+    const row = this.stmt(
+      `SELECT m.data AS list, d.data AS adv FROM match_details d
+       LEFT JOIN matches m ON m.id = d.id WHERE d.id = ?`,
+    ).get(matchId) as { list: string | null; adv: string } | undefined;
+    return row ? this.mergeDetail(row) : null;
   }
 
   getDetails(opts: { uuid?: string; season?: number; limit?: number } = {}): MatchInfo[] {
-    let sql = `SELECT d.data FROM match_details d JOIN matches m ON m.id = d.id`;
+    let sql = `SELECT m.data AS list, d.data AS adv FROM match_details d
+               JOIN matches m ON m.id = d.id`;
     const where: string[] = [];
     const args: (string | number)[] = [];
     if (opts.uuid) {
@@ -113,21 +208,72 @@ export class Store {
       sql += ` LIMIT ?`;
       args.push(opts.limit);
     }
-    const rows = this.db.prepare(sql).all(...args) as { data: string }[];
-    return rows.map((r) => JSON.parse(r.data) as MatchInfo);
+    const rows = this.stmt(sql).all(...args) as { list: string | null; adv: string }[];
+    return rows.map((r) => this.mergeDetail(r));
+  }
+
+  /** Ids of recent ranked matches with no timelines yet, within `window`. */
+  detailCandidates(opts: {
+    uuid?: string;
+    window: number;
+    limit: number;
+    completedOnly?: boolean;
+  }): number[] {
+    const args: (string | number)[] = [];
+    let inner = `SELECT m.id, m.date, m.decayed, m.forfeited, m.winner_uuid FROM matches m`;
+    if (opts.uuid) {
+      inner += ` JOIN match_players p ON p.match_id = m.id WHERE m.type = 2 AND p.uuid = ?`;
+      args.push(opts.uuid);
+    } else {
+      inner += ` WHERE m.type = 2`;
+    }
+    inner += ` ORDER BY m.date DESC LIMIT ?`;
+    args.push(opts.window);
+
+    let sql = `SELECT x.id FROM (${inner}) x
+               LEFT JOIN match_details d ON d.id = x.id
+               WHERE d.id IS NULL AND x.decayed = 0`;
+    if (opts.completedOnly) sql += ` AND x.forfeited = 0 AND x.winner_uuid IS NOT NULL`;
+    sql += ` ORDER BY x.date DESC LIMIT ?`;
+    args.push(opts.limit);
+
+    return (this.stmt(sql).all(...args) as { id: number }[]).map((r) => r.id);
   }
 
   detailCount(): number {
-    const row = this.db.prepare(`SELECT COUNT(*) AS n FROM match_details`).get() as { n: number };
+    const row = this.stmt(`SELECT COUNT(*) AS n FROM match_details`).get() as { n: number };
     return row.n;
   }
 
   matchCount(): number {
-    const row = this.db.prepare(`SELECT COUNT(*) AS n FROM matches`).get() as { n: number };
+    const row = this.stmt(`SELECT COUNT(*) AS n FROM matches`).get() as { n: number };
     return row.n;
   }
 
-  getMatchesForPlayer(uuid: string, opts: { season?: number; type?: number; limit?: number } = {}): MatchInfo[] {
+  /** Seasons the player has a ranked match in, newest first. */
+  seasonsForPlayer(uuid: string): number[] {
+    const rows = this.stmt(
+      `SELECT DISTINCT m.season AS season FROM matches m
+       JOIN match_players p ON p.match_id = m.id
+       WHERE p.uuid = ? AND m.type = 2 ORDER BY m.season DESC`,
+    ).all(uuid) as { season: number }[];
+    return rows.map((r) => r.season);
+  }
+
+  /** Newest stored match: the staleness check and `after` cursor for ingest. */
+  newestMatchForPlayer(uuid: string): { id: number; date: number } | null {
+    const row = this.stmt(
+      `SELECT m.id AS id, m.date AS date FROM matches m
+       JOIN match_players p ON p.match_id = m.id
+       WHERE p.uuid = ? ORDER BY m.date DESC, m.id DESC LIMIT 1`,
+    ).get(uuid) as { id: number; date: number } | undefined;
+    return row ?? null;
+  }
+
+  getMatchesForPlayer(
+    uuid: string,
+    opts: { season?: number; type?: number; limit?: number } = {},
+  ): MatchInfo[] {
     let sql = `SELECT m.data FROM matches m JOIN match_players p ON p.match_id = m.id WHERE p.uuid = ?`;
     const args: (string | number)[] = [uuid];
     if (opts.season !== undefined) {
@@ -143,55 +289,35 @@ export class Store {
       sql += ` LIMIT ?`;
       args.push(opts.limit);
     }
-    const rows = this.db.prepare(sql).all(...args) as { data: string }[];
+    const rows = this.stmt(sql).all(...args) as { data: string }[];
     return rows.map((r) => JSON.parse(r.data) as MatchInfo);
   }
 
-  getAllMatches(opts: { season?: number; type?: number; limit?: number } = {}): MatchInfo[] {
-    let sql = `SELECT data FROM matches`;
-    const where: string[] = [];
-    const args: number[] = [];
-    if (opts.season !== undefined) {
-      where.push(`season = ?`);
-      args.push(opts.season);
-    }
-    if (opts.type !== undefined) {
-      where.push(`type = ?`);
-      args.push(opts.type);
-    }
-    if (where.length > 0) sql += ` WHERE ` + where.join(" AND ");
-    sql += ` ORDER BY date DESC`;
-    if (opts.limit) {
-      sql += ` LIMIT ?`;
-      args.push(opts.limit);
-    }
-    const rows = this.db.prepare(sql).all(...args) as { data: string }[];
-    return rows.map((r) => JSON.parse(r.data) as MatchInfo);
-  }
-
-  oldestMatchId(): number | null {
-    const row = this.db.prepare(`SELECT MIN(id) AS id FROM matches`).get() as { id: number | null };
+  /** Scoped by type: a cursor from another type would skip unfetched matches. */
+  oldestMatchId(type?: number): number | null {
+    const row =
+      type === undefined
+        ? (this.stmt(`SELECT MIN(id) AS id FROM matches`).get() as { id: number | null })
+        : (this.stmt(`SELECT MIN(id) AS id FROM matches WHERE type = ?`).get(type) as {
+            id: number | null;
+          });
     return row.id;
   }
 
   upsertPlayer(user: UserDetails) {
-    this.db
-      .prepare(
-        `INSERT INTO players (uuid, nickname, last_ingest, data) VALUES (?, ?, ?, ?)
-         ON CONFLICT(uuid) DO UPDATE SET nickname = excluded.nickname,
-           last_ingest = excluded.last_ingest, data = excluded.data`,
-      )
-      .run(user.uuid, user.nickname, nowEpochSeconds(), JSON.stringify(user));
+    this.stmt(
+      `INSERT INTO players (uuid, nickname, last_ingest, data) VALUES (?, ?, ?, ?)
+       ON CONFLICT(uuid) DO UPDATE SET nickname = excluded.nickname,
+         last_ingest = excluded.last_ingest, data = excluded.data`,
+    ).run(user.uuid, user.nickname, nowEpochSeconds(), JSON.stringify(user));
   }
 
   getPlayer(identifier: string): { user: UserDetails; lastIngest: number } | null {
     const norm = identifier.replace(/-/g, "");
-    const row = this.db
-      .prepare(
-        `SELECT data, last_ingest FROM players
-         WHERE uuid = ? OR nickname = ? COLLATE NOCASE`,
-      )
-      .get(norm, identifier) as { data: string; last_ingest: number | null } | undefined;
+    const row = this.stmt(
+      `SELECT data, last_ingest FROM players
+       WHERE uuid = ? OR nickname = ? COLLATE NOCASE`,
+    ).get(norm, identifier) as { data: string; last_ingest: number | null } | undefined;
     if (!row || !row.data) return null;
     return { user: JSON.parse(row.data) as UserDetails, lastIngest: row.last_ingest ?? 0 };
   }

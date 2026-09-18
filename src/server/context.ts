@@ -1,8 +1,8 @@
 import { RankedClient } from "../api/client.js";
 import { RankedApi } from "../api/endpoints.js";
 import { Store } from "../db/db.js";
-import { fetchPlayerDetails, ingestPlayer } from "../ingest/backfill.js";
-import { buildGameHistory, labelRun, seasonsPlayed } from "../analysis/history.js";
+import { continueBackfill, fetchPlayerDetails, ingestPlayer } from "../ingest/backfill.js";
+import { buildGameHistory, labelRun } from "../analysis/history.js";
 import { extractRunSplits } from "../analysis/splits.js";
 import { nowEpochSeconds } from "../shared/brand.js";
 import type { UserDetails } from "../shared/types.js";
@@ -13,30 +13,22 @@ export class AppContext {
   readonly store: Store;
   readonly api: RankedApi;
   private ingesting = new Map<string, Promise<UserDetails>>();
-
-  /** Keyed on the row count that feeds each value, so an ingest invalidates it. */
-  private memoCache = new Map<string, { version: number; value: unknown }>();
-
-  private memo<T>(key: string, version: number, compute: () => T): T {
-    const hit = this.memoCache.get(key);
-    if (hit && hit.version === version) return hit.value as T;
-    const value = compute();
-    this.memoCache.set(key, { version, value });
-    return value;
-  }
+  private detailJobs = new Map<string, Promise<number>>();
+  /** Players whose older history is still being walked in the background. */
+  private backfillJobs = new Map<string, Promise<number>>();
 
   constructor(dbPath: string, privateKey: string | null) {
     this.store = new Store(dbPath);
     this.api = new RankedApi(new RankedClient({ privateKey }));
   }
 
-  private rankedMatches(uuid: string) {
-    return this.memo(`ranked:${uuid}`, this.store.matchCount(), () =>
-      this.store.getMatchesForPlayer(uuid, { type: 2 }),
-    );
+  /** Runs `job` once per uuid, clearing the slot when it settles. */
+  private startJob(map: Map<string, Promise<number>>, uuid: string, job: () => Promise<number>) {
+    if (map.has(uuid)) return;
+    const p = job().finally(() => map.delete(uuid));
+    p.catch(() => {});
+    map.set(uuid, p);
   }
-
-  private detailJobs = new Map<string, Promise<number>>();
 
   /** Concurrent requests for one player share a single ingest. */
   async ensurePlayer(identifier: string): Promise<UserDetails> {
@@ -49,13 +41,16 @@ export class AppContext {
     if (!pending) {
       pending = ingestPlayer(this.store, this.api, identifier).then((r) => {
         const uuid = r.user.uuid;
-        if (!this.detailJobs.has(uuid)) {
-          const job = fetchPlayerDetails(this.store, this.api, uuid).finally(() =>
-            this.detailJobs.delete(uuid),
+        // Older pages finish after the response, not inside it.
+        if (!r.complete && r.cursor !== null) {
+          const cursor = r.cursor;
+          this.startJob(this.backfillJobs, uuid, () =>
+            continueBackfill(this.store, this.api, identifier, cursor),
           );
-          job.catch(() => {});
-          this.detailJobs.set(uuid, job);
         }
+        this.startJob(this.detailJobs, uuid, () =>
+          fetchPlayerDetails(this.store, this.api, uuid),
+        );
         return r.user;
       });
       this.ingesting.set(key, pending);
@@ -66,15 +61,17 @@ export class AppContext {
 
   async playerHistory(identifier: string, season?: number) {
     const user = await this.ensurePlayer(identifier);
-    const matches = this.rankedMatches(user.uuid);
-    const seasons = seasonsPlayed(matches);
+    const seasons = this.store.seasonsForPlayer(user.uuid);
     // 0 only when the player has no ranked games at all, so no season matches.
     const active = season ?? seasons[0] ?? 0;
+    const matches = this.store.getMatchesForPlayer(user.uuid, { type: 2, season: active });
     return {
       user,
       seasons,
       season: active,
-      games: buildGameHistory(matches, user.uuid, active),
+      games: buildGameHistory(matches, user.uuid),
+      // Tells the client to re-ask rather than trust a partial season.
+      complete: !this.backfillJobs.has(user.uuid),
     };
   }
 

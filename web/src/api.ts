@@ -21,9 +21,10 @@ export type {
 export interface Overview {
   season: LeaderboardSeason;
   top: UserProfileWithSeasonResult[];
-  playersOnline: number;
-  liveMatchCount: number;
-  weekly: { id: number; endsAt: number; podium: WeeklyRaceEntry[]; entrants: number };
+  /** null when the live endpoint was unreachable; the ladder still renders. */
+  playersOnline: number | null;
+  liveMatchCount: number | null;
+  weekly: { id: number; endsAt: number; podium: WeeklyRaceEntry[]; entrants: number } | null;
 }
 
 export interface PlayerHistory {
@@ -31,6 +32,8 @@ export interface PlayerHistory {
   seasons: number[];
   season: number;
   games: GameRecord[];
+  /** False while older pages are still being fetched in the background. */
+  complete: boolean;
 }
 
 export interface GameSplits {
@@ -83,11 +86,32 @@ export async function apiPost<T>(path: string, payload: unknown): Promise<T> {
  */
 const responseCache = new Map<string, { data: unknown; time: number }>();
 const RESPONSE_TTL = 60_000;
+const MAX_RESPONSES = 200;
 
 function cachedResponse<T>(path: string | null): T | null {
   if (!path) return null;
   const hit = responseCache.get(path);
-  return hit && Date.now() - hit.time < RESPONSE_TTL ? (hit.data as T) : null;
+  if (!hit) return null;
+  if (Date.now() - hit.time >= RESPONSE_TTL) {
+    responseCache.delete(path);
+    return null;
+  }
+  return hit.data as T;
+}
+
+function cacheResponse(path: string, data: unknown) {
+  const now = Date.now();
+  if (responseCache.size >= MAX_RESPONSES) {
+    for (const [k, v] of responseCache) {
+      if (now - v.time >= RESPONSE_TTL) responseCache.delete(k);
+    }
+    // Insertion order, so this drops the oldest entries.
+    for (const k of responseCache.keys()) {
+      if (responseCache.size < MAX_RESPONSES) break;
+      responseCache.delete(k);
+    }
+  }
+  responseCache.set(path, { data, time: now });
 }
 
 export function useApi<T>(path: string | null, pollMs?: number) {
@@ -106,7 +130,7 @@ export function useApi<T>(path: string | null, pollMs?: number) {
       }
       apiGet<T>(path)
         .then((d) => {
-          responseCache.set(path, { data: d, time: Date.now() });
+          cacheResponse(path, d);
           if (generation.current === gen) {
             setData(d);
             if (!silent) setLoading(false);

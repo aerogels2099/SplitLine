@@ -1,68 +1,154 @@
-import type { RankedApi } from "../api/endpoints.js";
+import type { MatchListParams, RankedApi } from "../api/endpoints.js";
 import type { Store } from "../db/db.js";
-import type { MatchInfo, UserDetails } from "../shared/types.js";
+import type { MatchInfo, MatchType, UserDetails } from "../shared/types.js";
+
+/** A page is 100 matches; the API rejects count > 100. */
+const PAGE = 100;
+
+/** The player page only ever renders ranked games. */
+const DEFAULT_TYPE: MatchType = 2;
+
+export type IngestMode = "skipped" | "incremental" | "first-page";
 
 export interface PlayerIngestResult {
   user: UserDetails;
   matchesFetched: number;
   matchesStored: number;
+  mode: IngestMode;
+  /** False when older history is still missing; `cursor` resumes the walk. */
+  complete: boolean;
+  cursor: number | null;
 }
 
-/** Decayed matches are stored and flagged; timelines are fetched separately. */
+interface IngestOpts {
+  maxMatches?: number;
+  season?: number;
+  type?: MatchType;
+}
+
+/** Decayed matches are stored and flagged; older pages go to continueBackfill. */
 export async function ingestPlayer(
   store: Store,
   api: RankedApi,
   identifier: string,
-  opts: { maxMatches?: number; season?: number } = {},
+  opts: IngestOpts = {},
 ): Promise<PlayerIngestResult> {
-  const maxMatches = opts.maxMatches ?? 300;
+  const type = opts.type ?? DEFAULT_TYPE;
+  const known = store.getPlayer(identifier);
+  const newest = known ? store.newestMatchForPlayer(known.user.uuid) : null;
 
-  const [user, firstPage] = await Promise.all([
-    api.getUser(identifier),
-    api.getUserMatches(identifier, { count: 100, season: opts.season }),
-  ]);
-  store.upsertPlayer(user);
+  if (newest) {
+    const user = await api.getUser(identifier);
+    store.upsertPlayer(user);
 
-  // Paginate backward until a page comes back short. [] is the terminator,
-  // not an error.
-  const all: MatchInfo[] = [...firstPage];
-  let last = firstPage;
-  while (all.length < maxMatches && last.length === 100) {
-    last = await api.getUserMatches(identifier, {
-      count: 100,
-      before: all[all.length - 1]!.id,
+    // lastRanked is exactly the newest ranked match's date (verified against
+    // live responses), so nothing newer means nothing to fetch.
+    if (user.timestamp.lastRanked <= newest.date) {
+      return {
+        user,
+        matchesFetched: 0,
+        matchesStored: 0,
+        mode: "skipped",
+        complete: true,
+        cursor: null,
+      };
+    }
+
+    const fresh = await api.getUserMatches(identifier, {
+      count: PAGE,
+      after: newest.id,
+      type,
       season: opts.season,
     });
-    all.push(...last);
+    const stored = store.upsertMatches(fresh);
+    if (fresh.length < PAGE) {
+      return {
+        user,
+        matchesFetched: fresh.length,
+        matchesStored: stored,
+        mode: "incremental",
+        complete: true,
+        cursor: null,
+      };
+    }
+    // A full page means the delta has a hole; fall through to a full walk.
   }
-  const stored = store.upsertMatches(all);
 
-  return { user, matchesFetched: all.length, matchesStored: stored };
+  // Cold start; the profile and the first page do not depend on each other.
+  const [user, firstPage] = await Promise.all([
+    api.getUser(identifier),
+    api.getUserMatches(identifier, { count: PAGE, type, season: opts.season }),
+  ]);
+  store.upsertPlayer(user);
+  const stored = store.upsertMatches(firstPage);
+  const complete = firstPage.length < PAGE;
+  return {
+    user,
+    matchesFetched: firstPage.length,
+    matchesStored: stored,
+    mode: "first-page",
+    complete,
+    cursor: complete ? null : firstPage[firstPage.length - 1]!.id,
+  };
 }
 
+/** Walks the rest of a player's history backwards from `cursor`. */
+export async function continueBackfill(
+  store: Store,
+  api: RankedApi,
+  identifier: string,
+  cursor: number,
+  opts: IngestOpts = {},
+): Promise<number> {
+  const type = opts.type ?? DEFAULT_TYPE;
+  const maxMatches = opts.maxMatches ?? 300;
+  const params: MatchListParams = { count: PAGE, type, season: opts.season };
+
+  let before: number | undefined = cursor;
+  let seen = PAGE; // the page ingestPlayer already stored
+  let stored = 0;
+  while (seen < maxMatches) {
+    const page = await api.getUserMatches(identifier, { ...params, before });
+    // [] is the terminator, not an error.
+    if (page.length === 0) break;
+    stored += store.upsertMatches(page);
+    seen += page.length;
+    before = page[page.length - 1]!.id;
+    if (page.length < PAGE) break;
+  }
+  return stored;
+}
+
+/** Below the client's concurrency limit, so background work leaves slots free. */
+const CHUNK = 4;
+
+async function fetchDetails(store: Store, api: RankedApi, ids: number[]): Promise<number> {
+  let fetched = 0;
+  for (let i = 0; i < ids.length; i += CHUNK) {
+    // allSettled: one unreachable match must not discard the whole batch.
+    const results = await Promise.allSettled(ids.slice(i, i + CHUNK).map((id) => api.getMatch(id)));
+    const details = results
+      .filter((r): r is PromiseFulfilledResult<MatchInfo> => r.status === "fulfilled")
+      .map((r) => r.value);
+    if (details.length > 0) store.upsertDetails(details);
+    fetched += details.length;
+  }
+  return fetched;
+}
+
+/** Timelines for a player's recent ranked games that are not cached yet. */
 export async function fetchPlayerDetails(
   store: Store,
   api: RankedApi,
   uuid: string,
   detailTarget = 40,
 ): Promise<number> {
-  const wanted = store
-    .getMatchesForPlayer(uuid, { type: 2, limit: detailTarget * 2 })
-    .filter((m) => !m.decayed)
-    .slice(0, detailTarget)
-    .filter((m) => !store.hasDetail(m.id));
-
-  let fetched = 0;
-  const CHUNK = 8;
-  for (let i = 0; i < wanted.length; i += CHUNK) {
-    const chunk = wanted.slice(i, i + CHUNK);
-    const details = await Promise.all(chunk.map((m) => api.getMatch(m.id)));
-    for (const d of details) {
-      store.upsertDetail(d);
-      fetched++;
-    }
-  }
-  return fetched;
+  const ids = store.detailCandidates({
+    uuid,
+    window: detailTarget * 2,
+    limit: detailTarget,
+  });
+  return fetchDetails(store, api, ids);
 }
 
 export interface CrawlResult {
@@ -76,16 +162,16 @@ export async function crawlMatches(
   opts: { pages?: number; fromOldest?: boolean } = {},
 ): Promise<CrawlResult> {
   const pages = opts.pages ?? 5;
-  let before = opts.fromOldest ? (store.oldestMatchId() ?? undefined) : undefined;
+  let before = opts.fromOldest ? (store.oldestMatchId(2) ?? undefined) : undefined;
   let stored = 0;
   let fetched = 0;
   for (let i = 0; i < pages; i++) {
-    const page = await api.getMatches({ count: 100, type: 2, before });
+    const page = await api.getMatches({ count: PAGE, type: 2, before });
     fetched++;
     if (page.length === 0) break;
     stored += store.upsertMatches(page);
     before = page[page.length - 1]!.id;
-    if (page.length < 100) break;
+    if (page.length < PAGE) break;
   }
   return { pagesFetched: fetched, matchesStored: stored };
 }
@@ -95,22 +181,10 @@ export async function fetchCorpusDetails(
   api: RankedApi,
   opts: { budget?: number } = {},
 ): Promise<number> {
-  const budget = opts.budget ?? 50;
-  const candidates = store
-    .getAllMatches({ type: 2, limit: 2000 })
-    .filter((m) => !m.decayed && !m.forfeited && m.result.uuid !== null)
-    .filter((m) => !store.hasDetail(m.id))
-    .slice(0, budget);
-
-  let fetched = 0;
-  const CHUNK = 8;
-  for (let i = 0; i < candidates.length; i += CHUNK) {
-    const chunk = candidates.slice(i, i + CHUNK);
-    const details = await Promise.all(chunk.map((m) => api.getMatch(m.id)));
-    for (const d of details) {
-      store.upsertDetail(d);
-      fetched++;
-    }
-  }
-  return fetched;
+  const ids = store.detailCandidates({
+    window: 2000,
+    limit: opts.budget ?? 50,
+    completedOnly: true,
+  });
+  return fetchDetails(store, api, ids);
 }

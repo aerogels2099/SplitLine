@@ -1,9 +1,5 @@
 /**
  * Reconstructs run structure from `timelines[]` on /matches/{id}.
- *
- * Verified 2026-07: timelines are ordered newest-first, milestones re-fire
- * after a run reset so only events after the last reset count, and deaths
- * appear as `projectelo.timeline.death*`.
  */
 import { asMillis, type EpochSeconds, type Millis } from "../shared/brand.js";
 import type { MatchInfo } from "../shared/types.js";
@@ -70,7 +66,6 @@ export interface RunSplits {
   date: EpochSeconds;
   uuid: string;
   nickname: string;
-  /** Elo at match time — from changes[].eloRate (PRE-match), NOT players[].eloRate. */
   eloAtMatch: number | null;
   finished: boolean;
   won: boolean;
@@ -78,14 +73,12 @@ export interface RunSplits {
   forfeited: boolean;
   deaths: number;
   resets: number;
-  /** Cumulative time at each milestone; null when never reached. */
   splits: Record<MilestoneKey, Millis | null>;
-  /** Durations between consecutive reached milestones; null when unknown. */
   segments: Record<SegmentKey, Millis | null>;
 }
 
 export function extractRunSplits(detail: MatchInfo, uuid: string): RunSplits | null {
-  if (!detail.timelines || detail.decayed) return null;
+  if (!detail.timelines?.length || detail.decayed) return null;
   const player = detail.players.find((p) => p.uuid === uuid);
   if (!player) return null;
 
@@ -112,8 +105,6 @@ export function extractRunSplits(detail: MatchInfo, uuid: string): RunSplits | n
   for (const s of SEGMENTS) {
     const from = s.from === null ? 0 : (splits[s.from] ?? null);
     const to = splits[s.to] ?? null;
-    // Negative duration means the route ordered milestones differently —
-    // treat as unknown, not as data.
     segments[s.key] =
       from !== null && to !== null && to >= from ? asMillis(to - (from as number)) : null;
   }

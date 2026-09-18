@@ -8,6 +8,7 @@ const WINDOW_MS = 10 * 60 * 1000;
 const BUDGET = 450;
 const MAX_CONCURRENT = 8;
 const MAX_RETRIES = 3;
+const MAX_CACHE_ENTRIES = 2000;
 
 export class ApiError extends Error {
   constructor(
@@ -42,6 +43,13 @@ export interface ClientOptions {
 
 const realSleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
+/** An unconsumed body holds its connection until it is garbage collected. */
+async function discard(res: Response): Promise<void> {
+  try {
+    await res.body?.cancel();
+  } catch {}
+}
+
 export class RankedClient {
   private readonly baseUrl: string;
   private readonly privateKey: string | null;
@@ -52,6 +60,7 @@ export class RankedClient {
   private inFlight = 0;
   private waiters: Array<() => void> = [];
   private cache = new Map<string, CacheEntry>();
+  private inFlightByUrl = new Map<string, Promise<unknown>>();
 
   constructor(opts: ClientOptions = {}) {
     this.baseUrl = opts.baseUrl ?? PRIMARY_BASE;
@@ -67,6 +76,10 @@ export class RankedClient {
 
   budgetRemaining(): number {
     return Math.max(0, BUDGET - this.budgetUsed());
+  }
+
+  cacheSize(): number {
+    return this.cache.size;
   }
 
   private pruneWindow() {
@@ -110,20 +123,64 @@ export class RankedClient {
     const ttl = opts.ttlMs ?? 0;
 
     if (ttl > 0) {
-      const hit = this.cache.get(url);
-      if (hit && hit.expires > Date.now()) return hit.value as T;
+      const hit = this.cacheGet<T>(url);
+      if (hit !== undefined) return hit;
     }
 
-    await this.acquireSlot();
-    try {
-      const value = await this.request<T>(url, path, opts.withKey === true);
-      if (ttl > 0) {
-        this.cache.set(url, { expires: Date.now() + ttl, value });
-        if (this.cache.size > 5000) this.evictExpired();
+    return this.coalesce(url, ttl, async () => {
+      await this.acquireSlot();
+      try {
+        return await this.request<T>(url, path, opts.withKey === true);
+      } finally {
+        this.releaseSlot();
       }
-      return value;
-    } finally {
-      this.releaseSlot();
+    });
+  }
+
+  /** Shares one in-flight request between callers asking for the same URL. */
+  private coalesce<T>(url: string, ttlMs: number, run: () => Promise<T>): Promise<T> {
+    const pending = this.inFlightByUrl.get(url);
+    if (pending) return pending as Promise<T>;
+
+    const p = run()
+      .then((value) => {
+        this.cacheSet(url, value, ttlMs);
+        return value;
+      })
+      .finally(() => {
+        this.inFlightByUrl.delete(url);
+      });
+    this.inFlightByUrl.set(url, p as Promise<unknown>);
+    p.catch(() => {});
+    return p;
+  }
+
+  private cacheGet<T>(url: string): T | undefined {
+    const hit = this.cache.get(url);
+    if (!hit) return undefined;
+    if (hit.expires <= Date.now()) {
+      this.cache.delete(url);
+      return undefined;
+    }
+    return hit.value as T;
+  }
+
+  private cacheSet(url: string, value: unknown, ttlMs: number) {
+    if (ttlMs <= 0) return;
+    this.cache.set(url, { expires: Date.now() + ttlMs, value });
+    if (this.cache.size > MAX_CACHE_ENTRIES) this.evict();
+  }
+
+  /** Expired entries first, then oldest-inserted, until back under the cap. */
+  private evict() {
+    const now = Date.now();
+    for (const [k, v] of this.cache) {
+      if (v.expires <= now) this.cache.delete(k);
+    }
+    while (this.cache.size > MAX_CACHE_ENTRIES) {
+      const oldest = this.cache.keys().next();
+      if (oldest.done === true) break;
+      this.cache.delete(oldest.value);
     }
   }
 
@@ -135,17 +192,17 @@ export class RankedClient {
     const url = base + path;
     const ttl = opts.ttlMs ?? 0;
     if (ttl > 0) {
-      const hit = this.cache.get(url);
-      if (hit && hit.expires > Date.now()) return hit.value as T;
+      const hit = this.cacheGet<T>(url);
+      if (hit !== undefined) return hit;
     }
-    await this.acquireSlot();
-    try {
-      const value = await this.requestRaw<T>(url, path);
-      if (ttl > 0) this.cache.set(url, { expires: Date.now() + ttl, value });
-      return value;
-    } finally {
-      this.releaseSlot();
-    }
+    return this.coalesce(url, ttl, async () => {
+      await this.acquireSlot();
+      try {
+        return await this.requestRaw<T>(url, path);
+      } finally {
+        this.releaseSlot();
+      }
+    });
   }
 
   private async requestRaw<T>(url: string, path: string): Promise<T> {
@@ -159,10 +216,14 @@ export class RankedClient {
           headers: { "User-Agent": "SplitLine/0.1" },
         });
         if (res.status >= 500 || res.status === 429) {
+          await discard(res);
           lastError = new ApiError(`server error ${res.status}`, res.status, path);
           continue;
         }
-        if (!res.ok) throw new ApiError(`request failed ${res.status}`, res.status, path);
+        if (!res.ok) {
+          await discard(res);
+          throw new ApiError(`request failed ${res.status}`, res.status, path);
+        }
         return (await res.json()) as T;
       } catch (err) {
         if (err instanceof ApiError && err.httpStatus > 0 && err.httpStatus < 500) throw err;
@@ -172,13 +233,6 @@ export class RankedClient {
     throw lastError instanceof Error
       ? lastError
       : new ApiError("request failed after retries", 0, path);
-  }
-
-  private evictExpired() {
-    const now = Date.now();
-    for (const [k, v] of this.cache) {
-      if (v.expires <= now) this.cache.delete(k);
-    }
   }
 
   private async request<T>(url: string, path: string, withKey: boolean): Promise<T> {
@@ -193,10 +247,10 @@ export class RankedClient {
     }
 
     let lastError: unknown = null;
+    let backoffMs = 0;
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      if (attempt > 0) {
-        await this.sleep(1000 * 2 ** (attempt - 1) + Math.random() * 250);
-      }
+      if (backoffMs > 0) await this.sleep(backoffMs);
+      backoffMs = 1000 * 2 ** attempt + Math.random() * 250;
       await this.waitForBudget();
       this.sent.push(Date.now());
 
@@ -204,17 +258,19 @@ export class RankedClient {
       try {
         res = await this.fetchImpl(url, { headers });
       } catch (err) {
-      lastError = err;
+        lastError = err;
         continue;
       }
 
       if (res.status === 429) {
+        await discard(res);
         const retryAfter = Number(res.headers.get("retry-after"));
-        await this.sleep(Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 15_000);
+        backoffMs = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 15_000;
         lastError = new ApiError("rate limited", 429, path);
         continue;
       }
       if (res.status >= 500) {
+        await discard(res);
         lastError = new ApiError(`server error ${res.status}`, res.status, path);
         continue;
       }
@@ -228,7 +284,6 @@ export class RankedClient {
       }
 
       if (body.status === "success") return body.data;
-      // 400 = no data, 401 = wrong params — not retryable.
       throw new ApiError(
         typeof body.data === "string" ? body.data : `request failed (${res.status})`,
         res.status,

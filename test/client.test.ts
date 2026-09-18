@@ -50,6 +50,72 @@ describe("RankedClient", () => {
     expect(c.budgetUsed()).toBe(1);
   });
 
+  it("sleeps once per 429, honouring retry-after instead of adding to it", async () => {
+    const sleeps: number[] = [];
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response("slow down", { status: 429, headers: { "retry-after": "2" } }),
+      )
+      .mockResolvedValueOnce(ok("done"));
+    const c = new RankedClient({
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      sleepImpl: async (ms) => {
+        sleeps.push(ms);
+      },
+    });
+    await expect(c.get("/matches")).resolves.toBe("done");
+    expect(sleeps).toEqual([2000]);
+  });
+
+  it("drops expired entries, so the cache does not grow across TTL cycles", async () => {
+    const fetchImpl = vi.fn(async () => ok("v"));
+    const c = new RankedClient({
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      sleepImpl: noSleep,
+    });
+    await c.get("/leaderboard", { ttlMs: 1 });
+    expect(c.cacheSize()).toBe(1);
+    await new Promise((r) => setTimeout(r, 5));
+    await c.get("/leaderboard", { ttlMs: 1 });
+    expect(fetchImpl).toHaveBeenCalledTimes(2); // expired, so refetched
+    expect(c.cacheSize()).toBe(1); // and not accumulated
+  });
+
+  it("does not cache when ttlMs is 0", async () => {
+    const fetchImpl = vi.fn(async () => ok("live"));
+    const c = new RankedClient({
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      sleepImpl: noSleep,
+    });
+    await c.get("/matches/1", { ttlMs: 0 });
+    await c.get("/matches/1", { ttlMs: 0 });
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(c.cacheSize()).toBe(0);
+  });
+
+  it("shares one upstream request between concurrent callers", async () => {
+    const resolvers: ((r: Response) => void)[] = [];
+    const fetchImpl = vi.fn(() => new Promise<Response>((r) => resolvers.push(r)));
+    const c = new RankedClient({
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      sleepImpl: noSleep,
+    });
+
+    const both = Promise.all([c.get("/matches/1"), c.get("/matches/1")]);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(fetchImpl).toHaveBeenCalledTimes(1); // one request, two callers
+    resolvers[0]!(ok("shared"));
+    await expect(both).resolves.toEqual(["shared", "shared"]);
+
+    // The in-flight entry is cleared once settled, so a later call is fresh.
+    const third = c.get("/matches/1");
+    await new Promise((r) => setTimeout(r, 0));
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    resolvers[1]!(ok("again"));
+    await expect(third).resolves.toBe("again");
+  });
+
   it("requires a private key for keyed endpoints", async () => {
     const fetchImpl = vi.fn(async () => ok({}));
     const c = new RankedClient({ fetchImpl: fetchImpl as unknown as typeof fetch, sleepImpl: noSleep });

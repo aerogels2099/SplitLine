@@ -13,9 +13,15 @@ export function LadderSidebar({ current }: { current?: string }) {
   const users = data?.users.slice(0, SHOWN) ?? [];
   const here = current?.toLowerCase();
 
+  // Once only: `data` gets a new identity on every poll, which would
+  // otherwise yank the list back under a scrolled user.
+  const centredFor = useRef<string | undefined>(undefined);
   useEffect(() => {
+    if (!data || !here || centredFor.current === here) return;
     const el = listRef.current?.querySelector<HTMLElement>("a.on");
-    el?.scrollIntoView({ block: "center" });
+    if (!el) return;
+    el.scrollIntoView({ block: "center" });
+    centredFor.current = here;
   }, [data, here]);
 
   return (

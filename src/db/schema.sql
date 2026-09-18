@@ -13,25 +13,30 @@ CREATE TABLE IF NOT EXISTS matches (
   bastion_type TEXT,
   category     TEXT,
   tag          TEXT,
-  data         TEXT NOT NULL               -- full MatchInfo JSON (list-level fields)
+  data         TEXT NOT NULL               -- MatchInfo JSON, advanced fields stripped
 );
 
 CREATE INDEX IF NOT EXISTS idx_matches_date ON matches(date);
 CREATE INDEX IF NOT EXISTS idx_matches_season_type ON matches(season, type);
 
+-- Advanced fields exist only on GET /matches/{id}, so they live here. `data`
+-- holds ONLY those fields (completions, timelines, replayExist); the list-level
+-- record is stored once, in matches.data. Reads merge the two halves.
 CREATE TABLE IF NOT EXISTS match_details (
   id         INTEGER PRIMARY KEY REFERENCES matches(id),
   fetched_at INTEGER NOT NULL,             -- epoch seconds
-  data       TEXT NOT NULL                 -- full MatchInfo JSON incl. timelines
+  data       TEXT NOT NULL                 -- advanced fields JSON
 );
 
+-- Both elo columns come from changes[], never from players[].eloRate, which is
+-- the player's CURRENT rating at fetch time rather than their rating then.
 CREATE TABLE IF NOT EXISTS match_players (
   match_id   INTEGER NOT NULL REFERENCES matches(id),
   uuid       TEXT NOT NULL,
   nickname   TEXT NOT NULL,
-  elo_rate   INTEGER,                      -- elo at match time (NULL in placements)
+  elo_rate   INTEGER,                      -- PRE-match rating (NULL in placements)
   elo_change INTEGER,                      -- NULL in placements
-  elo_after  INTEGER,
+  elo_after  INTEGER,                      -- elo_rate + elo_change
   PRIMARY KEY (match_id, uuid)
 ) WITHOUT ROWID;
 
