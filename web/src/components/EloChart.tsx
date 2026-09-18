@@ -162,7 +162,6 @@ export function EloChart({ points, height = 300 }: { points: EloChartPoint[]; he
                     stroke={t.color}
                     strokeOpacity={0.3}
                     strokeWidth={1}
-                    strokeDasharray="4 4"
                   />
                 )}
               </g>
@@ -240,7 +239,6 @@ export function EloChart({ points, height = 300 }: { points: EloChartPoint[]; he
               y2={H - PAD.b}
               stroke="var(--gold-dim)"
               strokeWidth={1}
-              strokeDasharray="3 3"
             />
             {sq(sorted[hover]!.X, sorted[hover]!.Y, 9, "var(--gold-hot)")}
           </g>

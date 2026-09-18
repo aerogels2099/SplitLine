@@ -58,6 +58,7 @@ export function ChartCard(props: {
   title: string;
   sub?: string;
   table?: TableSpec;
+  actions?: ReactNode;
   stale?: boolean;
   children: ReactNode;
   footer?: ReactNode;
@@ -70,6 +71,7 @@ export function ChartCard(props: {
       <div className="card-head">
         <span className="card-title">{props.title}</span>
         {props.sub && <span className="card-sub">{props.sub}</span>}
+        {props.actions && <span className="card-actions">{props.actions}</span>}
         {props.table && (
           <span className="card-actions">
             <button className={showTable ? "" : "on"} onClick={() => setShowTable(false)}>
@@ -170,7 +172,6 @@ export function Ring({
     <div style={{ position: "relative", width: size, height: size }}>
       <svg width={size} height={size} style={{ transform: "rotate(-90deg)", display: "block" }}>
         <circle cx={cx} cy={cx} r={r} fill="none" stroke="var(--slot)" strokeWidth={stroke} />
-        <circle cx={cx} cy={cx} r={r} fill="none" stroke="var(--border)" strokeWidth={stroke} strokeDasharray={`1 3`} />
         <circle
           cx={cx}
           cy={cx}

@@ -5,8 +5,6 @@ import App from "./App";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/jetbrains-mono";
-import "@fontsource-variable/pixelify-sans";
-import "@fontsource/silkscreen";
 import "./theme.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

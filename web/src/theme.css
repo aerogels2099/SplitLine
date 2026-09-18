@@ -51,8 +51,8 @@
   --tier-diamond: #46c8ff;
   --tier-netherite: #c490f0;
 
-  --font-display: "Pixelify Sans Variable", "Space Grotesk Variable", sans-serif;
-  --font-pixel-sm: "Silkscreen", monospace;
+  --font-display: "Space Grotesk Variable", system-ui, sans-serif;
+  --font-label: "Inter Variable", system-ui, sans-serif;
   --font-body: "Inter Variable", system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
@@ -86,9 +86,7 @@ body {
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.5;
-  background:
-    radial-gradient(60rem 30rem at 50% -12%, rgba(255, 204, 51, 0.05), transparent 60%),
-    var(--void);
+  background: var(--void);
   position: relative;
 }
 
@@ -99,25 +97,8 @@ body::before {
   left: 0;
   right: 0;
   height: 4px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--gold) 0 14px,
-    var(--gold-dim) 14px 28px
-  );
+  background: var(--gold);
   z-index: 60;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image:
-    linear-gradient(rgba(244, 238, 221, 0.028) 2px, transparent 2px),
-    linear-gradient(90deg, rgba(244, 238, 221, 0.028) 2px, transparent 2px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(64rem 40rem at 50% 0%, rgba(0, 0, 0, 0.8), transparent 75%);
 }
 
 a {
@@ -185,7 +166,6 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 10px;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
 }
 .brand:hover {
   text-decoration: none;
@@ -215,7 +195,7 @@ a:hover {
   padding: 3px;
 }
 .topnav a {
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -237,7 +217,6 @@ a:hover {
   background: var(--gold);
   border-color: var(--gold-hot);
   box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
-  text-shadow: none;
 }
 
 .search {
@@ -302,7 +281,6 @@ button.primary {
   border-color: var(--gold-hot);
   color: #171205;
   font-weight: 700;
-  text-shadow: none;
 }
 button.primary:hover {
   background: var(--gold-hot);
@@ -316,7 +294,6 @@ h1,
   font-weight: 700;
   letter-spacing: 0.5px;
   margin: 8px 0 6px;
-  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.65);
 }
 h1 .accent,
 .grad-text {
@@ -331,21 +308,19 @@ h2 {
   display: flex;
   align-items: center;
   gap: 12px;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
 }
 h2::after {
   content: "";
-  height: 4px;
+  height: 1px;
   flex: 1;
-  background: repeating-linear-gradient(90deg, var(--border) 0 10px, transparent 10px 16px);
+  background: var(--border);
 }
 .overline {
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--gold);
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
 }
 .subtitle {
   color: var(--text-muted);
@@ -414,7 +389,6 @@ h2::after {
   font-size: 16px;
   letter-spacing: 0.3px;
   color: var(--text-primary);
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
 }
 .card-sub {
   font-size: 12px;
@@ -429,7 +403,7 @@ h2::after {
 }
 .card-actions button {
   padding: 3px 10px;
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 9px;
   text-transform: uppercase;
   border: none;
@@ -451,7 +425,7 @@ h2::after {
 }
 
 .stat-label {
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 1.6px;
@@ -465,7 +439,6 @@ h2::after {
   margin-top: 6px;
   line-height: 1.15;
   color: var(--text-primary);
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
 .stat-value.hero {
   font-size: 48px;
@@ -490,7 +463,7 @@ table.data {
 }
 table.data th {
   text-align: left;
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 8.5px;
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -537,18 +510,6 @@ table.data tbody tr:hover {
   background: var(--seq-fill);
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25);
 }
-.meter::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0 calc(10% - 2px),
-    var(--slot) calc(10% - 2px) 10%
-  );
-  pointer-events: none;
-}
-
 .legend {
   display: flex;
   gap: 14px;
@@ -606,7 +567,7 @@ table.data tbody tr:hover {
   border: 2px solid transparent;
   color: var(--text-muted);
   padding: 8px 16px 7px;
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -666,7 +627,7 @@ table.data tbody tr:hover {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 8.5px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -733,7 +694,7 @@ table.data tbody tr:hover {
   position: absolute;
   top: 8px;
   left: 10px;
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 8.5px;
   letter-spacing: 1.4px;
   color: var(--text-muted);
@@ -751,7 +712,6 @@ table.data tbody tr:hover {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 18px;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
 }
 .podium-stat {
   font-family: var(--font-mono);
@@ -779,11 +739,7 @@ table.data tbody tr:hover {
   left: 0;
   right: 0;
   height: 4px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--hero-c, var(--gold)) 0 10px,
-    transparent 10px 20px
-  );
+  background: var(--hero-c, var(--gold));
   opacity: 0.7;
 }
 .player-hero h1 {
@@ -821,17 +777,6 @@ table.data tbody tr:hover {
   background: var(--gold);
   transform-origin: left;
   transition: transform 0.25s var(--ease-in-out);
-}
-.tug::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0 calc(5% - 2px),
-    rgba(0, 0, 0, 0.35) calc(5% - 2px) 5%
-  );
-  pointer-events: none;
 }
 .tug .pct {
   position: absolute;
@@ -904,7 +849,7 @@ table.data tbody tr:hover {
   color: var(--text-muted);
 }
 .cmdk-esc {
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 8px;
   letter-spacing: 1px;
   color: var(--text-muted);
@@ -1116,7 +1061,7 @@ table.data tbody tr:hover {
 .live-badge {
   display: inline-flex;
   align-items: center;
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 9px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -1135,8 +1080,6 @@ table.data tbody tr:hover {
   height: 100%;
   background: var(--gold);
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.28);
-  -webkit-mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 10px);
-  mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 10px);
 }
 .meter::after {
   content: none;
@@ -1168,7 +1111,7 @@ table.data tbody tr:hover {
   border: 2px solid transparent;
   box-shadow: none;
   color: var(--text-muted);
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: 0.5px;
   padding: 8px 12px 7px;
@@ -1224,7 +1167,7 @@ table.data tbody tr:hover {
   color: var(--text-primary);
 }
 .game-outcome {
-  font-family: var(--font-pixel-sm);
+  font-family: var(--font-label);
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1314,6 +1257,107 @@ table.data tbody tr:hover {
   .game-time,
   .game-date {
     display: none;
+  }
+}
+
+.player-layout {
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.player-main {
+  min-width: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.ladder-side {
+  position: sticky;
+  top: 72px;
+  border: 2px solid var(--border);
+  background: var(--surface-1);
+  box-shadow: var(--bevel), var(--slab-shadow);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 96px);
+}
+.ladder-side-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 12px;
+  border-bottom: 2px solid var(--border);
+  background: var(--slot);
+  font-family: var(--font-label);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: var(--gold);
+}
+.ladder-side-head span {
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+.ladder-side-list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.ladder-side-empty {
+  padding: 14px 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.ladder-side-list a {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  color: var(--text-secondary);
+  border-left: 3px solid transparent;
+}
+.ladder-side-list a:hover {
+  text-decoration: none;
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+.ladder-side-list a.on {
+  background: var(--surface-2);
+  border-left-color: var(--gold);
+  color: var(--text-primary);
+}
+.ladder-rank {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.ladder-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.ladder-flag {
+  opacity: 0.8;
+}
+.ladder-elo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 900px) {
+  .player-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ladder-side {
+    position: static;
+    max-height: 320px;
   }
 }
 

@@ -4,6 +4,8 @@ import { fmtDate, fmtMs, fmtSigned } from "../../format";
 import { EloChart, type EloChartPoint } from "../../components/EloChart";
 import { ChartCard, ErrorBox } from "../../components/ui";
 
+const RANGES = [0, 100, 50, 25];
+
 export default function GameHistory({ id, initial }: { id: string; initial: PlayerHistory }) {
   const [season, setSeason] = useState(initial.season);
   // The page already loaded one season; re-fetch only when another is picked.
@@ -11,8 +13,10 @@ export default function GameHistory({ id, initial }: { id: string; initial: Play
   const { data, error, stale } = useApi<PlayerHistory>(season === initial.season ? null : path);
   const view = season === initial.season ? initial : data;
 
-  const seasons = initial.seasons;
+  // the API lists seasons newest-first; show them left to right as a timeline
+  const seasons = [...initial.seasons].reverse();
   const at = seasons.indexOf(season);
+  const [range, setWindow] = useState(0);
 
   if (error) return <ErrorBox message={error} />;
   if (!view) return <div className="card">Loading season {season}…</div>;
@@ -21,6 +25,9 @@ export default function GameHistory({ id, initial }: { id: string; initial: Play
   const points: EloChartPoint[] = games
     .filter((g): g is GameRecord & { eloAfter: number } => g.eloAfter !== null)
     .map((g) => ({ date: g.date, elo: g.eloAfter, change: g.eloChange ?? 0, decayed: g.decayed }));
+
+  // the range counts games back from the most recent, so 0 means the lot
+  const shown = range === 0 ? points : points.slice(-range);
 
   const real = games.filter((g) => !g.decayed);
   const wins = real.filter((g) => g.outcome === "win").length;
@@ -31,8 +38,8 @@ export default function GameHistory({ id, initial }: { id: string; initial: Play
       <div className="season-bar">
         <button
           type="button"
-          disabled={at >= seasons.length - 1}
-          onClick={() => setSeason(seasons[at + 1]!)}
+          disabled={at <= 0}
+          onClick={() => setSeason(seasons[at - 1]!)}
           aria-label="Earlier season"
         >
           ◂
@@ -51,8 +58,8 @@ export default function GameHistory({ id, initial }: { id: string; initial: Play
         </div>
         <button
           type="button"
-          disabled={at <= 0}
-          onClick={() => setSeason(seasons[at - 1]!)}
+          disabled={at >= seasons.length - 1}
+          onClick={() => setSeason(seasons[at + 1]!)}
           aria-label="Later season"
         >
           ▸
@@ -65,14 +72,18 @@ export default function GameHistory({ id, initial }: { id: string; initial: Play
       {points.length > 1 && (
         <ChartCard
           title={`Season ${season} rating`}
-          sub="post-match elo, one step per game"
-          table={{
-            headers: ["Date", "Elo", "Change"],
-            rows: points.map((p) => [fmtDate(p.date), p.elo, fmtSigned(p.change)]),
-            numeric: [1, 2],
-          }}
+          actions={RANGES.filter((n) => n === 0 || n < points.length).map((n) => (
+            <button
+              key={n}
+              type="button"
+              className={n === range ? "on" : ""}
+              onClick={() => setWindow(n)}
+            >
+              {n === 0 ? "All" : `Last ${n}`}
+            </button>
+          ))}
         >
-          <EloChart points={points} height={260} />
+          <EloChart points={shown} height={260} />
         </ChartCard>
       )}
 
