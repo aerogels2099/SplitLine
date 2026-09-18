@@ -1,0 +1,328 @@
+{
+ "status": "success",
+ "data": {
+  "uuid": "635f35ee69ed4f0c94ff26ece4818956",
+  "nickname": "edcr",
+  "roleType": 1,
+  "eloRate": 2622,
+  "eloRank": 1,
+  "achievements": {
+   "display": [
+    {
+     "id": "seasonResult",
+     "date": 1734741052,
+     "data": [
+      "6",
+      "212"
+     ],
+     "level": 6,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1745193879,
+     "data": [
+      "7",
+      "14"
+     ],
+     "level": 4,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1755734804,
+     "data": [
+      "8",
+      "1"
+     ],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "playoffsResult",
+     "date": 1769142230,
+     "data": [
+      "9"
+     ],
+     "level": 16,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "playoffsResult",
+     "date": 1779054342,
+     "data": [
+      "10"
+     ],
+     "level": 1,
+     "value": null,
+     "goal": null
+    }
+   ],
+   "total": [
+    {
+     "id": "seasonResult",
+     "date": 1777507279,
+     "data": [
+      "10",
+      "2"
+     ],
+     "level": 2,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1767312115,
+     "data": [
+      "9",
+      "5"
+     ],
+     "level": 2,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "highestWinStreak",
+     "date": 1763996053,
+     "data": [],
+     "level": 8,
+     "value": 29,
+     "goal": null
+    },
+    {
+     "id": "wins",
+     "date": 1759292903,
+     "data": [],
+     "level": 10,
+     "value": 3162,
+     "goal": 5000
+    },
+    {
+     "id": "playoffsResult",
+     "date": 1757276316,
+     "data": [
+      "8"
+     ],
+     "level": 16,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "playtime",
+     "date": 1756235390,
+     "data": [],
+     "level": 8,
+     "value": 2839593068,
+     "goal": 3600000000
+    },
+    {
+     "id": "bestTime",
+     "date": 1779741714,
+     "data": [],
+     "level": 12,
+     "value": 353371,
+     "goal": null
+    },
+    {
+     "id": "ironHoe",
+     "date": 1746735933,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "playedMatches",
+     "date": 1746465442,
+     "data": [],
+     "level": 10,
+     "value": 4994,
+     "goal": 5000
+    },
+    {
+     "id": "foodless",
+     "date": 1737503708,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "egapHolder",
+     "date": 1737501751,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "weeklyRace",
+     "date": 1737331829,
+     "data": [
+      "1"
+     ],
+     "level": 3,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "ironPickless",
+     "date": 1733599895,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "armorless",
+     "date": 1732030223,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    }
+   ]
+  },
+  "timestamp": {
+   "firstOnline": 1729383977,
+   "lastOnline": 1784646632,
+   "lastRanked": 1784567161,
+   "nextDecay": 1785215161
+  },
+  "statistics": {
+   "season": {
+    "bestTime": {
+     "ranked": 353371,
+     "casual": null
+    },
+    "highestWinStreak": {
+     "ranked": 16,
+     "casual": 0
+    },
+    "currentWinStreak": {
+     "ranked": 5,
+     "casual": 0
+    },
+    "playedMatches": {
+     "ranked": 361,
+     "casual": 0
+    },
+    "playtime": {
+     "ranked": 192489860,
+     "casual": 0
+    },
+    "completionTime": {
+     "ranked": 140652251,
+     "casual": 0
+    },
+    "forfeits": {
+     "ranked": 0,
+     "casual": 0
+    },
+    "completions": {
+     "ranked": 259,
+     "casual": 0
+    },
+    "wins": {
+     "ranked": 283,
+     "casual": 0
+    },
+    "loses": {
+     "ranked": 75,
+     "casual": 0
+    }
+   },
+   "total": {
+    "bestTime": {
+     "ranked": 353371,
+     "casual": null
+    },
+    "highestWinStreak": {
+     "ranked": 29,
+     "casual": 0
+    },
+    "currentWinStreak": {
+     "ranked": 5,
+     "casual": 0
+    },
+    "playedMatches": {
+     "ranked": 4994,
+     "casual": 2
+    },
+    "playtime": {
+     "ranked": 2839593068,
+     "casual": 1289061
+    },
+    "completionTime": {
+     "ranked": 1609855440,
+     "casual": 0
+    },
+    "forfeits": {
+     "ranked": 319,
+     "casual": 1
+    },
+    "completions": {
+     "ranked": 2687,
+     "casual": 0
+    },
+    "wins": {
+     "ranked": 3162,
+     "casual": 0
+    },
+    "loses": {
+     "ranked": 1734,
+     "casual": 1
+    }
+   }
+  },
+  "connections": {
+   "discord": {
+    "id": "355797150057365514",
+    "name": "edcr"
+   },
+   "youtube": {
+    "id": "UC-bgy9RFU02wj5rP8ZDjwFg",
+    "name": "edcr"
+   },
+   "twitch": {
+    "id": "edcrspeedruns",
+    "name": "edcrSpeedruns"
+   }
+  },
+  "weeklyRaces": [
+   {
+    "id": 16,
+    "time": 80835,
+    "rank": 8
+   }
+  ],
+  "country": "gb",
+  "seasonResult": {
+   "last": {
+    "eloRate": 2622,
+    "eloRank": 1,
+    "phasePoint": 135
+   },
+   "highest": 2622,
+   "lowest": 1648,
+   "phases": [
+    {
+     "phase": 1,
+     "eloRate": 2351,
+     "eloRank": 1,
+     "point": 50
+    },
+    {
+     "phase": 2,
+     "eloRate": 2514,
+     "eloRank": 1,
+     "point": 60
+    }
+   ]
+  }
+ }
+}

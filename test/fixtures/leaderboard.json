@@ -1,0 +1,1962 @@
+{
+ "status": "success",
+ "data": {
+  "season": {
+   "startsAt": 1784678400,
+   "endsAt": 1788048000,
+   "number": 11
+  },
+  "users": [
+   {
+    "uuid": "635f35ee69ed4f0c94ff26ece4818956",
+    "nickname": "edcr",
+    "roleType": 1,
+    "eloRate": 2622,
+    "eloRank": 1,
+    "country": "gb",
+    "seasonResult": {
+     "eloRate": 2622,
+     "eloRank": 1,
+     "phasePoint": 135
+    }
+   },
+   {
+    "uuid": "a54e3bc4c6354b07a236b81efbcfe791",
+    "nickname": "Infume",
+    "roleType": 2,
+    "eloRate": 2564,
+    "eloRank": 2,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2564,
+     "eloRank": 2,
+     "phasePoint": 69
+    }
+   },
+   {
+    "uuid": "2ef2bfed3d084649b56290328970ace9",
+    "nickname": "nahhann",
+    "roleType": 1,
+    "eloRate": 2428,
+    "eloRank": 3,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2428,
+     "eloRank": 3,
+     "phasePoint": 65
+    }
+   },
+   {
+    "uuid": "3c8757790ab0400b8b9e3936e0dd535b",
+    "nickname": "doogile",
+    "roleType": 3,
+    "eloRate": 2363,
+    "eloRank": 4,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2363,
+     "eloRank": 4,
+     "phasePoint": 112
+    }
+   },
+   {
+    "uuid": "bbd1dbd2f3ed4c43b62fc7572229ee61",
+    "nickname": "romuxii",
+    "roleType": 0,
+    "eloRate": 2363,
+    "eloRank": 4,
+    "country": "by",
+    "seasonResult": {
+     "eloRate": 2363,
+     "eloRank": 4,
+     "phasePoint": 12
+    }
+   },
+   {
+    "uuid": "bc80af38933f4ae19b0494681a54422b",
+    "nickname": "Ancoboyy",
+    "roleType": 2,
+    "eloRate": 2342,
+    "eloRank": 6,
+    "country": "tr",
+    "seasonResult": {
+     "eloRate": 2342,
+     "eloRank": 6,
+     "phasePoint": 44
+    }
+   },
+   {
+    "uuid": "2fe70934e7be458dba747c4ac830391c",
+    "nickname": "nhb_",
+    "roleType": 2,
+    "eloRate": 2336,
+    "eloRank": 7,
+    "country": null,
+    "seasonResult": {
+     "eloRate": 2336,
+     "eloRank": 7,
+     "phasePoint": 94
+    }
+   },
+   {
+    "uuid": "3b01d4b4fef14f178b75f05c04dd34ef",
+    "nickname": "BeefSalad",
+    "roleType": 3,
+    "eloRate": 2334,
+    "eloRank": 8,
+    "country": "gb",
+    "seasonResult": {
+     "eloRate": 2334,
+     "eloRank": 8,
+     "phasePoint": 61
+    }
+   },
+   {
+    "uuid": "5a32f1e5609847c691c07730f973397c",
+    "nickname": "DARVY__X1",
+    "roleType": 2,
+    "eloRate": 2329,
+    "eloRank": 9,
+    "country": "je",
+    "seasonResult": {
+     "eloRate": 2329,
+     "eloRank": 9,
+     "phasePoint": 28
+    }
+   },
+   {
+    "uuid": "cdf98ee293f3483fa3890bb3582dbda3",
+    "nickname": "NoHacsJustRoblox",
+    "roleType": 2,
+    "eloRate": 2320,
+    "eloRank": 10,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 2320,
+     "eloRank": 10,
+     "phasePoint": 44
+    }
+   },
+   {
+    "uuid": "7665f76f431b41c6b321bea16aff913b",
+    "nickname": "lowk3y_",
+    "roleType": 3,
+    "eloRate": 2295,
+    "eloRank": 11,
+    "seasonResult": {
+     "eloRate": 2295,
+     "eloRank": 11,
+     "phasePoint": 66
+    },
+    "country": null
+   },
+   {
+    "uuid": "e811fb301b1a41ea81c1f481ea93c3be",
+    "nickname": "nyachloe",
+    "roleType": 3,
+    "eloRate": 2294,
+    "eloRank": 12,
+    "country": null,
+    "seasonResult": {
+     "eloRate": 2294,
+     "eloRank": 12,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "939ddf85303441de901d60bfa4109318",
+    "nickname": "thecamo6",
+    "roleType": 3,
+    "eloRate": 2289,
+    "eloRank": 13,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2289,
+     "eloRank": 13,
+     "phasePoint": 8
+    }
+   },
+   {
+    "uuid": "9a8e24df4c8549d696a6951da84fa5c4",
+    "nickname": "Feinberg",
+    "roleType": 3,
+    "eloRate": 2289,
+    "eloRank": 13,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2289,
+     "eloRank": 13,
+     "phasePoint": 90
+    }
+   },
+   {
+    "uuid": "253b53d832ab4bafb5ee0308d5164ccf",
+    "nickname": "Aquacorde",
+    "roleType": 3,
+    "eloRate": 2279,
+    "eloRank": 15,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 2279,
+     "eloRank": 15,
+     "phasePoint": 81
+    }
+   },
+   {
+    "uuid": "25349f93cf194f3baeee93d024eccc21",
+    "nickname": "retropog",
+    "roleType": 1,
+    "eloRate": 2277,
+    "eloRank": 16,
+    "country": "au",
+    "seasonResult": {
+     "eloRate": 2277,
+     "eloRank": 16,
+     "phasePoint": 34
+    }
+   },
+   {
+    "uuid": "aa5a894a4d5340f49683fdfd1ea9c523",
+    "nickname": "Pinne",
+    "roleType": 1,
+    "eloRate": 2273,
+    "eloRank": 17,
+    "country": "no",
+    "seasonResult": {
+     "eloRate": 2273,
+     "eloRank": 17,
+     "phasePoint": 78
+    }
+   },
+   {
+    "uuid": "bcb0f43558d745ee977841180b121267",
+    "nickname": "pavkin",
+    "roleType": 0,
+    "eloRate": 2263,
+    "eloRank": 18,
+    "country": "kr",
+    "seasonResult": {
+     "eloRate": 2263,
+     "eloRank": 18,
+     "phasePoint": 30
+    }
+   },
+   {
+    "uuid": "cc432b2626a44ae1836a50244adbf468",
+    "nickname": "Watermelon1708",
+    "roleType": 1,
+    "eloRate": 2239,
+    "eloRank": 19,
+    "country": "pl",
+    "seasonResult": {
+     "eloRate": 2239,
+     "eloRank": 19,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "7f93d3e698cd4d648accc2a4d46ce119",
+    "nickname": "woofdoggo_",
+    "roleType": 0,
+    "eloRate": 2235,
+    "eloRank": 20,
+    "seasonResult": {
+     "eloRate": 2235,
+     "eloRank": 20,
+     "phasePoint": 59
+    },
+    "country": null
+   },
+   {
+    "uuid": "4cf401d7b9474756b06a653867d22fca",
+    "nickname": "BadGamer",
+    "roleType": 1,
+    "eloRate": 2223,
+    "eloRank": 21,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 2223,
+     "eloRank": 21,
+     "phasePoint": 41
+    }
+   },
+   {
+    "uuid": "cf1102ea451241d187aaa62e05cab5c3",
+    "nickname": "nonsochiamaa",
+    "roleType": 1,
+    "eloRate": 2217,
+    "eloRank": 22,
+    "country": "br",
+    "seasonResult": {
+     "eloRate": 2217,
+     "eloRank": 22,
+     "phasePoint": 16
+    }
+   },
+   {
+    "uuid": "a5d83ff042164ff1b862dedc118c1dae",
+    "nickname": "steez",
+    "roleType": 2,
+    "eloRate": 2216,
+    "eloRank": 23,
+    "country": "gb",
+    "seasonResult": {
+     "eloRate": 2216,
+     "eloRank": 23,
+     "phasePoint": 88
+    }
+   },
+   {
+    "uuid": "c0ee21f8d5904827b57349507ae2721b",
+    "nickname": "hsbi",
+    "roleType": 0,
+    "eloRate": 2207,
+    "eloRank": 24,
+    "country": "id",
+    "seasonResult": {
+     "eloRate": 2207,
+     "eloRank": 24,
+     "phasePoint": 4
+    }
+   },
+   {
+    "uuid": "5cd115f0ec1240659db152406c0984a3",
+    "nickname": "yjako",
+    "roleType": 1,
+    "eloRate": 2202,
+    "eloRank": 25,
+    "country": "ph",
+    "seasonResult": {
+     "eloRate": 2202,
+     "eloRank": 25,
+     "phasePoint": 30
+    }
+   },
+   {
+    "uuid": "dacf61a7b4f74f9cb83512d7f2fe88a9",
+    "nickname": "Birdeyyy",
+    "roleType": 0,
+    "eloRate": 2202,
+    "eloRank": 25,
+    "country": "nl",
+    "seasonResult": {
+     "eloRate": 2202,
+     "eloRank": 25,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "70eb9286e3e24153a8b37c8f884f1292",
+    "nickname": "7rowl",
+    "roleType": 3,
+    "eloRate": 2196,
+    "eloRank": 27,
+    "country": "ua",
+    "seasonResult": {
+     "eloRate": 2196,
+     "eloRank": 27,
+     "phasePoint": 24
+    }
+   },
+   {
+    "uuid": "17e787d1d6374f818b294f2319db370d",
+    "nickname": "silverrruns",
+    "roleType": 2,
+    "eloRate": 2195,
+    "eloRank": 28,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 2195,
+     "eloRank": 28,
+     "phasePoint": 72
+    }
+   },
+   {
+    "uuid": "bdb7f407200d4882b78e656ca161bddf",
+    "nickname": "wagasylvie",
+    "roleType": 1,
+    "eloRate": 2187,
+    "eloRank": 29,
+    "country": "hk",
+    "seasonResult": {
+     "eloRate": 2187,
+     "eloRank": 29,
+     "phasePoint": 7
+    }
+   },
+   {
+    "uuid": "be4ad7e999e14a74974d47ac650062a3",
+    "nickname": "bbiddd",
+    "roleType": 1,
+    "eloRate": 2183,
+    "eloRank": 30,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 2183,
+     "eloRank": 30,
+     "phasePoint": 31
+    }
+   },
+   {
+    "uuid": "d7d0b271136647fea7398a444ab51c13",
+    "nickname": "JustAltoid",
+    "roleType": 1,
+    "eloRate": 2182,
+    "eloRank": 31,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2182,
+     "eloRank": 31,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "553414a2c89b4d6b8c0ba5bd89284508",
+    "nickname": "ulsah1n",
+    "roleType": 0,
+    "eloRate": 2181,
+    "eloRank": 32,
+    "country": "tr",
+    "seasonResult": {
+     "eloRate": 2181,
+     "eloRank": 32,
+     "phasePoint": 33
+    }
+   },
+   {
+    "uuid": "dd382293fed04a3e9fa850bb139279fc",
+    "nickname": "vorbh",
+    "roleType": 1,
+    "eloRate": 2180,
+    "eloRank": 33,
+    "country": "no",
+    "seasonResult": {
+     "eloRate": 2180,
+     "eloRank": 33,
+     "phasePoint": 41
+    }
+   },
+   {
+    "uuid": "ac601ce7376f49cea7ce14cd577dac85",
+    "nickname": "BlazeMind",
+    "roleType": 2,
+    "eloRate": 2176,
+    "eloRank": 34,
+    "country": "au",
+    "seasonResult": {
+     "eloRate": 2176,
+     "eloRank": 34,
+     "phasePoint": 100
+    }
+   },
+   {
+    "uuid": "3da9e8cec2d348f781a98d095b1d0325",
+    "nickname": "dolqhin",
+    "roleType": 1,
+    "eloRate": 2167,
+    "eloRank": 35,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2167,
+     "eloRank": 35,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "de8e3203f8674303ad4a2baa55a15c87",
+    "nickname": "cbirrd",
+    "roleType": 1,
+    "eloRate": 2167,
+    "eloRank": 35,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2167,
+     "eloRank": 35,
+     "phasePoint": 7
+    }
+   },
+   {
+    "uuid": "41d79a18ef5540d6bb3d68634f06a3b1",
+    "nickname": "okshey",
+    "roleType": 1,
+    "eloRate": 2165,
+    "eloRank": 37,
+    "country": "pl",
+    "seasonResult": {
+     "eloRate": 2165,
+     "eloRank": 37,
+     "phasePoint": 47
+    }
+   },
+   {
+    "uuid": "be7a79f3331042f19c07230752b26725",
+    "nickname": "dinonuggieboi",
+    "roleType": 1,
+    "eloRate": 2160,
+    "eloRank": 38,
+    "country": "ua",
+    "seasonResult": {
+     "eloRate": 2160,
+     "eloRank": 38,
+     "phasePoint": 20
+    }
+   },
+   {
+    "uuid": "0b164a03002048d3955715422179eedf",
+    "nickname": "KenanKardes",
+    "roleType": 0,
+    "eloRate": 2158,
+    "eloRank": 39,
+    "country": "az",
+    "seasonResult": {
+     "eloRate": 2158,
+     "eloRank": 39,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "849c693ddbd74a39b7d7d2025667afa6",
+    "nickname": "karatebaby_",
+    "roleType": 1,
+    "eloRate": 2150,
+    "eloRank": 40,
+    "country": "vn",
+    "seasonResult": {
+     "eloRate": 2150,
+     "eloRank": 40,
+     "phasePoint": 21
+    }
+   },
+   {
+    "uuid": "23e7466f0a1b4597bf89c17d53c4d0ae",
+    "nickname": "Lexanh",
+    "roleType": 1,
+    "eloRate": 2148,
+    "eloRank": 41,
+    "country": "bl",
+    "seasonResult": {
+     "eloRate": 2148,
+     "eloRank": 41,
+     "phasePoint": 26
+    }
+   },
+   {
+    "uuid": "a888602136ee48208516c4f7960ba997",
+    "nickname": "1_viewer",
+    "roleType": 2,
+    "eloRate": 2145,
+    "eloRank": 42,
+    "country": "il",
+    "seasonResult": {
+     "eloRate": 2145,
+     "eloRank": 42,
+     "phasePoint": 8
+    }
+   },
+   {
+    "uuid": "4aed1e5e8f5c44e2bc0666e0c03781af",
+    "nickname": "nEmerald",
+    "roleType": 2,
+    "eloRate": 2130,
+    "eloRank": 43,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2130,
+     "eloRank": 43,
+     "phasePoint": 36
+    }
+   },
+   {
+    "uuid": "9589914cf31a420bbcb07cd0768eec28",
+    "nickname": "_Pasha1337_",
+    "roleType": 0,
+    "eloRate": 2126,
+    "eloRank": 44,
+    "seasonResult": {
+     "eloRate": 2126,
+     "eloRank": 44,
+     "phasePoint": 0
+    },
+    "country": null
+   },
+   {
+    "uuid": "b516d1d18261467bbb6f447f0c111be7",
+    "nickname": "Gabryll",
+    "roleType": 1,
+    "eloRate": 2118,
+    "eloRank": 45,
+    "country": "mf",
+    "seasonResult": {
+     "eloRate": 2118,
+     "eloRank": 45,
+     "phasePoint": 10
+    }
+   },
+   {
+    "uuid": "a0a672a0bc194540bc195220dc170dba",
+    "nickname": "JackoWacko62",
+    "roleType": 3,
+    "eloRate": 2111,
+    "eloRank": 46,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2111,
+     "eloRank": 46,
+     "phasePoint": 4
+    }
+   },
+   {
+    "uuid": "8393e90d9dd94a3eb838146a5ae5b724",
+    "nickname": "takachaaaaaaan",
+    "roleType": 1,
+    "eloRate": 2111,
+    "eloRank": 46,
+    "country": "jp",
+    "seasonResult": {
+     "eloRate": 2111,
+     "eloRank": 46,
+     "phasePoint": 10
+    }
+   },
+   {
+    "uuid": "bc55d2999bf24ba2b764c4135a53255f",
+    "nickname": "Sadekeppi",
+    "roleType": 0,
+    "eloRate": 2110,
+    "eloRank": 48,
+    "country": "fi",
+    "seasonResult": {
+     "eloRate": 2110,
+     "eloRank": 48,
+     "phasePoint": 10
+    }
+   },
+   {
+    "uuid": "388533d5a2ad4b349a31db4738670a4b",
+    "nickname": "v_strid",
+    "roleType": 1,
+    "eloRate": 2107,
+    "eloRank": 49,
+    "country": "se",
+    "seasonResult": {
+     "eloRate": 2107,
+     "eloRank": 49,
+     "phasePoint": 82
+    }
+   },
+   {
+    "uuid": "070d5851c46a4a2da91e6ddfdb741d7f",
+    "nickname": "TheLandSharkJeff",
+    "roleType": 1,
+    "eloRate": 2106,
+    "eloRank": 50,
+    "country": "no",
+    "seasonResult": {
+     "eloRate": 2106,
+     "eloRank": 50,
+     "phasePoint": 15
+    }
+   },
+   {
+    "uuid": "eb136e7e26124f8daa99e521da609135",
+    "nickname": "Frolde",
+    "roleType": 1,
+    "eloRate": 2106,
+    "eloRank": 50,
+    "country": "dk",
+    "seasonResult": {
+     "eloRate": 2106,
+     "eloRank": 50,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "98cea324ee714d868b2ec1627f0f5762",
+    "nickname": "cvctus",
+    "roleType": 1,
+    "eloRate": 2099,
+    "eloRank": 52,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 2099,
+     "eloRank": 52,
+     "phasePoint": 4
+    }
+   },
+   {
+    "uuid": "3fa40d15dadb46368aa72bc4827dae73",
+    "nickname": "staremc",
+    "roleType": 1,
+    "eloRate": 2095,
+    "eloRank": 53,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2095,
+     "eloRank": 53,
+     "phasePoint": 18
+    }
+   },
+   {
+    "uuid": "31bb6401944d4fc5ad97f6cf90c54616",
+    "nickname": "darkk575",
+    "roleType": 1,
+    "eloRate": 2088,
+    "eloRank": 54,
+    "country": "br",
+    "seasonResult": {
+     "eloRate": 2088,
+     "eloRank": 54,
+     "phasePoint": 9
+    }
+   },
+   {
+    "uuid": "3d0359ab82024082a3204b0e5335674e",
+    "nickname": "snowdeerjulie",
+    "roleType": 1,
+    "eloRate": 2088,
+    "eloRank": 54,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2088,
+     "eloRank": 54,
+     "phasePoint": 4
+    }
+   },
+   {
+    "uuid": "d1718c79c34e4bce93cd688ac5254b58",
+    "nickname": "cornflakesmcsr",
+    "roleType": 1,
+    "eloRate": 2083,
+    "eloRank": 56,
+    "country": "de",
+    "seasonResult": {
+     "eloRate": 2083,
+     "eloRank": 56,
+     "phasePoint": 9
+    }
+   },
+   {
+    "uuid": "7d320034571e405a9b6889104489a3c4",
+    "nickname": "kohout135",
+    "roleType": 1,
+    "eloRate": 2081,
+    "eloRank": 57,
+    "country": "cz",
+    "seasonResult": {
+     "eloRate": 2081,
+     "eloRank": 57,
+     "phasePoint": 4
+    }
+   },
+   {
+    "uuid": "0c3cc22849a343b0964a89ac842fa3ca",
+    "nickname": "HDMICables",
+    "roleType": 0,
+    "eloRate": 2079,
+    "eloRank": 58,
+    "country": "nl",
+    "seasonResult": {
+     "eloRate": 2079,
+     "eloRank": 58,
+     "phasePoint": 9
+    }
+   },
+   {
+    "uuid": "ef0c8ab50e8541e5a18e94373d409f47",
+    "nickname": "Tadanoisikoro",
+    "roleType": 1,
+    "eloRate": 2077,
+    "eloRank": 59,
+    "country": "jp",
+    "seasonResult": {
+     "eloRate": 2077,
+     "eloRank": 59,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "9dcb17d831b24df2bae778cfd750ab1b",
+    "nickname": "loodlow",
+    "roleType": 1,
+    "eloRate": 2076,
+    "eloRank": 60,
+    "country": "ua",
+    "seasonResult": {
+     "eloRate": 2076,
+     "eloRank": 60,
+     "phasePoint": 7
+    }
+   },
+   {
+    "uuid": "da5e15a7d3c04a84b432defd5a15c910",
+    "nickname": "paukll",
+    "roleType": 1,
+    "eloRate": 2075,
+    "eloRank": 61,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2075,
+     "eloRank": 61,
+     "phasePoint": 14
+    }
+   },
+   {
+    "uuid": "f2061f886c254191871f635dc2ce80b9",
+    "nickname": "iluappi",
+    "roleType": 1,
+    "eloRate": 2070,
+    "eloRank": 62,
+    "country": "fi",
+    "seasonResult": {
+     "eloRate": 2070,
+     "eloRank": 62,
+     "phasePoint": 27
+    }
+   },
+   {
+    "uuid": "fb2bd99d6f664e7b96cc6a24834b9a76",
+    "nickname": "javierixmonfan",
+    "roleType": 0,
+    "eloRate": 2062,
+    "eloRank": 63,
+    "country": "ar",
+    "seasonResult": {
+     "eloRate": 2062,
+     "eloRank": 63,
+     "phasePoint": 11
+    }
+   },
+   {
+    "uuid": "410e5776b03a424d8740557bac2d9014",
+    "nickname": "YoomzMonkey",
+    "roleType": 1,
+    "eloRate": 2055,
+    "eloRank": 64,
+    "country": "no",
+    "seasonResult": {
+     "eloRate": 2055,
+     "eloRank": 64,
+     "phasePoint": 37
+    }
+   },
+   {
+    "uuid": "a00913f1079c4b0c9d68d32f57dfbe73",
+    "nickname": "sevensix_",
+    "roleType": 0,
+    "eloRate": 2054,
+    "eloRank": 65,
+    "country": "hk",
+    "seasonResult": {
+     "eloRate": 2054,
+     "eloRank": 65,
+     "phasePoint": 5
+    }
+   },
+   {
+    "uuid": "e3f76733da054480bab429a704ebecce",
+    "nickname": "gharfyy",
+    "roleType": 1,
+    "eloRate": 2048,
+    "eloRank": 66,
+    "country": "tr",
+    "seasonResult": {
+     "eloRate": 2048,
+     "eloRank": 66,
+     "phasePoint": 13
+    }
+   },
+   {
+    "uuid": "048de51800794a208de7f01652513c32",
+    "nickname": "SocratesDisciple",
+    "roleType": 1,
+    "eloRate": 2045,
+    "eloRank": 67,
+    "country": null,
+    "seasonResult": {
+     "eloRate": 2045,
+     "eloRank": 67,
+     "phasePoint": 18
+    }
+   },
+   {
+    "uuid": "64858295eb754646b03caead840391a2",
+    "nickname": "Casssual",
+    "roleType": 1,
+    "eloRate": 2045,
+    "eloRank": 67,
+    "country": "pl",
+    "seasonResult": {
+     "eloRate": 2045,
+     "eloRank": 67,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "d0a684fdcbe445d5abb39990ae1cfc3a",
+    "nickname": "danterus",
+    "roleType": 0,
+    "eloRate": 2039,
+    "eloRank": 69,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 2039,
+     "eloRank": 69,
+     "phasePoint": 5
+    }
+   },
+   {
+    "uuid": "386d64c3631c4975b0e8b658357c417f",
+    "nickname": "nolw",
+    "roleType": 0,
+    "eloRate": 2034,
+    "eloRank": 70,
+    "country": "br",
+    "seasonResult": {
+     "eloRate": 2034,
+     "eloRank": 70,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "99aa9e0e8034479a90259e244dfb9029",
+    "nickname": "Emillk",
+    "roleType": 1,
+    "eloRate": 2032,
+    "eloRank": 71,
+    "country": "yt",
+    "seasonResult": {
+     "eloRate": 2032,
+     "eloRank": 71,
+     "phasePoint": 3
+    }
+   },
+   {
+    "uuid": "ae0bcaf8f34f4c419358c0f0c638cc9a",
+    "nickname": "fe666",
+    "roleType": 1,
+    "eloRate": 2031,
+    "eloRank": 72,
+    "country": "hu",
+    "seasonResult": {
+     "eloRate": 2031,
+     "eloRank": 72,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "0388b80ebe6c4216b4a8305c0cd27894",
+    "nickname": "tommorerow",
+    "roleType": 1,
+    "eloRate": 2023,
+    "eloRank": 73,
+    "country": "mn",
+    "seasonResult": {
+     "eloRate": 2023,
+     "eloRank": 73,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "2e8569c8363b4ec9bb53d20d143b3348",
+    "nickname": "Japieh",
+    "roleType": 1,
+    "eloRate": 2023,
+    "eloRank": 73,
+    "country": "nl",
+    "seasonResult": {
+     "eloRate": 2023,
+     "eloRank": 73,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "0562802e736e47c581b2ef095e2ed067",
+    "nickname": "subdas",
+    "roleType": 0,
+    "eloRate": 2022,
+    "eloRank": 75,
+    "country": "br",
+    "seasonResult": {
+     "eloRate": 2022,
+     "eloRank": 75,
+     "phasePoint": 14
+    }
+   },
+   {
+    "uuid": "c32cdd142a0147dcb91771319d745194",
+    "nickname": "Erikfzf",
+    "roleType": 1,
+    "eloRate": 2022,
+    "eloRank": 75,
+    "country": "au",
+    "seasonResult": {
+     "eloRate": 2022,
+     "eloRank": 75,
+     "phasePoint": 53
+    }
+   },
+   {
+    "uuid": "e4808bc3e1e347988cbb59b55d723e0f",
+    "nickname": "dandannyboy",
+    "roleType": 1,
+    "eloRate": 2017,
+    "eloRank": 77,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 2017,
+     "eloRank": 77,
+     "phasePoint": 18
+    }
+   },
+   {
+    "uuid": "3dc5e4723e0f4a0285f8215e4fdbc77e",
+    "nickname": "ShyCircle230",
+    "roleType": 0,
+    "eloRate": 2016,
+    "eloRank": 78,
+    "country": "gs",
+    "seasonResult": {
+     "eloRate": 2016,
+     "eloRank": 78,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "734a1c6118754829acc234135470152c",
+    "nickname": "yeopgihoney",
+    "roleType": 1,
+    "eloRate": 2014,
+    "eloRank": 79,
+    "country": "kr",
+    "seasonResult": {
+     "eloRate": 2014,
+     "eloRank": 79,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "306494c164e74e838a7a0f63f79cc942",
+    "nickname": "IlLoonCrack",
+    "roleType": 1,
+    "eloRate": 2009,
+    "eloRank": 80,
+    "country": "ru",
+    "seasonResult": {
+     "eloRate": 2009,
+     "eloRank": 80,
+     "phasePoint": 3
+    }
+   },
+   {
+    "uuid": "afee11f6ce2f4c6ab25a3b011127e71d",
+    "nickname": "ItsNamii",
+    "roleType": 1,
+    "eloRate": 2009,
+    "eloRank": 80,
+    "country": null,
+    "seasonResult": {
+     "eloRate": 2009,
+     "eloRank": 80,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "fdff6a3e88054664974dbcd30583fe81",
+    "nickname": "Finnitzko",
+    "roleType": 1,
+    "eloRate": 2008,
+    "eloRank": 82,
+    "country": "de",
+    "seasonResult": {
+     "eloRate": 2008,
+     "eloRank": 82,
+     "phasePoint": 4
+    }
+   },
+   {
+    "uuid": "fe6771646c5d43c1b713023fb69c10c6",
+    "nickname": "SammmyG",
+    "roleType": 1,
+    "eloRate": 2007,
+    "eloRank": 83,
+    "country": "au",
+    "seasonResult": {
+     "eloRate": 2007,
+     "eloRank": 83,
+     "phasePoint": 21
+    }
+   },
+   {
+    "uuid": "48d9df3377554043ba39a8500c7ad702",
+    "nickname": "Geegeeboy_25",
+    "roleType": 1,
+    "eloRate": 2006,
+    "eloRank": 84,
+    "country": "cn",
+    "seasonResult": {
+     "eloRate": 2006,
+     "eloRank": 84,
+     "phasePoint": 7
+    }
+   },
+   {
+    "uuid": "71c9bd85da3549c28e70e981debcd40e",
+    "nickname": "pplazzz",
+    "roleType": 1,
+    "eloRate": 2006,
+    "eloRank": 84,
+    "country": "au",
+    "seasonResult": {
+     "eloRate": 2006,
+     "eloRank": 84,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "8c7208adf2784bacb3715ab657cd80bd",
+    "nickname": "BinEin",
+    "roleType": 1,
+    "eloRate": 2003,
+    "eloRank": 86,
+    "country": "pl",
+    "seasonResult": {
+     "eloRate": 2003,
+     "eloRank": 86,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "b140bbd0317d4eba89d34288f1b8f0c7",
+    "nickname": "amariyy",
+    "roleType": 1,
+    "eloRate": 2003,
+    "eloRank": 86,
+    "country": "hk",
+    "seasonResult": {
+     "eloRate": 2003,
+     "eloRank": 86,
+     "phasePoint": 24
+    }
+   },
+   {
+    "uuid": "3910d98bea254b488a10d6e91e469f7e",
+    "nickname": "dwoh",
+    "roleType": 3,
+    "eloRate": 2001,
+    "eloRank": 88,
+    "country": "kr",
+    "seasonResult": {
+     "eloRate": 2001,
+     "eloRank": 88,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "86334fc9e38344bdabf1a97f63c7be23",
+    "nickname": "Anjoru",
+    "roleType": 1,
+    "eloRate": 1997,
+    "eloRank": 89,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 1997,
+     "eloRank": 89,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "2988fcfbc6b141a497faa915e13b6592",
+    "nickname": "AutomattPLUS",
+    "roleType": 3,
+    "eloRate": 1997,
+    "eloRank": 89,
+    "country": "pl",
+    "seasonResult": {
+     "eloRate": 1997,
+     "eloRank": 89,
+     "phasePoint": 23
+    }
+   },
+   {
+    "uuid": "d93d53f5b7bd4fdc970d67a772936c81",
+    "nickname": "hack_page",
+    "roleType": 1,
+    "eloRate": 1993,
+    "eloRank": 91,
+    "country": "be",
+    "seasonResult": {
+     "eloRate": 1993,
+     "eloRank": 91,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "78a8ec9f99d34371b73decd2a78ff9b0",
+    "nickname": "TUDORULE",
+    "roleType": 0,
+    "eloRate": 1991,
+    "eloRank": 92,
+    "country": "ro",
+    "seasonResult": {
+     "eloRate": 1991,
+     "eloRank": 92,
+     "phasePoint": 7
+    }
+   },
+   {
+    "uuid": "79dab6610bb34d6d8c6f8348bed3620e",
+    "nickname": "Pi1Mu9353",
+    "roleType": 3,
+    "eloRate": 1982,
+    "eloRank": 93,
+    "country": "jp",
+    "seasonResult": {
+     "eloRate": 1982,
+     "eloRank": 93,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "26c82339872246c489bf285760ca1af3",
+    "nickname": "novadud",
+    "roleType": 0,
+    "eloRate": 1977,
+    "eloRank": 94,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 1977,
+     "eloRank": 94,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "8826e1e6d21b46ecbc5d5246b836f36a",
+    "nickname": "4antoo",
+    "roleType": 1,
+    "eloRate": 1976,
+    "eloRank": 95,
+    "country": "it",
+    "seasonResult": {
+     "eloRate": 1976,
+     "eloRank": 95,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "97d59e1daaa74e4094fff1c47cd091c2",
+    "nickname": "pigswitch",
+    "roleType": 2,
+    "eloRate": 1964,
+    "eloRank": 96,
+    "country": "mo",
+    "seasonResult": {
+     "eloRate": 1964,
+     "eloRank": 96,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "1ae14cb96a2f4357a71efac6f7012b59",
+    "nickname": "Cube1337x",
+    "roleType": 1,
+    "eloRate": 1960,
+    "eloRank": 97,
+    "country": "fi",
+    "seasonResult": {
+     "eloRate": 1960,
+     "eloRank": 97,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "7e7bea2031764e74ada950a5dcb5a0bc",
+    "nickname": "OGMineman",
+    "roleType": 0,
+    "eloRate": 1959,
+    "eloRank": 98,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 1959,
+     "eloRank": 98,
+     "phasePoint": 3
+    }
+   },
+   {
+    "uuid": "f2e05ad464b54d288fa18da14e9a2786",
+    "nickname": "LEC666888",
+    "roleType": 1,
+    "eloRate": 1959,
+    "eloRank": 98,
+    "country": "cn",
+    "seasonResult": {
+     "eloRate": 1959,
+     "eloRank": 98,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "13743fd1ed2c4fc78f5d3b86f412b536",
+    "nickname": "__zone",
+    "roleType": 1,
+    "eloRate": 1957,
+    "eloRank": 100,
+    "country": "dk",
+    "seasonResult": {
+     "eloRate": 1957,
+     "eloRank": 100,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "9649236873db4cb9b7bdc2dae693ed39",
+    "nickname": "Yosa1003",
+    "roleType": 2,
+    "eloRate": 1955,
+    "eloRank": 101,
+    "country": "jp",
+    "seasonResult": {
+     "eloRate": 1955,
+     "eloRank": 101,
+     "phasePoint": 7
+    }
+   },
+   {
+    "uuid": "0dd89d0a88244af69877bee47153db3a",
+    "nickname": "Haaons_",
+    "roleType": 1,
+    "eloRate": 1947,
+    "eloRank": 102,
+    "country": "at",
+    "seasonResult": {
+     "eloRate": 1947,
+     "eloRank": 102,
+     "phasePoint": 3
+    }
+   },
+   {
+    "uuid": "627c399d0d0c49318905bac47287d4a3",
+    "nickname": "k4yfour",
+    "roleType": 3,
+    "eloRate": 1944,
+    "eloRank": 103,
+    "seasonResult": {
+     "eloRate": 1944,
+     "eloRank": 103,
+     "phasePoint": 0
+    },
+    "country": null
+   },
+   {
+    "uuid": "c41b14ac0f1547aeb7690276d82aa458",
+    "nickname": "Psemcovici",
+    "roleType": 0,
+    "eloRate": 1944,
+    "eloRank": 103,
+    "country": null,
+    "seasonResult": {
+     "eloRate": 1944,
+     "eloRank": 103,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "5fe66e8b389f4dc384222e8cc09485f0",
+    "nickname": "sanjinhu",
+    "roleType": 3,
+    "eloRate": 1943,
+    "eloRank": 105,
+    "country": "br",
+    "seasonResult": {
+     "eloRate": 1943,
+     "eloRank": 105,
+     "phasePoint": 3
+    }
+   },
+   {
+    "uuid": "373fddb563124e13b043ea9c571595cd",
+    "nickname": "FuzzKing",
+    "roleType": 1,
+    "eloRate": 1939,
+    "eloRank": 106,
+    "country": "gl",
+    "seasonResult": {
+     "eloRate": 1939,
+     "eloRank": 106,
+     "phasePoint": 4
+    }
+   },
+   {
+    "uuid": "addd890764404097b3f12acdde2adf33",
+    "nickname": "_Hypn0tic",
+    "roleType": 1,
+    "eloRate": 1934,
+    "eloRank": 107,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 1934,
+     "eloRank": 107,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "c7802cb7c30c47aabc1a7ec790ff2260",
+    "nickname": "iKme_",
+    "roleType": 0,
+    "eloRate": 1932,
+    "eloRank": 108,
+    "country": "hu",
+    "seasonResult": {
+     "eloRate": 1932,
+     "eloRank": 108,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "23ba366244db45198ee477149dfb457b",
+    "nickname": "gilbert14",
+    "roleType": 0,
+    "eloRate": 1932,
+    "eloRank": 108,
+    "country": "sj",
+    "seasonResult": {
+     "eloRate": 1932,
+     "eloRank": 108,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "f55a7e31e65a453e941ebec79cd39992",
+    "nickname": "Brunted",
+    "roleType": 1,
+    "eloRate": 1931,
+    "eloRank": 110,
+    "country": "gb",
+    "seasonResult": {
+     "eloRate": 1931,
+     "eloRank": 110,
+     "phasePoint": 13
+    }
+   },
+   {
+    "uuid": "7fad8dae2ab04971bc07a6440f84d609",
+    "nickname": "suravil",
+    "roleType": 1,
+    "eloRate": 1930,
+    "eloRank": 111,
+    "country": "pl",
+    "seasonResult": {
+     "eloRate": 1930,
+     "eloRank": 111,
+     "phasePoint": 17
+    }
+   },
+   {
+    "uuid": "7f06e394e05c4ea79801924fc9b8d204",
+    "nickname": "inslyn",
+    "roleType": 0,
+    "eloRate": 1927,
+    "eloRank": 112,
+    "country": "tw",
+    "seasonResult": {
+     "eloRate": 1927,
+     "eloRank": 112,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "f0103fdd182548828ba66883fdd05214",
+    "nickname": "Magmania",
+    "roleType": 1,
+    "eloRate": 1926,
+    "eloRank": 113,
+    "country": "au",
+    "seasonResult": {
+     "eloRate": 1926,
+     "eloRank": 113,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "9d60c83675fb4fbfad7ca6998714f26c",
+    "nickname": "Rrcks51",
+    "roleType": 1,
+    "eloRate": 1925,
+    "eloRank": 114,
+    "country": "nl",
+    "seasonResult": {
+     "eloRate": 1925,
+     "eloRank": 114,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "fd62d46fe1ac4368b18e64249c370f30",
+    "nickname": "BangDreamRoselia",
+    "roleType": 1,
+    "eloRate": 1922,
+    "eloRank": 115,
+    "country": "cn",
+    "seasonResult": {
+     "eloRate": 1922,
+     "eloRank": 115,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "5ef7fbe30e774d2aa100348639d0fa9d",
+    "nickname": "TheGamerGuyy",
+    "roleType": 1,
+    "eloRate": 1919,
+    "eloRank": 116,
+    "country": "de",
+    "seasonResult": {
+     "eloRate": 1919,
+     "eloRank": 116,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "5f4e1b4455fc427b888aed4d0e6d004f",
+    "nickname": "valenmeoww",
+    "roleType": 1,
+    "eloRate": 1918,
+    "eloRank": 117,
+    "country": "ar",
+    "seasonResult": {
+     "eloRate": 1918,
+     "eloRank": 117,
+     "phasePoint": 11
+    }
+   },
+   {
+    "uuid": "083f99056a5c4503af326c23bcf8dafe",
+    "nickname": "benemies",
+    "roleType": 1,
+    "eloRate": 1917,
+    "eloRank": 118,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 1917,
+     "eloRank": 118,
+     "phasePoint": 7
+    }
+   },
+   {
+    "uuid": "00f996cd910f479ba0903d85c2bdb1e0",
+    "nickname": "Bloonskiller",
+    "roleType": 1,
+    "eloRate": 1916,
+    "eloRank": 119,
+    "seasonResult": {
+     "eloRate": 1916,
+     "eloRank": 119,
+     "phasePoint": 5
+    },
+    "country": null
+   },
+   {
+    "uuid": "1232e83ffdc0485b8e35aa9875a3708a",
+    "nickname": "qafo_",
+    "roleType": 1,
+    "eloRate": 1916,
+    "eloRank": 119,
+    "country": "pl",
+    "seasonResult": {
+     "eloRate": 1916,
+     "eloRank": 119,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "421bf983156d4a4c95ee3185888e6ba3",
+    "nickname": "hide_8110",
+    "roleType": 0,
+    "eloRate": 1914,
+    "eloRank": 121,
+    "country": null,
+    "seasonResult": {
+     "eloRate": 1914,
+     "eloRank": 121,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "f2800b7dd2ab410aa6145340afcac8ab",
+    "nickname": "SkorpionISGod",
+    "roleType": 1,
+    "eloRate": 1913,
+    "eloRank": 122,
+    "country": "pl",
+    "seasonResult": {
+     "eloRate": 1913,
+     "eloRank": 122,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "ea2b3799645743df906350b7110d21e7",
+    "nickname": "asteroid20993",
+    "roleType": 2,
+    "eloRate": 1912,
+    "eloRank": 123,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 1912,
+     "eloRank": 123,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "681679a877ef413c97da63162e835935",
+    "nickname": "skylewl",
+    "roleType": 1,
+    "eloRate": 1909,
+    "eloRank": 124,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 1909,
+     "eloRank": 124,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "40c422d462fe45e287d74f1da77eaf3e",
+    "nickname": "WumbusZero",
+    "roleType": 1,
+    "eloRate": 1908,
+    "eloRank": 125,
+    "country": "es",
+    "seasonResult": {
+     "eloRate": 1908,
+     "eloRank": 125,
+     "phasePoint": 3
+    }
+   },
+   {
+    "uuid": "c473d5e8b71a4fcc91c9d132bb61360c",
+    "nickname": "lenged",
+    "roleType": 1,
+    "eloRate": 1908,
+    "eloRank": 125,
+    "country": "au",
+    "seasonResult": {
+     "eloRate": 1908,
+     "eloRank": 125,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "350579d3e06341a0997ac47a91f2ac98",
+    "nickname": "xFray_",
+    "roleType": 1,
+    "eloRate": 1907,
+    "eloRank": 127,
+    "country": "sg",
+    "seasonResult": {
+     "eloRate": 1907,
+     "eloRank": 127,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "485afd8d37a949c390ccdb9f1f1ff3c6",
+    "nickname": "letsni",
+    "roleType": 0,
+    "eloRate": 1904,
+    "eloRank": 128,
+    "country": "ru",
+    "seasonResult": {
+     "eloRate": 1904,
+     "eloRank": 128,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "b6f45b2b47aa4e73b7e515b247e3eabf",
+    "nickname": "yunusbes",
+    "roleType": 0,
+    "eloRate": 1904,
+    "eloRank": 128,
+    "country": "tr",
+    "seasonResult": {
+     "eloRate": 1904,
+     "eloRank": 128,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "36c2c0065cc24c7dbb12fd3f5ba0b25c",
+    "nickname": "Tool_not_me",
+    "roleType": 1,
+    "eloRate": 1904,
+    "eloRank": 128,
+    "country": "cn",
+    "seasonResult": {
+     "eloRate": 1904,
+     "eloRank": 128,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "ac0c2ba5ec5546aea0d94fd38cd55682",
+    "nickname": "Coach_Side",
+    "roleType": 0,
+    "eloRate": 1899,
+    "eloRank": 131,
+    "country": "hu",
+    "seasonResult": {
+     "eloRate": 1899,
+     "eloRank": 131,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "4eea0516cb0c4c528cefe85448cac786",
+    "nickname": "blobserr",
+    "roleType": 1,
+    "eloRate": 1898,
+    "eloRank": 132,
+    "country": "vn",
+    "seasonResult": {
+     "eloRate": 1898,
+     "eloRank": 132,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "d30aa493035d4b168c8a4a1c20c766c8",
+    "nickname": "CxrtxR",
+    "roleType": 1,
+    "eloRate": 1895,
+    "eloRank": 133,
+    "country": null,
+    "seasonResult": {
+     "eloRate": 1895,
+     "eloRank": 133,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "4ffae4e9d50342c9bd9392c110d71c6d",
+    "nickname": "Gho",
+    "roleType": 1,
+    "eloRate": 1890,
+    "eloRank": 134,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 1890,
+     "eloRank": 134,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "db53b362478648b3921da80be96d1356",
+    "nickname": "Kickz",
+    "roleType": 1,
+    "eloRate": 1890,
+    "eloRank": 134,
+    "seasonResult": {
+     "eloRate": 1890,
+     "eloRank": 134,
+     "phasePoint": 7
+    },
+    "country": null
+   },
+   {
+    "uuid": "3ccd3947c6d74fd49606c68377c0f655",
+    "nickname": "smeks",
+    "roleType": 1,
+    "eloRate": 1887,
+    "eloRank": 136,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 1887,
+     "eloRank": 136,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "b0dea0d890de4eecb781481130c3c1d1",
+    "nickname": "Mixray_",
+    "roleType": 1,
+    "eloRate": 1886,
+    "eloRank": 137,
+    "country": "pl",
+    "seasonResult": {
+     "eloRate": 1886,
+     "eloRank": 137,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "7447dd83b8bc4b7fb97d3ec316f529dc",
+    "nickname": "Kxpow",
+    "roleType": 1,
+    "eloRate": 1883,
+    "eloRank": 138,
+    "country": "tz",
+    "seasonResult": {
+     "eloRate": 1883,
+     "eloRank": 138,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "95e0c77b02b74a4285da1dfdbf3062e1",
+    "nickname": "HealthyDawson",
+    "roleType": 2,
+    "eloRate": 1883,
+    "eloRank": 138,
+    "country": "us",
+    "seasonResult": {
+     "eloRate": 1883,
+     "eloRank": 138,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "6d004cbff8f148b598d4f6a720c239f1",
+    "nickname": "2welt",
+    "roleType": 3,
+    "eloRate": 1883,
+    "eloRank": 138,
+    "country": "ua",
+    "seasonResult": {
+     "eloRate": 1883,
+     "eloRank": 138,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "77b6cebc87354356aa060eed67751f61",
+    "nickname": "Obotron",
+    "roleType": 1,
+    "eloRate": 1882,
+    "eloRank": 141,
+    "country": "gb",
+    "seasonResult": {
+     "eloRate": 1882,
+     "eloRank": 141,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "af22aaab9ee74596a3578bd6345d25b5",
+    "nickname": "priffie",
+    "roleType": 0,
+    "eloRate": 1882,
+    "eloRank": 141,
+    "seasonResult": {
+     "eloRate": 1882,
+     "eloRank": 141,
+     "phasePoint": 13
+    },
+    "country": null
+   },
+   {
+    "uuid": "25d4de4fe37248f0bba16b43ca1994bb",
+    "nickname": "Hinart",
+    "roleType": 1,
+    "eloRate": 1875,
+    "eloRank": 143,
+    "country": "ua",
+    "seasonResult": {
+     "eloRate": 1875,
+     "eloRank": 143,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "78ea25c3db9a4830ba7e78074bd6fd10",
+    "nickname": "petal_go_round",
+    "roleType": 0,
+    "eloRate": 1872,
+    "eloRank": 144,
+    "country": null,
+    "seasonResult": {
+     "eloRate": 1872,
+     "eloRank": 144,
+     "phasePoint": 15
+    }
+   },
+   {
+    "uuid": "7820c6d710104a8a8596f8a5ee523d91",
+    "nickname": "Kaguy4_",
+    "roleType": 0,
+    "eloRate": 1870,
+    "eloRank": 145,
+    "country": "cn",
+    "seasonResult": {
+     "eloRate": 1870,
+     "eloRank": 145,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "161cd5db62394b4f9b39086717003ce1",
+    "nickname": "soffjustbad",
+    "roleType": 0,
+    "eloRate": 1867,
+    "eloRank": 146,
+    "country": "ru",
+    "seasonResult": {
+     "eloRate": 1867,
+     "eloRank": 146,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "acf90f097a544ab8b25d238b3ab4549c",
+    "nickname": "tommy21_",
+    "roleType": 0,
+    "eloRate": 1867,
+    "eloRank": 146,
+    "country": "ar",
+    "seasonResult": {
+     "eloRate": 1867,
+     "eloRank": 146,
+     "phasePoint": 4
+    }
+   },
+   {
+    "uuid": "1a709bc2947b4e3f8b4d590b95b7b0bc",
+    "nickname": "le4ves",
+    "roleType": 0,
+    "eloRate": 1866,
+    "eloRank": 148,
+    "country": "in",
+    "seasonResult": {
+     "eloRate": 1866,
+     "eloRank": 148,
+     "phasePoint": 0
+    }
+   },
+   {
+    "uuid": "6ddcd037dd4048e8804d0f99fa1cf4c6",
+    "nickname": "Ale267",
+    "roleType": 1,
+    "eloRate": 1865,
+    "eloRank": 149,
+    "country": "it",
+    "seasonResult": {
+     "eloRate": 1865,
+     "eloRank": 149,
+     "phasePoint": 6
+    }
+   },
+   {
+    "uuid": "4f3e7905554345698e41f88caa4c088e",
+    "nickname": "cofesho",
+    "roleType": 1,
+    "eloRate": 1864,
+    "eloRank": 150,
+    "country": "ca",
+    "seasonResult": {
+     "eloRate": 1864,
+     "eloRank": 150,
+     "phasePoint": 9
+    }
+   }
+  ]
+ }
+}

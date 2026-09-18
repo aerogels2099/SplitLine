@@ -1,0 +1,7599 @@
+{
+ "status": "success",
+ "data": [
+  {
+   "id": 11878603,
+   "type": 2,
+   "seed": {
+    "id": "m722sumimscyd8vj",
+    "overworld": "VILLAGE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     97,
+     103,
+     82,
+     85
+    ],
+    "variations": [
+     "biome:structure:plains",
+     "biome:structure:plains",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "0f6bed1ad9f04cf78c5eca741810d80b",
+     "nickname": "1xm_",
+     "roleType": 1,
+     "eloRate": 883,
+     "eloRank": 10497,
+     "country": "id"
+    },
+    {
+     "uuid": "67fa423394624b6db0caa2152d3c11f3",
+     "nickname": "kk4o",
+     "roleType": 0,
+     "eloRate": 833,
+     "eloRank": 12373,
+     "country": "kr"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "67fa423394624b6db0caa2152d3c11f3",
+    "time": 1185541
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "67fa423394624b6db0caa2152d3c11f3",
+     "change": 23,
+     "eloRate": 810
+    },
+    {
+     "uuid": "0f6bed1ad9f04cf78c5eca741810d80b",
+     "change": -23,
+     "eloRate": 906
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697468,
+   "seedType": "VILLAGE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878602,
+   "type": 2,
+   "seed": {
+    "id": "m7234ye3pt1m9d9e",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     97,
+     94,
+     91,
+     103
+    ],
+    "variations": [
+     "bastion:triple:2",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "52437d6f739e487082c09eb12a8b1fa1",
+     "nickname": "liam_does_stuff_",
+     "roleType": 0,
+     "eloRate": 567,
+     "eloRank": 17482,
+     "country": "dz"
+    },
+    {
+     "uuid": "df937639bd0349c7abb0293f37b933cc",
+     "nickname": "_Swassy_Zzz",
+     "roleType": 0,
+     "eloRate": 630,
+     "eloRank": 16730,
+     "country": "vn"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "df937639bd0349c7abb0293f37b933cc",
+    "time": 628752
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "df937639bd0349c7abb0293f37b933cc",
+     "change": 19,
+     "eloRate": 611
+    },
+    {
+     "uuid": "52437d6f739e487082c09eb12a8b1fa1",
+     "change": -19,
+     "eloRate": 586
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697460,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878601,
+   "type": 2,
+   "seed": {
+    "id": "m7237dhvaqjz3zyc",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     100,
+     97,
+     94,
+     85
+    ],
+    "variations": [
+     "bastion:good_gap:1",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "bastion:small_single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:57"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "eca0d60de78447f58ae871acd2b4d035",
+     "nickname": "Thomatos200",
+     "roleType": 0,
+     "eloRate": 379,
+     "eloRank": 21779,
+     "country": "us"
+    },
+    {
+     "uuid": "ad5fcfc3c0914719b740aa43ea16804a",
+     "nickname": "CHATGAP",
+     "roleType": 0,
+     "eloRate": 519,
+     "eloRank": 19747,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "ad5fcfc3c0914719b740aa43ea16804a",
+    "time": 484396
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "ad5fcfc3c0914719b740aa43ea16804a",
+     "change": 16,
+     "eloRate": 503
+    },
+    {
+     "uuid": "eca0d60de78447f58ae871acd2b4d035",
+     "change": -16,
+     "eloRate": 395
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697458,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878596,
+   "type": 2,
+   "seed": {
+    "id": "m723ah94ffq4nviw",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "TREASURE",
+    "endTowers": [
+     100,
+     76,
+     97,
+     103
+    ],
+    "variations": [
+     "biome:bastion:crimson_forest",
+     "biome:fortress:nether_wastes"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "bed310b3094e4ece9879ffa682dab9a8",
+     "nickname": "zenfyqp",
+     "roleType": 1,
+     "eloRate": 1254,
+     "eloRank": 2761,
+     "country": null
+    },
+    {
+     "uuid": "7ca8ff999f764f259ea8f068402ca712",
+     "nickname": "SuchMuscle",
+     "roleType": 0,
+     "eloRate": 1210,
+     "eloRank": 3497,
+     "country": "ar"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "bed310b3094e4ece9879ffa682dab9a8",
+    "time": 430969
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "bed310b3094e4ece9879ffa682dab9a8",
+     "change": 20,
+     "eloRate": 1234
+    },
+    {
+     "uuid": "7ca8ff999f764f259ea8f068402ca712",
+     "change": -20,
+     "eloRate": 1230
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697442,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878595,
+   "type": 2,
+   "seed": {
+    "id": "m722wwkihu4e7cg7",
+    "overworld": "VILLAGE",
+    "nether": "HOUSING",
+    "endTowers": [
+     100,
+     82,
+     94,
+     103
+    ],
+    "variations": [
+     "biome:structure:plains",
+     "biome:structure:plains",
+     "bastion:triple:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:basalt_deltas",
+     "end_spawn:buried:57",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "2140c2cdae6746eeb338ed5818984f9e",
+     "nickname": "Dolphina__",
+     "roleType": 0,
+     "eloRate": 645,
+     "eloRank": 15772,
+     "country": null
+    },
+    {
+     "uuid": "218983b7781045939495414d6f6ebbcb",
+     "nickname": "feyw1lds",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "2140c2cdae6746eeb338ed5818984f9e",
+    "time": 469042
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "2140c2cdae6746eeb338ed5818984f9e",
+     "change": 19,
+     "eloRate": 626
+    },
+    {
+     "uuid": "218983b7781045939495414d6f6ebbcb",
+     "change": null,
+     "eloRate": null
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697433,
+   "seedType": "VILLAGE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878593,
+   "type": 2,
+   "seed": {
+    "id": "m723d9pjmow70k8x",
+    "overworld": "VILLAGE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     91,
+     103,
+     76,
+     82
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "biome:structure:desert",
+     "chest:structure:diamond",
+     "biome:structure:desert",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "df8f447d40644667857e3df5a573bc67",
+     "nickname": "Chuckmo895",
+     "roleType": 1,
+     "eloRate": 891,
+     "eloRank": 10859,
+     "country": null
+    },
+    {
+     "uuid": "0e5cef34201344f09c74e36fa7e499aa",
+     "nickname": "OhBongo",
+     "roleType": 0,
+     "eloRate": 842,
+     "eloRank": 11758,
+     "country": "tz"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "df8f447d40644667857e3df5a573bc67",
+    "time": 1290201
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "df8f447d40644667857e3df5a573bc67",
+     "change": 20,
+     "eloRate": 871
+    },
+    {
+     "uuid": "0e5cef34201344f09c74e36fa7e499aa",
+     "change": -20,
+     "eloRate": 862
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697418,
+   "seedType": "VILLAGE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878590,
+   "type": 2,
+   "seed": {
+    "id": "m723a2krhwhypbh3",
+    "overworld": "VILLAGE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     85,
+     76,
+     82,
+     103
+    ],
+    "variations": [
+     "biome:structure:desert",
+     "biome:structure:desert",
+     "bastion:triple:2",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:soul_sand_valley",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "3dc10067c8994f69804d1219c86005ba",
+     "nickname": "Sumner2_",
+     "roleType": 0,
+     "eloRate": 1220,
+     "eloRank": 3267,
+     "country": "vn"
+    },
+    {
+     "uuid": "61ca7e1c768d447495f2ad69e6e7fbb1",
+     "nickname": "0v3rK1ll",
+     "roleType": 1,
+     "eloRate": 1255,
+     "eloRank": 2749,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "61ca7e1c768d447495f2ad69e6e7fbb1",
+    "time": 688406
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "61ca7e1c768d447495f2ad69e6e7fbb1",
+     "change": 20,
+     "eloRate": 1235
+    },
+    {
+     "uuid": "3dc10067c8994f69804d1219c86005ba",
+     "change": -20,
+     "eloRate": 1240
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697394,
+   "seedType": "VILLAGE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878588,
+   "type": 2,
+   "seed": {
+    "id": "m723bwwwu8mr6dk3",
+    "overworld": "BURIED_TREASURE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     79,
+     97,
+     91,
+     76
+    ],
+    "variations": [
+     "biome:structure:deep_ocean",
+     "biome:structure:deep_ocean",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "6eebeee0cd744492adf048406adb1037",
+     "nickname": "KomboJack",
+     "roleType": 1,
+     "eloRate": 1607,
+     "eloRank": 522,
+     "country": "us"
+    },
+    {
+     "uuid": "d120be6583ca46c1b9057cf3ff6dfd91",
+     "nickname": "wmacc",
+     "roleType": 3,
+     "eloRate": 1588,
+     "eloRank": 576,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "d120be6583ca46c1b9057cf3ff6dfd91",
+    "time": 299447
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "d120be6583ca46c1b9057cf3ff6dfd91",
+     "change": 22,
+     "eloRate": 1566
+    },
+    {
+     "uuid": "6eebeee0cd744492adf048406adb1037",
+     "change": -22,
+     "eloRate": 1629
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697394,
+   "seedType": "BURIED_TREASURE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878586,
+   "type": 2,
+   "seed": {
+    "id": "m723bg6eikwf5fr1",
+    "overworld": "RUINED_PORTAL",
+    "nether": "TREASURE",
+    "endTowers": [
+     88,
+     91,
+     97,
+     85
+    ],
+    "variations": [
+     "type:structure:completable",
+     "biome:structure:plains",
+     "type:structure:completable",
+     "biome:structure:plains",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:basalt_deltas",
+     "end_spawn:buried:56"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "a8c9d33cd80249f28e6ecacbc12a4e70",
+     "nickname": "ActualCat866",
+     "roleType": 0,
+     "eloRate": 1047,
+     "eloRank": 6965,
+     "country": "cn"
+    },
+    {
+     "uuid": "e4986b387f024445ae9099ca66ea6a5f",
+     "nickname": "PlumpPuppyThing",
+     "roleType": 0,
+     "eloRate": 1046,
+     "eloRank": 7000,
+     "country": "jp"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "e4986b387f024445ae9099ca66ea6a5f",
+    "time": 1642049
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "e4986b387f024445ae9099ca66ea6a5f",
+     "change": 22,
+     "eloRate": 1024
+    },
+    {
+     "uuid": "a8c9d33cd80249f28e6ecacbc12a4e70",
+     "change": -22,
+     "eloRate": 1069
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697384,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878583,
+   "type": 2,
+   "seed": {
+    "id": "m7231bq36odd4wlp",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     76,
+     82,
+     94,
+     79
+    ],
+    "variations": [
+     "chest:structure:egap",
+     "chest:structure:egap",
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:crimson_forest",
+     "end_spawn:buried:44",
+     "end_tower:caged:front_center",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "8690be4fe4194e02bfee5d61ae77e31f",
+     "nickname": "jjupit_er",
+     "roleType": 1,
+     "eloRate": 1258,
+     "eloRank": 2701,
+     "country": "us"
+    },
+    {
+     "uuid": "c3430ae005c84253884033e8e634bf24",
+     "nickname": "SacredSunny",
+     "roleType": 0,
+     "eloRate": 1292,
+     "eloRank": 2323,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "c3430ae005c84253884033e8e634bf24",
+    "time": 635203
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "c3430ae005c84253884033e8e634bf24",
+     "change": 20,
+     "eloRate": 1272
+    },
+    {
+     "uuid": "8690be4fe4194e02bfee5d61ae77e31f",
+     "change": -20,
+     "eloRate": 1278
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697362,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878581,
+   "type": 2,
+   "seed": {
+    "id": "m722t8inlbjv3kt4",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     94,
+     103,
+     100,
+     82
+    ],
+    "variations": [
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:small_single:1",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "35436df790504666aa4865f5b7559b4d",
+     "nickname": "J0wl_",
+     "roleType": 2,
+     "eloRate": 1035,
+     "eloRank": 7284,
+     "country": "mx"
+    },
+    {
+     "uuid": "d1bd995bffcd4d8f9f4d7818ed73c625",
+     "nickname": "dazednova",
+     "roleType": 0,
+     "eloRate": 1078,
+     "eloRank": 6195,
+     "country": "ca"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "d1bd995bffcd4d8f9f4d7818ed73c625",
+    "time": 930527
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "d1bd995bffcd4d8f9f4d7818ed73c625",
+     "change": 20,
+     "eloRate": 1058
+    },
+    {
+     "uuid": "35436df790504666aa4865f5b7559b4d",
+     "change": -20,
+     "eloRate": 1055
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697359,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878580,
+   "type": 2,
+   "seed": {
+    "id": "m722yzv40hx4d7z3",
+    "overworld": "VILLAGE",
+    "nether": "STABLES",
+    "endTowers": [
+     100,
+     76,
+     97,
+     94
+    ],
+    "variations": [
+     "biome:structure:desert",
+     "biome:structure:desert",
+     "bastion:good_gap:2",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "bastion:small_single:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:crimson_forest",
+     "end_spawn:buried:57"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "b004b93b236a483dbc621cdbbce0b8f4",
+     "nickname": "denqil",
+     "roleType": 0,
+     "eloRate": 1177,
+     "eloRank": 4088,
+     "country": "kr"
+    },
+    {
+     "uuid": "703cac5362c94666a40768e0318358be",
+     "nickname": "NixMC_",
+     "roleType": 1,
+     "eloRate": 1194,
+     "eloRank": 3850,
+     "country": "rs"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "b004b93b236a483dbc621cdbbce0b8f4",
+    "time": 925162
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "b004b93b236a483dbc621cdbbce0b8f4",
+     "change": 22,
+     "eloRate": 1155
+    },
+    {
+     "uuid": "703cac5362c94666a40768e0318358be",
+     "change": -22,
+     "eloRate": 1216
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697357,
+   "seedType": "VILLAGE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878579,
+   "type": 2,
+   "seed": {
+    "id": "m723bsdskugpc5fd",
+    "overworld": "VILLAGE",
+    "nether": "HOUSING",
+    "endTowers": [
+     88,
+     82,
+     94,
+     79
+    ],
+    "variations": [
+     "biome:structure:plains",
+     "biome:structure:plains",
+     "bastion:triple:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front_center",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "b8d8039410fd44c285b950c533fb3d83",
+     "nickname": "EvanBlokEnder",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    },
+    {
+     "uuid": "25a21c0051eb46549ab860065a5ff7bb",
+     "nickname": "noodlesimp2",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "25a21c0051eb46549ab860065a5ff7bb",
+    "time": 214089
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "25a21c0051eb46549ab860065a5ff7bb",
+     "change": null,
+     "eloRate": null
+    },
+    {
+     "uuid": "b8d8039410fd44c285b950c533fb3d83",
+     "change": null,
+     "eloRate": null
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697355,
+   "seedType": "VILLAGE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878578,
+   "type": 2,
+   "seed": {
+    "id": "m7232wjmtar6lgem",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "TREASURE",
+    "endTowers": [
+     97,
+     82,
+     103,
+     100
+    ],
+    "variations": [
+     "chest:structure:egap",
+     "chest:structure:egap",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "5698f1c0403e45498cac5cece8d4817a",
+     "nickname": "SwbPoundcake",
+     "roleType": 2,
+     "eloRate": 1409,
+     "eloRank": 1364,
+     "country": "us"
+    },
+    {
+     "uuid": "c28caef410a84fbf902448afee8f79c3",
+     "nickname": "doogaii",
+     "roleType": 0,
+     "eloRate": 1419,
+     "eloRank": 1299,
+     "country": "vn"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "c28caef410a84fbf902448afee8f79c3",
+    "time": 691168
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [
+    {
+     "uuid": "5698f1c0403e45498cac5cece8d4817a",
+     "url": "https://www.twitch.tv/videos/2825954302",
+     "startsAt": 1784691302
+    }
+   ],
+   "changes": [
+    {
+     "uuid": "c28caef410a84fbf902448afee8f79c3",
+     "change": 21,
+     "eloRate": 1398
+    },
+    {
+     "uuid": "5698f1c0403e45498cac5cece8d4817a",
+     "change": -21,
+     "eloRate": 1430
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697352,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878577,
+   "type": 2,
+   "seed": {
+    "id": "m72327ogpjn4lh1l",
+    "overworld": "BURIED_TREASURE",
+    "nether": "TREASURE",
+    "endTowers": [
+     79,
+     88,
+     76,
+     82
+    ],
+    "variations": [
+     "biome:structure:deep_ocean",
+     "biome:structure:deep_ocean",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:basalt_deltas",
+     "end_tower:caged:front",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "2886c5ba354147b58bf9b4b4f8b82e67",
+     "nickname": "Lava_Real",
+     "roleType": 1,
+     "eloRate": 1360,
+     "eloRank": 1693,
+     "country": null
+    },
+    {
+     "uuid": "0ccb4c87736641399b6ae375f73023f8",
+     "nickname": "Puredevoted",
+     "roleType": 0,
+     "eloRate": 1331,
+     "eloRank": 1926,
+     "country": "cn"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "0ccb4c87736641399b6ae375f73023f8",
+    "time": 343975
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "0ccb4c87736641399b6ae375f73023f8",
+     "change": 23,
+     "eloRate": 1308
+    },
+    {
+     "uuid": "2886c5ba354147b58bf9b4b4f8b82e67",
+     "change": -23,
+     "eloRate": 1383
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697345,
+   "seedType": "BURIED_TREASURE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878576,
+   "type": 2,
+   "seed": {
+    "id": "m7234pbf991kt0kd",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     91,
+     97,
+     100,
+     94
+    ],
+    "variations": [
+     "bastion:good_gap:2",
+     "bastion:single:2",
+     "bastion:small_single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:crimson_forest"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "7fed681d9dee49a59fea0f41a7ecc87e",
+     "nickname": "BurntPlank",
+     "roleType": 0,
+     "eloRate": 1692,
+     "eloRank": 339,
+     "country": null
+    },
+    {
+     "uuid": "00758ea19c6b45b3a7921f9185696359",
+     "nickname": "mytinsaw",
+     "roleType": 1,
+     "eloRate": 1769,
+     "eloRank": 241,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "00758ea19c6b45b3a7921f9185696359",
+    "time": 645212
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "00758ea19c6b45b3a7921f9185696359",
+     "change": 19,
+     "eloRate": 1750
+    },
+    {
+     "uuid": "7fed681d9dee49a59fea0f41a7ecc87e",
+     "change": -19,
+     "eloRate": 1711
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697325,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878574,
+   "type": 2,
+   "seed": {
+    "id": "m723226ayd6x3sl8",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     79,
+     100,
+     76,
+     85
+    ],
+    "variations": [
+     "bastion:good_gap:1",
+     "bastion:triple:1",
+     "bastion:single:2",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "e43d14390eb6490392de00b223f4d4c9",
+     "nickname": "then_it_go",
+     "roleType": 1,
+     "eloRate": 1549,
+     "eloRank": 684,
+     "country": "eh"
+    },
+    {
+     "uuid": "1e0c8ca21bd24a9ba430bdbecfa00034",
+     "nickname": "Boreism",
+     "roleType": 1,
+     "eloRate": 1504,
+     "eloRank": 936,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "e43d14390eb6490392de00b223f4d4c9",
+    "time": 742252
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "e43d14390eb6490392de00b223f4d4c9",
+     "change": 20,
+     "eloRate": 1529
+    },
+    {
+     "uuid": "1e0c8ca21bd24a9ba430bdbecfa00034",
+     "change": -20,
+     "eloRate": 1524
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697315,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878573,
+   "type": 2,
+   "seed": {
+    "id": "m722zqdqf416t6ox",
+    "overworld": "VILLAGE",
+    "nether": "TREASURE",
+    "endTowers": [
+     79,
+     91,
+     100,
+     76
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "biome:structure:plains",
+     "chest:structure:diamond",
+     "biome:structure:plains",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:soul_sand_valley",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "40f265a042334671838a3aa91a1349d5",
+     "nickname": "ychan6",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    },
+    {
+     "uuid": "5781b8a8e0794fa59e543de005ef08ff",
+     "nickname": "mayodrank",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "5781b8a8e0794fa59e543de005ef08ff",
+    "time": 869938
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "5781b8a8e0794fa59e543de005ef08ff",
+     "change": null,
+     "eloRate": null
+    },
+    {
+     "uuid": "40f265a042334671838a3aa91a1349d5",
+     "change": null,
+     "eloRate": null
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697314,
+   "seedType": "VILLAGE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878572,
+   "type": 2,
+   "seed": {
+    "id": "m722vpdo8x7mc09g",
+    "overworld": "VILLAGE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     79,
+     91,
+     82,
+     100
+    ],
+    "variations": [
+     "biome:structure:desert",
+     "biome:structure:desert",
+     "bastion:triple:2",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:basalt_deltas",
+     "end_tower:caged:front",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "2f8a8d703f4b4bfda02c1bd203151fd3",
+     "nickname": "Ballixstic",
+     "roleType": 1,
+     "eloRate": 1037,
+     "eloRank": 7232,
+     "country": null
+    },
+    {
+     "uuid": "4ff8650f026b40d48a2de807d74c4dca",
+     "nickname": "Cybiq",
+     "roleType": 0,
+     "eloRate": 1042,
+     "eloRank": 7092,
+     "country": "my"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "2f8a8d703f4b4bfda02c1bd203151fd3",
+    "time": 871720
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [
+    {
+     "uuid": "2f8a8d703f4b4bfda02c1bd203151fd3",
+     "url": "https://www.twitch.tv/videos/2825888807",
+     "startsAt": 1784685263
+    }
+   ],
+   "changes": [
+    {
+     "uuid": "2f8a8d703f4b4bfda02c1bd203151fd3",
+     "change": 22,
+     "eloRate": 1015
+    },
+    {
+     "uuid": "4ff8650f026b40d48a2de807d74c4dca",
+     "change": -22,
+     "eloRate": 1064
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697296,
+   "seedType": "VILLAGE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878567,
+   "type": 2,
+   "seed": {
+    "id": "m7237wh0oa1noarw",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     82,
+     88,
+     79,
+     91
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "chest:structure:diamond",
+     "bastion:good_gap:1",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "bastion:small_single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:56",
+     "end_tower:caged:front",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "e0d7eb8cc9b2406581a409f362a666eb",
+     "nickname": "holmone5393",
+     "roleType": 0,
+     "eloRate": 490,
+     "eloRank": 20076,
+     "country": null
+    },
+    {
+     "uuid": "24ec54d33d7b459da3e51bfd3b7e9e3d",
+     "nickname": "ycl3",
+     "roleType": 0,
+     "eloRate": 542,
+     "eloRank": 18668,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "24ec54d33d7b459da3e51bfd3b7e9e3d",
+    "time": 322092
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "24ec54d33d7b459da3e51bfd3b7e9e3d",
+     "change": 20,
+     "eloRate": 522
+    },
+    {
+     "uuid": "e0d7eb8cc9b2406581a409f362a666eb",
+     "change": -20,
+     "eloRate": 510
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697278,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878566,
+   "type": 2,
+   "seed": {
+    "id": "m723cpscuvtx6inw",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     100,
+     82,
+     85,
+     94
+    ],
+    "variations": [
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "f67a9a74a2ef49f5a374b8d89f219032",
+     "nickname": "kehler",
+     "roleType": 1,
+     "eloRate": 1287,
+     "eloRank": 2373,
+     "country": "ca"
+    },
+    {
+     "uuid": "6cc38a7d31f847468240a806af79718d",
+     "nickname": "Skeletqn",
+     "roleType": 0,
+     "eloRate": 1194,
+     "eloRank": 3850,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "f67a9a74a2ef49f5a374b8d89f219032",
+    "time": 966444
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "f67a9a74a2ef49f5a374b8d89f219032",
+     "change": 18,
+     "eloRate": 1269
+    },
+    {
+     "uuid": "6cc38a7d31f847468240a806af79718d",
+     "change": -18,
+     "eloRate": 1212
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697257,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878563,
+   "type": 2,
+   "seed": {
+    "id": "m7235aiqm3wale5c",
+    "overworld": "VILLAGE",
+    "nether": "STABLES",
+    "endTowers": [
+     94,
+     79,
+     91,
+     85
+    ],
+    "variations": [
+     "biome:structure:desert",
+     "biome:structure:desert",
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:single:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:soul_sand_valley",
+     "end_spawn:buried:56",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "566c10d082eb4d6cbf0c75d0d4d26a15",
+     "nickname": "ImpeachedWig583",
+     "roleType": 0,
+     "eloRate": 719,
+     "eloRank": 14037,
+     "country": "us"
+    },
+    {
+     "uuid": "a04f2867134b4a29991851190505751c",
+     "nickname": "takoqN",
+     "roleType": 0,
+     "eloRate": 744,
+     "eloRank": 13535,
+     "country": "jp"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "a04f2867134b4a29991851190505751c",
+    "time": 1000395
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "a04f2867134b4a29991851190505751c",
+     "change": 21,
+     "eloRate": 723
+    },
+    {
+     "uuid": "566c10d082eb4d6cbf0c75d0d4d26a15",
+     "change": -21,
+     "eloRate": 740
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697254,
+   "seedType": "VILLAGE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878561,
+   "type": 2,
+   "seed": {
+    "id": "m722ys58be4pzzft",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     88,
+     97,
+     76,
+     82
+    ],
+    "variations": [
+     "bastion:good_gap:2",
+     "bastion:triple:1",
+     "bastion:single:2",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "53131d61b2a947f5ad78dc5e6d955f4b",
+     "nickname": "_Tullia",
+     "roleType": 1,
+     "eloRate": 1256,
+     "eloRank": 2727,
+     "country": null
+    },
+    {
+     "uuid": "93877782022f4af89cbb1eb9968bac25",
+     "nickname": "WoeMCSR",
+     "roleType": 1,
+     "eloRate": 1351,
+     "eloRank": 1764,
+     "country": "ca"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "93877782022f4af89cbb1eb9968bac25",
+    "time": 715382
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "93877782022f4af89cbb1eb9968bac25",
+     "change": 18,
+     "eloRate": 1333
+    },
+    {
+     "uuid": "53131d61b2a947f5ad78dc5e6d955f4b",
+     "change": -18,
+     "eloRate": 1274
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697223,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878560,
+   "type": 2,
+   "seed": {
+    "id": "m72343y8m2fiziej",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     91,
+     94,
+     103,
+     100
+    ],
+    "variations": [
+     "bastion:single:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "3f3a2d15989f4056ae75aa277dd76cea",
+     "nickname": "AkuResing",
+     "roleType": 0,
+     "eloRate": 885,
+     "eloRank": 10963,
+     "country": "id"
+    },
+    {
+     "uuid": "611b35b80df444b099b2fa10c762e208",
+     "nickname": "o28c",
+     "roleType": 0,
+     "eloRate": 852,
+     "eloRank": 11584,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "611b35b80df444b099b2fa10c762e208",
+    "time": 313022
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "611b35b80df444b099b2fa10c762e208",
+     "change": 23,
+     "eloRate": 829
+    },
+    {
+     "uuid": "3f3a2d15989f4056ae75aa277dd76cea",
+     "change": -23,
+     "eloRate": 908
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697219,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878559,
+   "type": 2,
+   "seed": {
+    "id": "m722ystqyniw1i8v",
+    "overworld": "SHIPWRECK",
+    "nether": "HOUSING",
+    "endTowers": [
+     100,
+     103,
+     88,
+     79
+    ],
+    "variations": [
+     "biome:structure:deep_ocean",
+     "type:structure:full",
+     "biome:structure:deep_ocean",
+     "type:structure:full",
+     "bastion:triple:2",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "167631b9f677476f9b02c8e3198715be",
+     "nickname": "ScoringSinger53",
+     "roleType": 0,
+     "eloRate": 530,
+     "eloRank": 19023,
+     "country": null
+    },
+    {
+     "uuid": "13b8de97e222463799b34b4ae5e6f346",
+     "nickname": "miniuko",
+     "roleType": 0,
+     "eloRate": 591,
+     "eloRank": 17325,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "13b8de97e222463799b34b4ae5e6f346",
+    "time": 498879
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "13b8de97e222463799b34b4ae5e6f346",
+     "change": 19,
+     "eloRate": 572
+    },
+    {
+     "uuid": "167631b9f677476f9b02c8e3198715be",
+     "change": -19,
+     "eloRate": 549
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697215,
+   "seedType": "SHIPWRECK",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878558,
+   "type": 2,
+   "seed": {
+    "id": "m7236klleljk0omg",
+    "overworld": "SHIPWRECK",
+    "nether": "TREASURE",
+    "endTowers": [
+     103,
+     88,
+     85,
+     97
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:ocean",
+     "type:structure:sideways",
+     "chest:structure:carrot",
+     "biome:structure:ocean",
+     "type:structure:sideways",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:soul_sand_valley",
+     "end_spawn:buried:56"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "159731005fbd4d108354858f975c4ce3",
+     "nickname": "insideratmolespy",
+     "roleType": 0,
+     "eloRate": 735,
+     "eloRank": 13718,
+     "country": "cn"
+    },
+    {
+     "uuid": "6a2df1d15892447585dd32bd9eab0885",
+     "nickname": "IGN_Alex",
+     "roleType": 0,
+     "eloRate": 776,
+     "eloRank": 13000,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "6a2df1d15892447585dd32bd9eab0885",
+    "time": 1450485
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "6a2df1d15892447585dd32bd9eab0885",
+     "change": 20,
+     "eloRate": 756
+    },
+    {
+     "uuid": "159731005fbd4d108354858f975c4ce3",
+     "change": -20,
+     "eloRate": 755
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697215,
+   "seedType": "SHIPWRECK",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878557,
+   "type": 2,
+   "seed": {
+    "id": "m7234wvoowaweqxw",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     91,
+     85,
+     76,
+     82
+    ],
+    "variations": [
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:soul_sand_valley",
+     "end_spawn:buried:57",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "a8b07c3388684caf88348b98de4e4a60",
+     "nickname": "GishyJ",
+     "roleType": 3,
+     "eloRate": 1165,
+     "eloRank": 4301,
+     "country": "us"
+    },
+    {
+     "uuid": "617792e5d5d54b0d9483a1693a9527a9",
+     "nickname": "DanimalLover01",
+     "roleType": 1,
+     "eloRate": 1132,
+     "eloRank": 4935,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "a8b07c3388684caf88348b98de4e4a60",
+    "time": 684087
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [
+    {
+     "uuid": "a8b07c3388684caf88348b98de4e4a60",
+     "url": "https://www.twitch.tv/videos/2804037312",
+     "startsAt": 1784686726
+    }
+   ],
+   "changes": [
+    {
+     "uuid": "a8b07c3388684caf88348b98de4e4a60",
+     "change": 20,
+     "eloRate": 1145
+    },
+    {
+     "uuid": "617792e5d5d54b0d9483a1693a9527a9",
+     "change": -20,
+     "eloRate": 1152
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697214,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878556,
+   "type": 2,
+   "seed": {
+    "id": "m722untonevjkmwz",
+    "overworld": "SHIPWRECK",
+    "nether": "HOUSING",
+    "endTowers": [
+     94,
+     103,
+     79,
+     88
+    ],
+    "variations": [
+     "biome:structure:deep_ocean",
+     "type:structure:normal",
+     "biome:structure:deep_ocean",
+     "type:structure:normal",
+     "bastion:triple:2",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:crimson_forest",
+     "end_spawn:buried:51",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "f5e5b664d1164145bce2ea24865298d5",
+     "nickname": "taiga2010",
+     "roleType": 0,
+     "eloRate": 545,
+     "eloRank": 18588,
+     "country": "jp"
+    },
+    {
+     "uuid": "591261eca8c24f1ca0dd60646524baa1",
+     "nickname": "Cry0spark",
+     "roleType": 2,
+     "eloRate": 543,
+     "eloRank": 18642,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "f5e5b664d1164145bce2ea24865298d5",
+    "time": 1738492
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "f5e5b664d1164145bce2ea24865298d5",
+     "change": 22,
+     "eloRate": 523
+    },
+    {
+     "uuid": "591261eca8c24f1ca0dd60646524baa1",
+     "change": -22,
+     "eloRate": 565
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697204,
+   "seedType": "SHIPWRECK",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878551,
+   "type": 2,
+   "seed": {
+    "id": "m723cyo4k3jj8w5s",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     76,
+     97,
+     100,
+     91
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "chest:structure:diamond",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "d6104b530be0499e92e0e39477fee338",
+     "nickname": "Leo_47",
+     "roleType": 1,
+     "eloRate": 851,
+     "eloRank": 11604,
+     "country": null
+    },
+    {
+     "uuid": "8565789719584c3b8aa6c236bc254e4f",
+     "nickname": "SaltySandwich42",
+     "roleType": 0,
+     "eloRate": 941,
+     "eloRank": 9650,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "8565789719584c3b8aa6c236bc254e4f",
+    "time": 782501
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "8565789719584c3b8aa6c236bc254e4f",
+     "change": 18,
+     "eloRate": 923
+    },
+    {
+     "uuid": "d6104b530be0499e92e0e39477fee338",
+     "change": -18,
+     "eloRate": 869
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697169,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878549,
+   "type": 2,
+   "seed": {
+    "id": "m72375gw8t46hoi1",
+    "overworld": "SHIPWRECK",
+    "nether": "BRIDGE",
+    "endTowers": [
+     97,
+     85,
+     94,
+     76
+    ],
+    "variations": [
+     "biome:structure:deep_cold_ocean",
+     "type:structure:normal",
+     "biome:structure:deep_cold_ocean",
+     "type:structure:normal",
+     "bastion:triple:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:41"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "989ea431545c41f787e62b968dc27111",
+     "nickname": "SemiDemi752",
+     "roleType": 0,
+     "eloRate": 1163,
+     "eloRank": 4331,
+     "country": null
+    },
+    {
+     "uuid": "ae6ac300b8cd4fbb84b13a5a2d7e1821",
+     "nickname": "depth120125",
+     "roleType": 0,
+     "eloRate": 1136,
+     "eloRank": 4852,
+     "country": "kr"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "989ea431545c41f787e62b968dc27111",
+    "time": 1394339
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "989ea431545c41f787e62b968dc27111",
+     "change": 21,
+     "eloRate": 1142
+    },
+    {
+     "uuid": "ae6ac300b8cd4fbb84b13a5a2d7e1821",
+     "change": -21,
+     "eloRate": 1157
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697153,
+   "seedType": "SHIPWRECK",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878546,
+   "type": 2,
+   "seed": {
+    "id": "m723ertxy3gwy21v",
+    "overworld": "VILLAGE",
+    "nether": "TREASURE",
+    "endTowers": [
+     79,
+     76,
+     94,
+     100
+    ],
+    "variations": [
+     "biome:structure:savanna",
+     "biome:structure:savanna",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "17656eaee1684d37aca0efd0080ba080",
+     "nickname": "cottag",
+     "roleType": 1,
+     "eloRate": 1347,
+     "eloRank": 1796,
+     "country": "co"
+    },
+    {
+     "uuid": "45ca47e113154df2aa45362576dd6f3e",
+     "nickname": "flinch13",
+     "roleType": 1,
+     "eloRate": 1407,
+     "eloRank": 1376,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "45ca47e113154df2aa45362576dd6f3e",
+    "time": 994670
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "45ca47e113154df2aa45362576dd6f3e",
+     "change": 19,
+     "eloRate": 1388
+    },
+    {
+     "uuid": "17656eaee1684d37aca0efd0080ba080",
+     "change": -19,
+     "eloRate": 1366
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697129,
+   "seedType": "VILLAGE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878544,
+   "type": 2,
+   "seed": {
+    "id": "m723ekbbmuetsutr",
+    "overworld": "SHIPWRECK",
+    "nether": "BRIDGE",
+    "endTowers": [
+     97,
+     88,
+     82,
+     103
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "bastion:triple:2",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:soul_sand_valley",
+     "end_spawn:buried:58",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "6b5a90e11a8944eab28bfbbc27d94950",
+     "nickname": "arrxstd",
+     "roleType": 0,
+     "eloRate": 1146,
+     "eloRank": 4646,
+     "country": "ca"
+    },
+    {
+     "uuid": "9714fcb2fe264c82b707af5f3abda3c7",
+     "nickname": "Josh2299",
+     "roleType": 1,
+     "eloRate": 1204,
+     "eloRank": 3655,
+     "country": "au"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "9714fcb2fe264c82b707af5f3abda3c7",
+    "time": 1194408
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "9714fcb2fe264c82b707af5f3abda3c7",
+     "change": 19,
+     "eloRate": 1185
+    },
+    {
+     "uuid": "6b5a90e11a8944eab28bfbbc27d94950",
+     "change": -19,
+     "eloRate": 1165
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697107,
+   "seedType": "SHIPWRECK",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878539,
+   "type": 2,
+   "seed": {
+    "id": "m7235i4zidz8olms",
+    "overworld": "BURIED_TREASURE",
+    "nether": "TREASURE",
+    "endTowers": [
+     103,
+     88,
+     94,
+     91
+    ],
+    "variations": [
+     "biome:structure:deep_cold_ocean",
+     "biome:structure:deep_cold_ocean",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:warped_forest",
+     "end_spawn:buried:56"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "1bec48fcd75d48f29e5853cc316c83cb",
+     "nickname": "TwistyDuck",
+     "roleType": 0,
+     "eloRate": 1344,
+     "eloRank": 1813,
+     "country": null
+    },
+    {
+     "uuid": "5310fc4bd87c48328c5a14d6e9ad258c",
+     "nickname": "Kijaba",
+     "roleType": 0,
+     "eloRate": 1403,
+     "eloRank": 1407,
+     "country": "ca"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "5310fc4bd87c48328c5a14d6e9ad258c",
+    "time": 1130443
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "5310fc4bd87c48328c5a14d6e9ad258c",
+     "change": 19,
+     "eloRate": 1384
+    },
+    {
+     "uuid": "1bec48fcd75d48f29e5853cc316c83cb",
+     "change": -19,
+     "eloRate": 1363
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697055,
+   "seedType": "BURIED_TREASURE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878537,
+   "type": 2,
+   "seed": {
+    "id": "m722wadqsaldh6f0",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "TREASURE",
+    "endTowers": [
+     103,
+     79,
+     97,
+     100
+    ],
+    "variations": [
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:58",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c3b59eb2f03f487eb52cc7c6610dfb03",
+     "nickname": "BecauseNo",
+     "roleType": 0,
+     "eloRate": 1078,
+     "eloRank": 6195,
+     "country": null
+    },
+    {
+     "uuid": "20905270b88945d09e3fe640132e849f",
+     "nickname": "LarryMonke",
+     "roleType": 0,
+     "eloRate": 1070,
+     "eloRank": 6401,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 521348
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "20905270b88945d09e3fe640132e849f",
+     "change": 0,
+     "eloRate": 1070
+    },
+    {
+     "uuid": "c3b59eb2f03f487eb52cc7c6610dfb03",
+     "change": 0,
+     "eloRate": 1078
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697053,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878536,
+   "type": 2,
+   "seed": {
+    "id": "m7239ekxe7q5e3xe",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "TREASURE",
+    "endTowers": [
+     103,
+     97,
+     79,
+     76
+    ],
+    "variations": [
+     "biome:bastion:nether_wastes",
+     "biome:fortress:warped_forest",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "029c6d34ef4843ec8495d4dbbd473810",
+     "nickname": "_Nucleus",
+     "roleType": 0,
+     "eloRate": 328,
+     "eloRank": 22321,
+     "country": null
+    },
+    {
+     "uuid": "35c2625f1dba4e8e9f6260bebf9bcceb",
+     "nickname": "Adway1",
+     "roleType": 0,
+     "eloRate": 305,
+     "eloRank": 22432,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "35c2625f1dba4e8e9f6260bebf9bcceb",
+    "time": 1680783
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "35c2625f1dba4e8e9f6260bebf9bcceb",
+     "change": 22,
+     "eloRate": 283
+    },
+    {
+     "uuid": "029c6d34ef4843ec8495d4dbbd473810",
+     "change": -22,
+     "eloRate": 350
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697043,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878535,
+   "type": 2,
+   "seed": {
+    "id": "m722ylbuhc1055sv",
+    "overworld": "SHIPWRECK",
+    "nether": "STABLES",
+    "endTowers": [
+     76,
+     97,
+     82,
+     88
+    ],
+    "variations": [
+     "biome:structure:lukewarm_ocean",
+     "type:structure:sideways",
+     "biome:structure:lukewarm_ocean",
+     "type:structure:sideways",
+     "bastion:good_gap:1",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "bastion:small_single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:warped_forest",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "d33beb69cdf146d1b44e81d3513021a9",
+     "nickname": "Quedgy",
+     "roleType": 0,
+     "eloRate": 667,
+     "eloRank": 15198,
+     "country": null
+    },
+    {
+     "uuid": "9c20c022d62c4c6d9f93326e03c1c9bb",
+     "nickname": "ninsai",
+     "roleType": 0,
+     "eloRate": 687,
+     "eloRank": 14715,
+     "country": "au"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "9c20c022d62c4c6d9f93326e03c1c9bb",
+    "time": 500475
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "9c20c022d62c4c6d9f93326e03c1c9bb",
+     "change": 21,
+     "eloRate": 666
+    },
+    {
+     "uuid": "d33beb69cdf146d1b44e81d3513021a9",
+     "change": -21,
+     "eloRate": 688
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697042,
+   "seedType": "SHIPWRECK",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878534,
+   "type": 2,
+   "seed": {
+    "id": "m722v1lw76a8dqrh",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "HOUSING",
+    "endTowers": [
+     88,
+     97,
+     76,
+     79
+    ],
+    "variations": [
+     "bastion:triple:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:basalt_deltas",
+     "end_spawn:buried:59",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c270348f4d4649358e27b076999d3a52",
+     "nickname": "FernandoG",
+     "roleType": 0,
+     "eloRate": 1403,
+     "eloRank": 1407,
+     "country": "mx"
+    },
+    {
+     "uuid": "4b8fdd27feb547df865965b6a2f36084",
+     "nickname": "Ryaaan_n",
+     "roleType": 0,
+     "eloRate": 1379,
+     "eloRank": 1557,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "4b8fdd27feb547df865965b6a2f36084",
+    "time": 724358
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "4b8fdd27feb547df865965b6a2f36084",
+     "change": 22,
+     "eloRate": 1357
+    },
+    {
+     "uuid": "c270348f4d4649358e27b076999d3a52",
+     "change": -22,
+     "eloRate": 1425
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697038,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878533,
+   "type": 2,
+   "seed": {
+    "id": "m723cgoj1r4lmevc",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "HOUSING",
+    "endTowers": [
+     91,
+     100,
+     103,
+     85
+    ],
+    "variations": [
+     "bastion:triple:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "37fa4cd3d977481ca6b4384a8ad5f9a1",
+     "nickname": "V______v______V",
+     "roleType": 0,
+     "eloRate": 476,
+     "eloRank": 20404,
+     "country": null
+    },
+    {
+     "uuid": "fd42e30f1d984947bbf432b2e9866ffc",
+     "nickname": "Silentsolid",
+     "roleType": 0,
+     "eloRate": 579,
+     "eloRank": 17664,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "fd42e30f1d984947bbf432b2e9866ffc",
+    "time": 3005490
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "fd42e30f1d984947bbf432b2e9866ffc",
+     "change": 17,
+     "eloRate": 562
+    },
+    {
+     "uuid": "37fa4cd3d977481ca6b4384a8ad5f9a1",
+     "change": -17,
+     "eloRate": 493
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697036,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878532,
+   "type": 2,
+   "seed": {
+    "id": "m7236bf6bxk7zx3v",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     91,
+     88,
+     82,
+     76
+    ],
+    "variations": [
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "1839be683f4444369ee8c24919cd157b",
+     "nickname": "apopoapopo",
+     "roleType": 1,
+     "eloRate": 586,
+     "eloRank": 17482,
+     "country": "jp"
+    },
+    {
+     "uuid": "1b5a731ab26f4f89bfedf68862d3efcc",
+     "nickname": "Hvang",
+     "roleType": 0,
+     "eloRate": 542,
+     "eloRank": 18668,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "1839be683f4444369ee8c24919cd157b",
+    "time": 1928698
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "1839be683f4444369ee8c24919cd157b",
+     "change": 20,
+     "eloRate": 566
+    },
+    {
+     "uuid": "1b5a731ab26f4f89bfedf68862d3efcc",
+     "change": -20,
+     "eloRate": 562
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697034,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878529,
+   "type": 2,
+   "seed": {
+    "id": "m722vhf7o9uvx88s",
+    "overworld": "VILLAGE",
+    "nether": "HOUSING",
+    "endTowers": [
+     82,
+     85,
+     79,
+     97
+    ],
+    "variations": [
+     "biome:structure:savanna",
+     "biome:structure:savanna",
+     "bastion:triple:2",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:soul_sand_valley",
+     "end_tower:caged:front",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c7ee9261cd7c46f980732560ada4eabf",
+     "nickname": "diupez",
+     "roleType": 0,
+     "eloRate": 752,
+     "eloRank": 13375,
+     "country": "vn"
+    },
+    {
+     "uuid": "8a802b3513c3418ea81594185b27e4e1",
+     "nickname": "MesusChrist",
+     "roleType": 0,
+     "eloRate": 760,
+     "eloRank": 13244,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 723870
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "c7ee9261cd7c46f980732560ada4eabf",
+     "change": 0,
+     "eloRate": 752
+    },
+    {
+     "uuid": "8a802b3513c3418ea81594185b27e4e1",
+     "change": 0,
+     "eloRate": 760
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697020,
+   "seedType": "VILLAGE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878528,
+   "type": 2,
+   "seed": {
+    "id": "m72379xlkew16e52",
+    "overworld": "VILLAGE",
+    "nether": "HOUSING",
+    "endTowers": [
+     100,
+     88,
+     94,
+     79
+    ],
+    "variations": [
+     "biome:structure:desert",
+     "biome:structure:desert",
+     "bastion:triple:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "f681f593ee48448288fed14fe0db4f2c",
+     "nickname": "HINIeong",
+     "roleType": 1,
+     "eloRate": 878,
+     "eloRank": 11103,
+     "country": "kr"
+    },
+    {
+     "uuid": "b5fa81dd316c455fbdb9401f5a4f95a1",
+     "nickname": "MINHLO170108",
+     "roleType": 0,
+     "eloRate": 762,
+     "eloRank": 13217,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "f681f593ee48448288fed14fe0db4f2c",
+    "time": 1129205
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "f681f593ee48448288fed14fe0db4f2c",
+     "change": 17,
+     "eloRate": 861
+    },
+    {
+     "uuid": "b5fa81dd316c455fbdb9401f5a4f95a1",
+     "change": -17,
+     "eloRate": 779
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697020,
+   "seedType": "VILLAGE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878527,
+   "type": 2,
+   "seed": {
+    "id": "m723ekiyebyqq4qa",
+    "overworld": "RUINED_PORTAL",
+    "nether": "HOUSING",
+    "endTowers": [
+     103,
+     97,
+     100,
+     76
+    ],
+    "variations": [
+     "type:structure:completable",
+     "biome:structure:plains",
+     "type:structure:completable",
+     "biome:structure:plains",
+     "bastion:triple:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:soul_sand_valley",
+     "end_spawn:buried:57"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "2ff3196692f6481b996e310400f77d6e",
+     "nickname": "austinsomnia",
+     "roleType": 1,
+     "eloRate": 1003,
+     "eloRank": 8160,
+     "country": null
+    },
+    {
+     "uuid": "f221f3c4712d467791fbe1ae94644526",
+     "nickname": "vawzen_",
+     "roleType": 0,
+     "eloRate": 1084,
+     "eloRank": 6064,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "f221f3c4712d467791fbe1ae94644526",
+    "time": 927909
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "f221f3c4712d467791fbe1ae94644526",
+     "change": 18,
+     "eloRate": 1066
+    },
+    {
+     "uuid": "2ff3196692f6481b996e310400f77d6e",
+     "change": -18,
+     "eloRate": 1021
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784697019,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878521,
+   "type": 2,
+   "seed": {
+    "id": "m722vgmknoqxon3f",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "HOUSING",
+    "endTowers": [
+     79,
+     88,
+     91,
+     94
+    ],
+    "variations": [
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:warped_forest",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:57",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c80ab6637058487bb6758ed6acdbce47",
+     "nickname": "Asthetiks",
+     "roleType": 1,
+     "eloRate": 1486,
+     "eloRank": 1020,
+     "country": "kh"
+    },
+    {
+     "uuid": "611c88dda6974d7b986428365548eaf6",
+     "nickname": "Aerrgia",
+     "roleType": 1,
+     "eloRate": 1495,
+     "eloRank": 989,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 988308
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "c80ab6637058487bb6758ed6acdbce47",
+     "change": 0,
+     "eloRate": 1486
+    },
+    {
+     "uuid": "611c88dda6974d7b986428365548eaf6",
+     "change": 0,
+     "eloRate": 1495
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696995,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878520,
+   "type": 2,
+   "seed": {
+    "id": "m722vxk4ab0cf150",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     79,
+     82,
+     85,
+     88
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "chest:structure:diamond",
+     "bastion:good_gap:2",
+     "bastion:triple:1",
+     "bastion:small_single:2",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:warped_forest",
+     "end_tower:caged:front",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "fcf90ec4d49e47a49c6bcaa8c28175d1",
+     "nickname": "Jabo_",
+     "roleType": 1,
+     "eloRate": 1335,
+     "eloRank": 1891,
+     "country": "us"
+    },
+    {
+     "uuid": "45ceb164f3de4d54b2324dc601956333",
+     "nickname": "oMojang",
+     "roleType": 1,
+     "eloRate": 1337,
+     "eloRank": 1874,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "fcf90ec4d49e47a49c6bcaa8c28175d1",
+    "time": 1142505
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [
+    {
+     "uuid": "fcf90ec4d49e47a49c6bcaa8c28175d1",
+     "url": "https://www.twitch.tv/videos/2825893399",
+     "startsAt": 1784685629
+    }
+   ],
+   "changes": [
+    {
+     "uuid": "fcf90ec4d49e47a49c6bcaa8c28175d1",
+     "change": 22,
+     "eloRate": 1313
+    },
+    {
+     "uuid": "45ceb164f3de4d54b2324dc601956333",
+     "change": -22,
+     "eloRate": 1359
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696987,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878513,
+   "type": 2,
+   "seed": {
+    "id": "m722whhknfhie7n5",
+    "overworld": "RUINED_PORTAL",
+    "nether": "TREASURE",
+    "endTowers": [
+     76,
+     103,
+     100,
+     85
+    ],
+    "variations": [
+     "type:structure:completable",
+     "biome:structure:plains",
+     "type:structure:completable",
+     "biome:structure:plains",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "bed310b3094e4ece9879ffa682dab9a8",
+     "nickname": "zenfyqp",
+     "roleType": 1,
+     "eloRate": 1254,
+     "eloRank": 2761,
+     "country": null
+    },
+    {
+     "uuid": "7f084ab9ae724595b18c50adc2873ca9",
+     "nickname": "catboymcsr",
+     "roleType": 1,
+     "eloRate": 1246,
+     "eloRank": 2868,
+     "country": "at"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 685479
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "bed310b3094e4ece9879ffa682dab9a8",
+     "change": 0,
+     "eloRate": 1234
+    },
+    {
+     "uuid": "7f084ab9ae724595b18c50adc2873ca9",
+     "change": 0,
+     "eloRate": 1246
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696946,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878507,
+   "type": 2,
+   "seed": {
+    "id": "m7238o4v6cnmi9zh",
+    "overworld": "SHIPWRECK",
+    "nether": "BRIDGE",
+    "endTowers": [
+     85,
+     94,
+     76,
+     100
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:sideways",
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:sideways",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:soul_sand_valley"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "7af0f46bdb804076a0faff38a6bf4afc",
+     "nickname": "HappyAreaBean",
+     "roleType": 0,
+     "eloRate": 1064,
+     "eloRank": 6528,
+     "country": "hk"
+    },
+    {
+     "uuid": "192e297c11d74e88b29ff72b27c0bbe6",
+     "nickname": "ftfzuftzu",
+     "roleType": 0,
+     "eloRate": 980,
+     "eloRank": 8731,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "7af0f46bdb804076a0faff38a6bf4afc",
+    "time": 1133950
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "7af0f46bdb804076a0faff38a6bf4afc",
+     "change": 18,
+     "eloRate": 1046
+    },
+    {
+     "uuid": "192e297c11d74e88b29ff72b27c0bbe6",
+     "change": -18,
+     "eloRate": 998
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696921,
+   "seedType": "SHIPWRECK",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878505,
+   "type": 2,
+   "seed": {
+    "id": "m72347waekl16u0t",
+    "overworld": "SHIPWRECK",
+    "nether": "BRIDGE",
+    "endTowers": [
+     88,
+     91,
+     100,
+     94
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "bastion:triple:2",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:41"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c04b35220cb044468ff05964cddb429f",
+     "nickname": "oCreep3r",
+     "roleType": 0,
+     "eloRate": 631,
+     "eloRank": 16155,
+     "country": "mo"
+    },
+    {
+     "uuid": "df50634ed33f4bd8a8bccc4ad39d5f54",
+     "nickname": "ERO_Pico123",
+     "roleType": 1,
+     "eloRate": 685,
+     "eloRank": 14771,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "df50634ed33f4bd8a8bccc4ad39d5f54",
+    "time": 741692
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "df50634ed33f4bd8a8bccc4ad39d5f54",
+     "change": 19,
+     "eloRate": 666
+    },
+    {
+     "uuid": "c04b35220cb044468ff05964cddb429f",
+     "change": -19,
+     "eloRate": 650
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696911,
+   "seedType": "SHIPWRECK",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878504,
+   "type": 2,
+   "seed": {
+    "id": "m722ugd8pc3z85ja",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     76,
+     103,
+     85,
+     88
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "chest:structure:diamond",
+     "bastion:good_gap:1",
+     "bastion:triple:1",
+     "bastion:single:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:58"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "2481d626847948c1aad741c0f380143d",
+     "nickname": "tigronyaa",
+     "roleType": 1,
+     "eloRate": 1764,
+     "eloRank": 247,
+     "country": "us"
+    },
+    {
+     "uuid": "387436fe8d2f4df8bc169e97c0626005",
+     "nickname": "aurazz_",
+     "roleType": 2,
+     "eloRate": 1537,
+     "eloRank": 731,
+     "country": "gb"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "2481d626847948c1aad741c0f380143d",
+    "time": 815171
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "2481d626847948c1aad741c0f380143d",
+     "change": 13,
+     "eloRate": 1751
+    },
+    {
+     "uuid": "387436fe8d2f4df8bc169e97c0626005",
+     "change": -13,
+     "eloRate": 1550
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696908,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878503,
+   "type": 2,
+   "seed": {
+    "id": "m722vvxvac400als",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     97,
+     100,
+     79,
+     85
+    ],
+    "variations": [
+     "bastion:triple:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:crimson_forest",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "1170cd35dad2449185a32c32551aeda9",
+     "nickname": "Dumbellino",
+     "roleType": 1,
+     "eloRate": 689,
+     "eloRank": 14674,
+     "country": "kh"
+    },
+    {
+     "uuid": "27338f29f8614da3a87ce14b4e4bfc58",
+     "nickname": "SakuraQ_Q49",
+     "roleType": 0,
+     "eloRate": 662,
+     "eloRank": 15321,
+     "country": "cn"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "1170cd35dad2449185a32c32551aeda9",
+    "time": 296100
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "1170cd35dad2449185a32c32551aeda9",
+     "change": 20,
+     "eloRate": 669
+    },
+    {
+     "uuid": "27338f29f8614da3a87ce14b4e4bfc58",
+     "change": -20,
+     "eloRate": 682
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696906,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878501,
+   "type": 2,
+   "seed": {
+    "id": "m7231qknwc7m3ak9",
+    "overworld": "RUINED_PORTAL",
+    "nether": "STABLES",
+    "endTowers": [
+     100,
+     85,
+     103,
+     88
+    ],
+    "variations": [
+     "type:structure:completable",
+     "biome:structure:forest",
+     "type:structure:completable",
+     "biome:structure:forest",
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "6a36c813109a41878be22da77a6dc376",
+     "nickname": "toelover42",
+     "roleType": 0,
+     "eloRate": 598,
+     "eloRank": 17128,
+     "country": null
+    },
+    {
+     "uuid": "f50ac22567bc41e8b02848d9ef2c4ffb",
+     "nickname": "ClaireJulia",
+     "roleType": 0,
+     "eloRate": 630,
+     "eloRank": 16183,
+     "country": "cn"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "f50ac22567bc41e8b02848d9ef2c4ffb",
+    "time": 1632605
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "f50ac22567bc41e8b02848d9ef2c4ffb",
+     "change": 20,
+     "eloRate": 610
+    },
+    {
+     "uuid": "6a36c813109a41878be22da77a6dc376",
+     "change": -20,
+     "eloRate": 618
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696894,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878500,
+   "type": 2,
+   "seed": {
+    "id": "m7230hah1aue480u",
+    "overworld": "RUINED_PORTAL",
+    "nether": "STABLES",
+    "endTowers": [
+     85,
+     94,
+     91,
+     103
+    ],
+    "variations": [
+     "type:structure:completable",
+     "biome:structure:forest",
+     "type:structure:completable",
+     "biome:structure:forest",
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:small_single:1",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "76f04350b2814b0982866798da160dce",
+     "nickname": "rainbowlucas",
+     "roleType": 1,
+     "eloRate": 1331,
+     "eloRank": 1926,
+     "country": null
+    },
+    {
+     "uuid": "9f3c3acbf46844bea325e85201d4d35d",
+     "nickname": "flufv",
+     "roleType": 0,
+     "eloRate": 1290,
+     "eloRank": 2342,
+     "country": "ca"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "76f04350b2814b0982866798da160dce",
+    "time": 644160
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "76f04350b2814b0982866798da160dce",
+     "change": 20,
+     "eloRate": 1311
+    },
+    {
+     "uuid": "9f3c3acbf46844bea325e85201d4d35d",
+     "change": -20,
+     "eloRate": 1310
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696885,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878499,
+   "type": 2,
+   "seed": {
+    "id": "m722tuwwxo4dbcn9",
+    "overworld": "VILLAGE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     79,
+     91,
+     94,
+     88
+    ],
+    "variations": [
+     "biome:structure:savanna",
+     "biome:structure:savanna",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:soul_sand_valley",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "0ccb4c87736641399b6ae375f73023f8",
+     "nickname": "Puredevoted",
+     "roleType": 0,
+     "eloRate": 1331,
+     "eloRank": 1926,
+     "country": "cn"
+    },
+    {
+     "uuid": "7ca8ff999f764f259ea8f068402ca712",
+     "nickname": "SuchMuscle",
+     "roleType": 0,
+     "eloRate": 1210,
+     "eloRank": 3497,
+     "country": "ar"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "0ccb4c87736641399b6ae375f73023f8",
+    "time": 780513
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "0ccb4c87736641399b6ae375f73023f8",
+     "change": 19,
+     "eloRate": 1289
+    },
+    {
+     "uuid": "7ca8ff999f764f259ea8f068402ca712",
+     "change": -19,
+     "eloRate": 1249
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696883,
+   "seedType": "VILLAGE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878498,
+   "type": 2,
+   "seed": {
+    "id": "m72375u50guz4584",
+    "overworld": "VILLAGE",
+    "nether": "HOUSING",
+    "endTowers": [
+     76,
+     100,
+     79,
+     82
+    ],
+    "variations": [
+     "biome:structure:desert",
+     "biome:structure:desert",
+     "bastion:triple:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:soul_sand_valley",
+     "end_spawn:buried:35",
+     "end_tower:caged:back",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "e0007fa8bc5f419bb88a5fc6566309bd",
+     "nickname": "seedoose",
+     "roleType": 1,
+     "eloRate": 1189,
+     "eloRank": 3929,
+     "country": null
+    },
+    {
+     "uuid": "fb7b25de0d9441fd9192b041940a9be6",
+     "nickname": "squa_r",
+     "roleType": 1,
+     "eloRate": 1151,
+     "eloRank": 4553,
+     "country": "mx"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "e0007fa8bc5f419bb88a5fc6566309bd",
+    "time": 950105
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "e0007fa8bc5f419bb88a5fc6566309bd",
+     "change": 20,
+     "eloRate": 1169
+    },
+    {
+     "uuid": "fb7b25de0d9441fd9192b041940a9be6",
+     "change": -20,
+     "eloRate": 1171
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696881,
+   "seedType": "VILLAGE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878496,
+   "type": 2,
+   "seed": {
+    "id": "m723d5m92c22i0ix",
+    "overworld": "SHIPWRECK",
+    "nether": "HOUSING",
+    "endTowers": [
+     97,
+     100,
+     76,
+     103
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:lukewarm_ocean",
+     "type:structure:upsidedown",
+     "chest:structure:carrot",
+     "biome:structure:lukewarm_ocean",
+     "type:structure:upsidedown",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:crimson_forest",
+     "end_spawn:buried:57"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "2d757b0159e347148485ea24a91828e7",
+     "nickname": "Maesil_teaO",
+     "roleType": 0,
+     "eloRate": 682,
+     "eloRank": 14842,
+     "country": "kr"
+    },
+    {
+     "uuid": "052e5175204c4143a1771667727d1337",
+     "nickname": "rishtrain",
+     "roleType": 0,
+     "eloRate": 723,
+     "eloRank": 13957,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "2d757b0159e347148485ea24a91828e7",
+    "time": 1680700
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "2d757b0159e347148485ea24a91828e7",
+     "change": 23,
+     "eloRate": 659
+    },
+    {
+     "uuid": "052e5175204c4143a1771667727d1337",
+     "change": -23,
+     "eloRate": 746
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696871,
+   "seedType": "SHIPWRECK",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878494,
+   "type": 2,
+   "seed": {
+    "id": "m7230bevwweczrda",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     91,
+     94,
+     88,
+     100
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "chest:structure:diamond",
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "0e75954913044608a0c0c292b5f7db9e",
+     "nickname": "riddlesnout",
+     "roleType": 0,
+     "eloRate": 1234,
+     "eloRank": 3044,
+     "country": null
+    },
+    {
+     "uuid": "109b63f94dcc4cd4a0a634d875835073",
+     "nickname": "fruitmastr",
+     "roleType": 0,
+     "eloRate": 1178,
+     "eloRank": 4069,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "0e75954913044608a0c0c292b5f7db9e",
+    "time": 305515
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "0e75954913044608a0c0c292b5f7db9e",
+     "change": 19,
+     "eloRate": 1215
+    },
+    {
+     "uuid": "109b63f94dcc4cd4a0a634d875835073",
+     "change": -19,
+     "eloRate": 1197
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696866,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878493,
+   "type": 2,
+   "seed": {
+    "id": "m7231e5w0rarl0fi",
+    "overworld": "VILLAGE",
+    "nether": "TREASURE",
+    "endTowers": [
+     88,
+     76,
+     91,
+     103
+    ],
+    "variations": [
+     "biome:structure:desert",
+     "biome:structure:desert",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:nether_wastes"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "218983b7781045939495414d6f6ebbcb",
+     "nickname": "feyw1lds",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    },
+    {
+     "uuid": "f6c7bf9ee4a84bbf8deac2e82c08f20a",
+     "nickname": "winking1010",
+     "roleType": 0,
+     "eloRate": 564,
+     "eloRank": 18072,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "218983b7781045939495414d6f6ebbcb",
+    "time": 945037
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "218983b7781045939495414d6f6ebbcb",
+     "change": null,
+     "eloRate": null
+    },
+    {
+     "uuid": "f6c7bf9ee4a84bbf8deac2e82c08f20a",
+     "change": -20,
+     "eloRate": 584
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696864,
+   "seedType": "VILLAGE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878490,
+   "type": 2,
+   "seed": {
+    "id": "m7239y8uil11zeer",
+    "overworld": "BURIED_TREASURE",
+    "nether": "HOUSING",
+    "endTowers": [
+     97,
+     100,
+     79,
+     85
+    ],
+    "variations": [
+     "biome:structure:deep_ocean",
+     "biome:structure:deep_ocean",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "2886c5ba354147b58bf9b4b4f8b82e67",
+     "nickname": "Lava_Real",
+     "roleType": 1,
+     "eloRate": 1360,
+     "eloRank": 1693,
+     "country": null
+    },
+    {
+     "uuid": "705ff5b5ce4f42709507aac394c02191",
+     "nickname": "hakureen",
+     "roleType": 1,
+     "eloRate": 1416,
+     "eloRank": 1320,
+     "country": "jp"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "2886c5ba354147b58bf9b4b4f8b82e67",
+    "time": 922184
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [
+    {
+     "uuid": "705ff5b5ce4f42709507aac394c02191",
+     "url": "https://www.twitch.tv/videos/2825880173",
+     "startsAt": 1784684529
+    }
+   ],
+   "changes": [
+    {
+     "uuid": "2886c5ba354147b58bf9b4b4f8b82e67",
+     "change": 23,
+     "eloRate": 1360
+    },
+    {
+     "uuid": "705ff5b5ce4f42709507aac394c02191",
+     "change": -23,
+     "eloRate": 1439
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696832,
+   "seedType": "BURIED_TREASURE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878489,
+   "type": 2,
+   "seed": {
+    "id": "m722uzijoxidurv8",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     100,
+     82,
+     97,
+     91
+    ],
+    "variations": [
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:single:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "8cde722101364b7cb9491bed71842eae",
+     "nickname": "Vryion",
+     "roleType": 1,
+     "eloRate": 963,
+     "eloRank": 9132,
+     "country": null
+    },
+    {
+     "uuid": "f3488147a8af42b497b472175950f192",
+     "nickname": "wpaper_",
+     "roleType": 0,
+     "eloRate": 974,
+     "eloRank": 8889,
+     "country": "cn"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "8cde722101364b7cb9491bed71842eae",
+    "time": 902644
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "8cde722101364b7cb9491bed71842eae",
+     "change": 22,
+     "eloRate": 941
+    },
+    {
+     "uuid": "f3488147a8af42b497b472175950f192",
+     "change": -22,
+     "eloRate": 996
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696828,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878487,
+   "type": 2,
+   "seed": {
+    "id": "m722zwmukbdmtyrx",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "HOUSING",
+    "endTowers": [
+     100,
+     97,
+     76,
+     88
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "chest:structure:egap",
+     "chest:structure:diamond",
+     "chest:structure:egap",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest",
+     "end_spawn:buried:57"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c5e8611561b047c08465eac3a5fff395",
+     "nickname": "yamayuhei",
+     "roleType": 0,
+     "eloRate": 397,
+     "eloRank": 21741,
+     "country": "jp"
+    },
+    {
+     "uuid": "82ee228bb88d4536b78c34e847e3d4a8",
+     "nickname": "Glovenator",
+     "roleType": 0,
+     "eloRate": 397,
+     "eloRank": 21741,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "82ee228bb88d4536b78c34e847e3d4a8",
+    "time": 1909409
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "82ee228bb88d4536b78c34e847e3d4a8",
+     "change": 22,
+     "eloRate": 375
+    },
+    {
+     "uuid": "c5e8611561b047c08465eac3a5fff395",
+     "change": -22,
+     "eloRate": 419
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696825,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878486,
+   "type": 2,
+   "seed": {
+    "id": "m72331b3bli0l0it",
+    "overworld": "VILLAGE",
+    "nether": "TREASURE",
+    "endTowers": [
+     82,
+     76,
+     97,
+     91
+    ],
+    "variations": [
+     "biome:structure:savanna",
+     "biome:structure:savanna",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest",
+     "end_spawn:buried:52",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "1ac57e2c04aa426d946f19415b30ec7c",
+     "nickname": "QJudst",
+     "roleType": 1,
+     "eloRate": 1026,
+     "eloRank": 7505,
+     "country": "kr"
+    },
+    {
+     "uuid": "61732a81e5d04b5e8ab884c9e030175f",
+     "nickname": "Yoles_lol",
+     "roleType": 0,
+     "eloRate": 955,
+     "eloRank": 9311,
+     "country": "ve"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "1ac57e2c04aa426d946f19415b30ec7c",
+    "time": 517346
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "1ac57e2c04aa426d946f19415b30ec7c",
+     "change": 19,
+     "eloRate": 1007
+    },
+    {
+     "uuid": "61732a81e5d04b5e8ab884c9e030175f",
+     "change": -19,
+     "eloRate": 974
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696824,
+   "seedType": "VILLAGE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878485,
+   "type": 2,
+   "seed": {
+    "id": "m722u42eryujpyc0",
+    "overworld": "VILLAGE",
+    "nether": "STABLES",
+    "endTowers": [
+     94,
+     82,
+     103,
+     91
+    ],
+    "variations": [
+     "biome:structure:plains",
+     "biome:structure:plains",
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:small_single:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:soul_sand_valley",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "32932d1385ef40c889d59a2f8f9ed77b",
+     "nickname": "MaxCaesar555",
+     "roleType": 0,
+     "eloRate": 463,
+     "eloRank": 20685,
+     "country": "th"
+    },
+    {
+     "uuid": "e2394f847b404623a2e13cec8261bcf0",
+     "nickname": "zmtbb",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 828551
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "32932d1385ef40c889d59a2f8f9ed77b",
+     "change": 1,
+     "eloRate": 462
+    },
+    {
+     "uuid": "e2394f847b404623a2e13cec8261bcf0",
+     "change": null,
+     "eloRate": null
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696818,
+   "seedType": "VILLAGE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878480,
+   "type": 2,
+   "seed": {
+    "id": "m72387tvbj54dca0",
+    "overworld": "RUINED_PORTAL",
+    "nether": "TREASURE",
+    "endTowers": [
+     76,
+     100,
+     97,
+     94
+    ],
+    "variations": [
+     "type:structure:lava",
+     "chest:structure:egap",
+     "biome:structure:plains",
+     "type:structure:lava",
+     "chest:structure:egap",
+     "biome:structure:plains",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:warped_forest",
+     "end_spawn:buried:58"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "fbbd5455fdd04285ae82d0e1afb866a0",
+     "nickname": "BigMagmaCube",
+     "roleType": 2,
+     "eloRate": 1328,
+     "eloRank": 1959,
+     "country": "cn"
+    },
+    {
+     "uuid": "c4ad0824de9b41f0b0b8dd1b9af10ec7",
+     "nickname": "Oohwo",
+     "roleType": 2,
+     "eloRate": 1353,
+     "eloRank": 1743,
+     "country": "ph"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "c4ad0824de9b41f0b0b8dd1b9af10ec7",
+    "time": 900586
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [
+    {
+     "uuid": "c4ad0824de9b41f0b0b8dd1b9af10ec7",
+     "url": "https://www.twitch.tv/videos/2825888710",
+     "startsAt": 1784685255
+    }
+   ],
+   "changes": [
+    {
+     "uuid": "c4ad0824de9b41f0b0b8dd1b9af10ec7",
+     "change": 21,
+     "eloRate": 1332
+    },
+    {
+     "uuid": "fbbd5455fdd04285ae82d0e1afb866a0",
+     "change": -21,
+     "eloRate": 1349
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696799,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878477,
+   "type": 2,
+   "seed": {
+    "id": "m7237d58l3mss3hq",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     103,
+     85,
+     79,
+     88
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "chest:structure:diamond",
+     "bastion:triple:2",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c2fe3719b9884c43b70c1b4f33994f75",
+     "nickname": "NotDishma",
+     "roleType": 0,
+     "eloRate": 788,
+     "eloRank": 12783,
+     "country": null
+    },
+    {
+     "uuid": "0bfee6131ad7418fac6f539c840fe7fc",
+     "nickname": "timex_gg",
+     "roleType": 0,
+     "eloRate": 801,
+     "eloRank": 12554,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 724528
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "c2fe3719b9884c43b70c1b4f33994f75",
+     "change": 0,
+     "eloRate": 788
+    },
+    {
+     "uuid": "0bfee6131ad7418fac6f539c840fe7fc",
+     "change": 0,
+     "eloRate": 801
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696790,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878473,
+   "type": 2,
+   "seed": {
+    "id": "m7239rhxm4la6wlf",
+    "overworld": "RUINED_PORTAL",
+    "nether": "HOUSING",
+    "endTowers": [
+     88,
+     85,
+     79,
+     91
+    ],
+    "variations": [
+     "type:structure:completable",
+     "biome:structure:forest",
+     "type:structure:completable",
+     "biome:structure:forest",
+     "bastion:triple:1",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:soul_sand_valley",
+     "end_spawn:buried:50",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "5b0a001b1fb4484f97c895a77ce21ffa",
+     "nickname": "12BrainCells",
+     "roleType": 3,
+     "eloRate": 1770,
+     "eloRank": 240,
+     "country": "ca"
+    },
+    {
+     "uuid": "734a1c6118754829acc234135470152c",
+     "nickname": "yeopgihoney",
+     "roleType": 1,
+     "eloRate": 2014,
+     "eloRank": 79,
+     "country": "kr"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "734a1c6118754829acc234135470152c",
+    "time": 334057
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "734a1c6118754829acc234135470152c",
+     "change": 12,
+     "eloRate": 2002
+    },
+    {
+     "uuid": "5b0a001b1fb4484f97c895a77ce21ffa",
+     "change": -12,
+     "eloRate": 1782
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696785,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878472,
+   "type": 2,
+   "seed": {
+    "id": "m723eo32vomhrys9",
+    "overworld": "SHIPWRECK",
+    "nether": "STABLES",
+    "endTowers": [
+     85,
+     88,
+     82,
+     91
+    ],
+    "variations": [
+     "biome:structure:deep_lukewarm_ocean",
+     "type:structure:upsidedown",
+     "biome:structure:deep_lukewarm_ocean",
+     "type:structure:upsidedown",
+     "bastion:good_gap:2",
+     "bastion:triple:2",
+     "bastion:single:1",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:crimson_forest",
+     "end_spawn:buried:58",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "7e19680fe4f64b78b994dd90f52b23cf",
+     "nickname": "misatzu",
+     "roleType": 0,
+     "eloRate": 1154,
+     "eloRank": 4495,
+     "country": "tw"
+    },
+    {
+     "uuid": "635c10a1459e4b57adf6addcbe224e0a",
+     "nickname": "1ovda",
+     "roleType": 0,
+     "eloRate": 1062,
+     "eloRank": 6574,
+     "country": "kr"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "7e19680fe4f64b78b994dd90f52b23cf",
+    "time": 1201293
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "7e19680fe4f64b78b994dd90f52b23cf",
+     "change": 18,
+     "eloRate": 1136
+    },
+    {
+     "uuid": "635c10a1459e4b57adf6addcbe224e0a",
+     "change": -18,
+     "eloRate": 1080
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696785,
+   "seedType": "SHIPWRECK",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878471,
+   "type": 2,
+   "seed": {
+    "id": "m723e2kisgocuzur",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "HOUSING",
+    "endTowers": [
+     94,
+     85,
+     97,
+     79
+    ],
+    "variations": [
+     "bastion:triple:2",
+     "biome:bastion:warped_forest",
+     "biome:fortress:basalt_deltas",
+     "end_spawn:buried:56",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "6632481c19f243bc80b0622cf9b842bc",
+     "nickname": "Dragcode",
+     "roleType": 0,
+     "eloRate": 1190,
+     "eloRank": 3916,
+     "country": null
+    },
+    {
+     "uuid": "02f2895b6a4f41e68825930e59ff587a",
+     "nickname": "ESG0",
+     "roleType": 0,
+     "eloRate": 1213,
+     "eloRank": 3426,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "6632481c19f243bc80b0622cf9b842bc",
+    "time": 967312
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "6632481c19f243bc80b0622cf9b842bc",
+     "change": 23,
+     "eloRate": 1167
+    },
+    {
+     "uuid": "02f2895b6a4f41e68825930e59ff587a",
+     "change": -23,
+     "eloRate": 1236
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696784,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878469,
+   "type": 2,
+   "seed": {
+    "id": "m7236zz0gk8tkv7h",
+    "overworld": "VILLAGE",
+    "nether": "HOUSING",
+    "endTowers": [
+     91,
+     82,
+     88,
+     100
+    ],
+    "variations": [
+     "biome:structure:plains",
+     "biome:structure:plains",
+     "bastion:triple:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:basalt_deltas",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "ad5fcfc3c0914719b740aa43ea16804a",
+     "nickname": "CHATGAP",
+     "roleType": 0,
+     "eloRate": 519,
+     "eloRank": 19747,
+     "country": null
+    },
+    {
+     "uuid": "7d8379c4031c4dd99ab244bc5c7a6f88",
+     "nickname": "Supzj",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 1332480
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "ad5fcfc3c0914719b740aa43ea16804a",
+     "change": 0,
+     "eloRate": 503
+    },
+    {
+     "uuid": "7d8379c4031c4dd99ab244bc5c7a6f88",
+     "change": null,
+     "eloRate": null
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696768,
+   "seedType": "VILLAGE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878463,
+   "type": 2,
+   "seed": {
+    "id": "m7232soyeotg3903",
+    "overworld": "SHIPWRECK",
+    "nether": "STABLES",
+    "endTowers": [
+     85,
+     94,
+     76,
+     79
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_cold_ocean",
+     "type:structure:upsidedown",
+     "chest:structure:carrot",
+     "biome:structure:deep_cold_ocean",
+     "type:structure:upsidedown",
+     "bastion:good_gap:2",
+     "bastion:triple:3",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "ae9aa74ac7a1483c9f264b7f47d1c604",
+     "nickname": "ikea21",
+     "roleType": 1,
+     "eloRate": 911,
+     "eloRank": 10378,
+     "country": "us"
+    },
+    {
+     "uuid": "620e8c9a4d80440796aab7285e9de1fb",
+     "nickname": "death_0220",
+     "roleType": 0,
+     "eloRate": 860,
+     "eloRank": 11435,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 1181609
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "620e8c9a4d80440796aab7285e9de1fb",
+     "change": 1,
+     "eloRate": 859
+    },
+    {
+     "uuid": "ae9aa74ac7a1483c9f264b7f47d1c604",
+     "change": -1,
+     "eloRate": 912
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696721,
+   "seedType": "SHIPWRECK",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878462,
+   "type": 2,
+   "seed": {
+    "id": "m7234nlo9l3q6704",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "HOUSING",
+    "endTowers": [
+     94,
+     88,
+     79,
+     85
+    ],
+    "variations": [
+     "bastion:triple:1",
+     "biome:bastion:warped_forest",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "e0d7eb8cc9b2406581a409f362a666eb",
+     "nickname": "holmone5393",
+     "roleType": 0,
+     "eloRate": 490,
+     "eloRank": 20076,
+     "country": null
+    },
+    {
+     "uuid": "4e4298cc71a745949e48f13eb643b774",
+     "nickname": "erennmf",
+     "roleType": 0,
+     "eloRate": 452,
+     "eloRank": 20911,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "e0d7eb8cc9b2406581a409f362a666eb",
+    "time": 387615
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "e0d7eb8cc9b2406581a409f362a666eb",
+     "change": 19,
+     "eloRate": 491
+    },
+    {
+     "uuid": "4e4298cc71a745949e48f13eb643b774",
+     "change": -19,
+     "eloRate": 471
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696701,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878461,
+   "type": 2,
+   "seed": {
+    "id": "m7237acldxjyq3r8",
+    "overworld": "SHIPWRECK",
+    "nether": "TREASURE",
+    "endTowers": [
+     100,
+     97,
+     103,
+     76
+    ],
+    "variations": [
+     "biome:structure:deep_ocean",
+     "type:structure:sideways",
+     "biome:structure:deep_ocean",
+     "type:structure:sideways",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:warped_forest",
+     "end_spawn:buried:48"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "ceb11c343fb64e52b603f3e648e185f9",
+     "nickname": "pgzzz",
+     "roleType": 0,
+     "eloRate": 1688,
+     "eloRank": 342,
+     "country": null
+    },
+    {
+     "uuid": "cb86043954a74ba0abbdd21179d00bfa",
+     "nickname": "subdasfan5",
+     "roleType": 1,
+     "eloRate": 1821,
+     "eloRank": 185,
+     "country": "br"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "ceb11c343fb64e52b603f3e648e185f9",
+    "time": 459754
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "ceb11c343fb64e52b603f3e648e185f9",
+     "change": 27,
+     "eloRate": 1661
+    },
+    {
+     "uuid": "cb86043954a74ba0abbdd21179d00bfa",
+     "change": -27,
+     "eloRate": 1848
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696700,
+   "seedType": "SHIPWRECK",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878460,
+   "type": 2,
+   "seed": {
+    "id": "m722w00zamjghgqa",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "HOUSING",
+    "endTowers": [
+     85,
+     79,
+     88,
+     91
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "chest:structure:egap",
+     "chest:structure:diamond",
+     "chest:structure:egap",
+     "bastion:triple:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:basalt_deltas",
+     "end_spawn:buried:47",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "255a064286bd46a6831a6f818519d91b",
+     "nickname": "DokuseiGomibako",
+     "roleType": 1,
+     "eloRate": 1317,
+     "eloRank": 2044,
+     "country": "us"
+    },
+    {
+     "uuid": "441989ec815a479fb381dffa1bf5bd1f",
+     "nickname": "nathades12310",
+     "roleType": 1,
+     "eloRate": 1359,
+     "eloRank": 1697,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "441989ec815a479fb381dffa1bf5bd1f",
+    "time": 300406
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "441989ec815a479fb381dffa1bf5bd1f",
+     "change": 20,
+     "eloRate": 1339
+    },
+    {
+     "uuid": "255a064286bd46a6831a6f818519d91b",
+     "change": -20,
+     "eloRate": 1337
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696700,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878459,
+   "type": 2,
+   "seed": {
+    "id": "m7232r4r0ojpks0g",
+    "overworld": "SHIPWRECK",
+    "nether": "STABLES",
+    "endTowers": [
+     85,
+     76,
+     91,
+     79
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "bastion:good_gap:2",
+     "bastion:triple:2",
+     "bastion:single:1",
+     "biome:bastion:warped_forest",
+     "biome:fortress:warped_forest",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "06a972aadc604d8b904835e41f2e6acf",
+     "nickname": "U1tr0",
+     "roleType": 1,
+     "eloRate": 1596,
+     "eloRank": 557,
+     "country": "us"
+    },
+    {
+     "uuid": "e020785e1275474582f3c639316a8c82",
+     "nickname": "PizzaTre",
+     "roleType": 3,
+     "eloRate": 1455,
+     "eloRank": 1153,
+     "country": "er"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "06a972aadc604d8b904835e41f2e6acf",
+    "time": 696342
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [
+    {
+     "uuid": "06a972aadc604d8b904835e41f2e6acf",
+     "url": "https://www.twitch.tv/videos/2819432294",
+     "startsAt": 1784691962
+    }
+   ],
+   "changes": [
+    {
+     "uuid": "06a972aadc604d8b904835e41f2e6acf",
+     "change": 16,
+     "eloRate": 1580
+    },
+    {
+     "uuid": "e020785e1275474582f3c639316a8c82",
+     "change": -16,
+     "eloRate": 1471
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696699,
+   "seedType": "SHIPWRECK",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878458,
+   "type": 2,
+   "seed": {
+    "id": "m722wjjtm0evei2d",
+    "overworld": "SHIPWRECK",
+    "nether": "TREASURE",
+    "endTowers": [
+     103,
+     94,
+     88,
+     76
+    ],
+    "variations": [
+     "biome:structure:deep_cold_ocean",
+     "type:structure:full",
+     "biome:structure:deep_cold_ocean",
+     "type:structure:full",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "db53b362478648b3921da80be96d1356",
+     "nickname": "Kickz",
+     "roleType": 1,
+     "eloRate": 1890,
+     "eloRank": 134,
+     "country": null
+    },
+    {
+     "uuid": "0562802e736e47c581b2ef095e2ed067",
+     "nickname": "subdas",
+     "roleType": 0,
+     "eloRate": 2022,
+     "eloRank": 75,
+     "country": "br"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "0562802e736e47c581b2ef095e2ed067",
+    "time": 593966
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "0562802e736e47c581b2ef095e2ed067",
+     "change": 16,
+     "eloRate": 2006
+    },
+    {
+     "uuid": "db53b362478648b3921da80be96d1356",
+     "change": -16,
+     "eloRate": 1906
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696698,
+   "seedType": "SHIPWRECK",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878457,
+   "type": 2,
+   "seed": {
+    "id": "m7230kh3ryn8te7d",
+    "overworld": "RUINED_PORTAL",
+    "nether": "HOUSING",
+    "endTowers": [
+     79,
+     100,
+     97,
+     85
+    ],
+    "variations": [
+     "type:structure:lava",
+     "chest:structure:looting_sword",
+     "biome:structure:forest",
+     "type:structure:lava",
+     "chest:structure:looting_sword",
+     "biome:structure:forest",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "e078f79f6a6d4d0bb3a1481dc18c63b5",
+     "nickname": "StarSpike",
+     "roleType": 0,
+     "eloRate": 1097,
+     "eloRank": 5773,
+     "country": null
+    },
+    {
+     "uuid": "06d2400ca84945d38506cfeb10b16b41",
+     "nickname": "Hsra1",
+     "roleType": 0,
+     "eloRate": 1013,
+     "eloRank": 7881,
+     "country": "in"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "e078f79f6a6d4d0bb3a1481dc18c63b5",
+    "time": 749554
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "e078f79f6a6d4d0bb3a1481dc18c63b5",
+     "change": 18,
+     "eloRate": 1079
+    },
+    {
+     "uuid": "06d2400ca84945d38506cfeb10b16b41",
+     "change": -18,
+     "eloRate": 1031
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696684,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878455,
+   "type": 2,
+   "seed": {
+    "id": "m72311t3qujabqgn",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     97,
+     103,
+     88,
+     85
+    ],
+    "variations": [
+     "chest:structure:egap",
+     "chest:structure:egap",
+     "bastion:good_gap:2",
+     "bastion:triple:2",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:basalt_deltas",
+     "end_spawn:buried:56"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "24ec54d33d7b459da3e51bfd3b7e9e3d",
+     "nickname": "ycl3",
+     "roleType": 0,
+     "eloRate": 542,
+     "eloRank": 18668,
+     "country": null
+    },
+    {
+     "uuid": "7d94245c4dd148bfac82d17c6130d97c",
+     "nickname": "TERUTORI",
+     "roleType": 1,
+     "eloRate": 511,
+     "eloRank": 19530,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "7d94245c4dd148bfac82d17c6130d97c",
+    "time": 995516
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "7d94245c4dd148bfac82d17c6130d97c",
+     "change": 22,
+     "eloRate": 489
+    },
+    {
+     "uuid": "24ec54d33d7b459da3e51bfd3b7e9e3d",
+     "change": -22,
+     "eloRate": 544
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696678,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878453,
+   "type": 2,
+   "seed": {
+    "id": "m7231h7w0x4zl8kw",
+    "overworld": "SHIPWRECK",
+    "nether": "HOUSING",
+    "endTowers": [
+     82,
+     85,
+     88,
+     79
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:normal",
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:normal",
+     "bastion:triple:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:basalt_deltas",
+     "end_tower:caged:front",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "af08dca60ddd4d77980c5ca0961afbfd",
+     "nickname": "CloolsS",
+     "roleType": 0,
+     "eloRate": 453,
+     "eloRank": 20899,
+     "country": null
+    },
+    {
+     "uuid": "8a769e990cc044519f3c8546edfe335f",
+     "nickname": "Michno06",
+     "roleType": 0,
+     "eloRate": 581,
+     "eloRank": 17618,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "8a769e990cc044519f3c8546edfe335f",
+    "time": 258849
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "8a769e990cc044519f3c8546edfe335f",
+     "change": 17,
+     "eloRate": 564
+    },
+    {
+     "uuid": "af08dca60ddd4d77980c5ca0961afbfd",
+     "change": -17,
+     "eloRate": 470
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696657,
+   "seedType": "SHIPWRECK",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878451,
+   "type": 2,
+   "seed": {
+    "id": "m72307eued92fbx6",
+    "overworld": "SHIPWRECK",
+    "nether": "BRIDGE",
+    "endTowers": [
+     103,
+     94,
+     85,
+     76
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "bastion:triple:2",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:soul_sand_valley"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "b803f6b7c2cb4ea6873c0133e38b3e8e",
+     "nickname": "Aromix",
+     "roleType": 1,
+     "eloRate": 771,
+     "eloRank": 13064,
+     "country": null
+    },
+    {
+     "uuid": "95748bed0a8b41c790bb22e05520fdbc",
+     "nickname": "atiruaLove",
+     "roleType": 0,
+     "eloRate": 744,
+     "eloRank": 13535,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "95748bed0a8b41c790bb22e05520fdbc",
+    "time": 1287042
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "95748bed0a8b41c790bb22e05520fdbc",
+     "change": 23,
+     "eloRate": 721
+    },
+    {
+     "uuid": "b803f6b7c2cb4ea6873c0133e38b3e8e",
+     "change": -23,
+     "eloRate": 794
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696649,
+   "seedType": "SHIPWRECK",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878450,
+   "type": 2,
+   "seed": {
+    "id": "m7234c8j38a03qxs",
+    "overworld": "SHIPWRECK",
+    "nether": "HOUSING",
+    "endTowers": [
+     79,
+     103,
+     85,
+     76
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:crimson_forest",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "d29e2a361cd94f9a9e079448a6bbebdd",
+     "nickname": "jia__jia",
+     "roleType": 0,
+     "eloRate": 601,
+     "eloRank": 17053,
+     "country": null
+    },
+    {
+     "uuid": "52437d6f739e487082c09eb12a8b1fa1",
+     "nickname": "liam_does_stuff_",
+     "roleType": 0,
+     "eloRate": 567,
+     "eloRank": 17482,
+     "country": "dz"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "d29e2a361cd94f9a9e079448a6bbebdd",
+    "time": 755284
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "d29e2a361cd94f9a9e079448a6bbebdd",
+     "change": 21,
+     "eloRate": 580
+    },
+    {
+     "uuid": "52437d6f739e487082c09eb12a8b1fa1",
+     "change": -21,
+     "eloRate": 607
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696649,
+   "seedType": "SHIPWRECK",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878449,
+   "type": 2,
+   "seed": {
+    "id": "m722t1vd09l35d6s",
+    "overworld": "SHIPWRECK",
+    "nether": "BRIDGE",
+    "endTowers": [
+     82,
+     97,
+     100,
+     94
+    ],
+    "variations": [
+     "biome:structure:deep_ocean",
+     "type:structure:normal",
+     "biome:structure:deep_ocean",
+     "type:structure:normal",
+     "bastion:triple:2",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:soul_sand_valley",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "61ca7e1c768d447495f2ad69e6e7fbb1",
+     "nickname": "0v3rK1ll",
+     "roleType": 1,
+     "eloRate": 1255,
+     "eloRank": 2749,
+     "country": null
+    },
+    {
+     "uuid": "eaad4b6cdd8a420c86cbf36550241526",
+     "nickname": "BEAR______",
+     "roleType": 0,
+     "eloRate": 1194,
+     "eloRank": 3850,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "61ca7e1c768d447495f2ad69e6e7fbb1",
+    "time": 730772
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "61ca7e1c768d447495f2ad69e6e7fbb1",
+     "change": 20,
+     "eloRate": 1215
+    },
+    {
+     "uuid": "eaad4b6cdd8a420c86cbf36550241526",
+     "change": -20,
+     "eloRate": 1214
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696649,
+   "seedType": "SHIPWRECK",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878448,
+   "type": 2,
+   "seed": {
+    "id": "m722z4cp4vfvqoec",
+    "overworld": "VILLAGE",
+    "nether": "HOUSING",
+    "endTowers": [
+     76,
+     88,
+     94,
+     82
+    ],
+    "variations": [
+     "biome:structure:desert",
+     "biome:structure:desert",
+     "bastion:triple:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:56",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "064eb02b4be741ca95f5c9af8dc005e5",
+     "nickname": "BloopySnot",
+     "roleType": 0,
+     "eloRate": 333,
+     "eloRank": 22286,
+     "country": null
+    },
+    {
+     "uuid": "167631b9f677476f9b02c8e3198715be",
+     "nickname": "ScoringSinger53",
+     "roleType": 0,
+     "eloRate": 530,
+     "eloRank": 19023,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "064eb02b4be741ca95f5c9af8dc005e5",
+    "time": 525780
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "064eb02b4be741ca95f5c9af8dc005e5",
+     "change": 29,
+     "eloRate": 304
+    },
+    {
+     "uuid": "167631b9f677476f9b02c8e3198715be",
+     "change": -29,
+     "eloRate": 578
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696642,
+   "seedType": "VILLAGE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878446,
+   "type": 2,
+   "seed": {
+    "id": "m7237rexxc1scilc",
+    "overworld": "VILLAGE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     88,
+     79,
+     85,
+     100
+    ],
+    "variations": [
+     "chest:structure:obsidian",
+     "biome:structure:plains",
+     "chest:structure:obsidian",
+     "biome:structure:plains",
+     "bastion:triple:2",
+     "biome:bastion:warped_forest",
+     "biome:fortress:crimson_forest",
+     "end_spawn:buried:52",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "539cafc2e5eb4f758cff1cdec0cf7972",
+     "nickname": "WhiteLeBron420",
+     "roleType": 1,
+     "eloRate": 1282,
+     "eloRank": 2426,
+     "country": "gq"
+    },
+    {
+     "uuid": "c3430ae005c84253884033e8e634bf24",
+     "nickname": "SacredSunny",
+     "roleType": 0,
+     "eloRate": 1292,
+     "eloRank": 2323,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "539cafc2e5eb4f758cff1cdec0cf7972",
+    "time": 638514
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "539cafc2e5eb4f758cff1cdec0cf7972",
+     "change": 21,
+     "eloRate": 1261
+    },
+    {
+     "uuid": "c3430ae005c84253884033e8e634bf24",
+     "change": -21,
+     "eloRate": 1293
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696634,
+   "seedType": "VILLAGE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878445,
+   "type": 2,
+   "seed": {
+    "id": "m722tss9j0o57wb4",
+    "overworld": "RUINED_PORTAL",
+    "nether": "HOUSING",
+    "endTowers": [
+     76,
+     79,
+     103,
+     85
+    ],
+    "variations": [
+     "type:structure:lava",
+     "biome:structure:forest",
+     "type:structure:lava",
+     "biome:structure:forest",
+     "bastion:triple:2",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c79323dcb1d442c08e6d1ccf919068e4",
+     "nickname": "SSJShadow",
+     "roleType": 0,
+     "eloRate": 803,
+     "eloRank": 12521,
+     "country": null
+    },
+    {
+     "uuid": "72263303d78a44b483459bc92e052865",
+     "nickname": "SirGummy8",
+     "roleType": 0,
+     "eloRate": 805,
+     "eloRank": 12483,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "c79323dcb1d442c08e6d1ccf919068e4",
+    "time": 1139019
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "c79323dcb1d442c08e6d1ccf919068e4",
+     "change": 22,
+     "eloRate": 781
+    },
+    {
+     "uuid": "72263303d78a44b483459bc92e052865",
+     "change": -22,
+     "eloRate": 827
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696634,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878438,
+   "type": 2,
+   "seed": {
+    "id": "m7235fk007jqhna8",
+    "overworld": "VILLAGE",
+    "nether": "TREASURE",
+    "endTowers": [
+     79,
+     103,
+     100,
+     94
+    ],
+    "variations": [
+     "biome:structure:plains",
+     "biome:structure:plains",
+     "biome:bastion:warped_forest",
+     "biome:fortress:warped_forest",
+     "end_spawn:buried:56",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "a2ba08b225a245b58263eae73f1efe81",
+     "nickname": "iTETSU810",
+     "roleType": 0,
+     "eloRate": 727,
+     "eloRank": 13880,
+     "country": null
+    },
+    {
+     "uuid": "aab38b9a116844eb9803dc320f674560",
+     "nickname": "PineDizzle_16",
+     "roleType": 0,
+     "eloRate": 670,
+     "eloRank": 15131,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "a2ba08b225a245b58263eae73f1efe81",
+    "time": 966733
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "a2ba08b225a245b58263eae73f1efe81",
+     "change": 19,
+     "eloRate": 708
+    },
+    {
+     "uuid": "aab38b9a116844eb9803dc320f674560",
+     "change": -19,
+     "eloRate": 689
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696610,
+   "seedType": "VILLAGE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878437,
+   "type": 2,
+   "seed": {
+    "id": "m7233zbw3tldizh9",
+    "overworld": "SHIPWRECK",
+    "nether": "BRIDGE",
+    "endTowers": [
+     82,
+     103,
+     91,
+     85
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_lukewarm_ocean",
+     "type:structure:normal",
+     "chest:structure:carrot",
+     "biome:structure:deep_lukewarm_ocean",
+     "type:structure:normal",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "6eebeee0cd744492adf048406adb1037",
+     "nickname": "KomboJack",
+     "roleType": 1,
+     "eloRate": 1607,
+     "eloRank": 522,
+     "country": "us"
+    },
+    {
+     "uuid": "7fed681d9dee49a59fea0f41a7ecc87e",
+     "nickname": "BurntPlank",
+     "roleType": 0,
+     "eloRate": 1692,
+     "eloRank": 339,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "7fed681d9dee49a59fea0f41a7ecc87e",
+    "time": 632239
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "7fed681d9dee49a59fea0f41a7ecc87e",
+     "change": 18,
+     "eloRate": 1693
+    },
+    {
+     "uuid": "6eebeee0cd744492adf048406adb1037",
+     "change": -18,
+     "eloRate": 1647
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696609,
+   "seedType": "SHIPWRECK",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878436,
+   "type": 2,
+   "seed": {
+    "id": "m7231jf6dz02n5f2",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "TREASURE",
+    "endTowers": [
+     76,
+     100,
+     103,
+     94
+    ],
+    "variations": [
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:57"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "7d3c763507ae44fd895c3511c1a02702",
+     "nickname": "Kraaafty",
+     "roleType": 1,
+     "eloRate": 702,
+     "eloRank": 14401,
+     "country": null
+    },
+    {
+     "uuid": "2140c2cdae6746eeb338ed5818984f9e",
+     "nickname": "Dolphina__",
+     "roleType": 0,
+     "eloRate": 645,
+     "eloRank": 15772,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "7d3c763507ae44fd895c3511c1a02702",
+    "time": 733341
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "7d3c763507ae44fd895c3511c1a02702",
+     "change": 19,
+     "eloRate": 683
+    },
+    {
+     "uuid": "2140c2cdae6746eeb338ed5818984f9e",
+     "change": -19,
+     "eloRate": 645
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696604,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878435,
+   "type": 2,
+   "seed": {
+    "id": "m7233ao56umm4tln",
+    "overworld": "RUINED_PORTAL",
+    "nether": "STABLES",
+    "endTowers": [
+     79,
+     88,
+     100,
+     76
+    ],
+    "variations": [
+     "type:structure:lava",
+     "biome:structure:beach",
+     "type:structure:lava",
+     "biome:structure:beach",
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:small_single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:warped_forest",
+     "end_spawn:buried:56",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "b29ed60f18c140c1a7fa0639c2af8038",
+     "nickname": "BecauseNoNo",
+     "roleType": 0,
+     "eloRate": 842,
+     "eloRank": 11758,
+     "country": null
+    },
+    {
+     "uuid": "aa362d5e6ab24aadbd7ea239973c646c",
+     "nickname": "mercuria03",
+     "roleType": 1,
+     "eloRate": 818,
+     "eloRank": 12211,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "aa362d5e6ab24aadbd7ea239973c646c",
+    "time": 635686
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "aa362d5e6ab24aadbd7ea239973c646c",
+     "change": 22,
+     "eloRate": 796
+    },
+    {
+     "uuid": "b29ed60f18c140c1a7fa0639c2af8038",
+     "change": -22,
+     "eloRate": 864
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696597,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878430,
+   "type": 2,
+   "seed": {
+    "id": "m723632tbimnu0b3",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "HOUSING",
+    "endTowers": [
+     76,
+     94,
+     85,
+     82
+    ],
+    "variations": [
+     "bastion:triple:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:36",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "d120be6583ca46c1b9057cf3ff6dfd91",
+     "nickname": "wmacc",
+     "roleType": 3,
+     "eloRate": 1588,
+     "eloRank": 576,
+     "country": "us"
+    },
+    {
+     "uuid": "00758ea19c6b45b3a7921f9185696359",
+     "nickname": "mytinsaw",
+     "roleType": 1,
+     "eloRate": 1769,
+     "eloRank": 241,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "00758ea19c6b45b3a7921f9185696359",
+    "time": 286340
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "00758ea19c6b45b3a7921f9185696359",
+     "change": 15,
+     "eloRate": 1735
+    },
+    {
+     "uuid": "d120be6583ca46c1b9057cf3ff6dfd91",
+     "change": -15,
+     "eloRate": 1581
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696584,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878429,
+   "type": 2,
+   "seed": {
+    "id": "m722yyrjrawdurkq",
+    "overworld": "SHIPWRECK",
+    "nether": "HOUSING",
+    "endTowers": [
+     79,
+     91,
+     76,
+     85
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:sideways",
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:sideways",
+     "bastion:triple:1",
+     "biome:bastion:warped_forest",
+     "biome:fortress:basalt_deltas",
+     "end_spawn:buried:33",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "123e6d3dd87f4f36829af462189f4774",
+     "nickname": "136_NhanMC",
+     "roleType": 0,
+     "eloRate": 752,
+     "eloRank": 13375,
+     "country": "vn"
+    },
+    {
+     "uuid": "94b71128dd6d455f8cbdaec62719b9a6",
+     "nickname": "ruiSP",
+     "roleType": 0,
+     "eloRate": 690,
+     "eloRank": 14648,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "123e6d3dd87f4f36829af462189f4774",
+    "time": 632870
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "123e6d3dd87f4f36829af462189f4774",
+     "change": 19,
+     "eloRate": 733
+    },
+    {
+     "uuid": "94b71128dd6d455f8cbdaec62719b9a6",
+     "change": -19,
+     "eloRate": 709
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696580,
+   "seedType": "SHIPWRECK",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878428,
+   "type": 2,
+   "seed": {
+    "id": "m72323s7wkzy6i62",
+    "overworld": "SHIPWRECK",
+    "nether": "TREASURE",
+    "endTowers": [
+     79,
+     94,
+     85,
+     103
+    ],
+    "variations": [
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:sideways",
+     "chest:structure:carrot",
+     "biome:structure:deep_ocean",
+     "type:structure:sideways",
+     "biome:bastion:soul_sand_valley",
+     "biome:fortress:soul_sand_valley",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "5698f1c0403e45498cac5cece8d4817a",
+     "nickname": "SwbPoundcake",
+     "roleType": 2,
+     "eloRate": 1409,
+     "eloRank": 1364,
+     "country": "us"
+    },
+    {
+     "uuid": "5ca6187328fc4011ae2e7b875e2b67cd",
+     "nickname": "Mastermode",
+     "roleType": 0,
+     "eloRate": 1426,
+     "eloRank": 1269,
+     "country": "gb"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "5698f1c0403e45498cac5cece8d4817a",
+    "time": 214969
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [
+    {
+     "uuid": "5698f1c0403e45498cac5cece8d4817a",
+     "url": "https://www.twitch.tv/videos/2825954302",
+     "startsAt": 1784691302
+    }
+   ],
+   "changes": [
+    {
+     "uuid": "5698f1c0403e45498cac5cece8d4817a",
+     "change": 21,
+     "eloRate": 1409
+    },
+    {
+     "uuid": "5ca6187328fc4011ae2e7b875e2b67cd",
+     "change": -21,
+     "eloRate": 1447
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696580,
+   "seedType": "SHIPWRECK",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878426,
+   "type": 2,
+   "seed": {
+    "id": "m7235e29rgn6a0iq",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     88,
+     91,
+     94,
+     79
+    ],
+    "variations": [
+     "chest:structure:egap",
+     "chest:structure:egap",
+     "bastion:good_gap:2",
+     "bastion:triple:1",
+     "bastion:single:2",
+     "biome:bastion:crimson_forest",
+     "biome:fortress:warped_forest",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "43a97dfbbb4d402389d4ed69e0246256",
+     "nickname": "__Raiku",
+     "roleType": 0,
+     "eloRate": 279,
+     "eloRank": 22542,
+     "country": null
+    },
+    {
+     "uuid": "3a8799bd5dcf4929b08db0ef10f5f459",
+     "nickname": "lijhl",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": "cn"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "43a97dfbbb4d402389d4ed69e0246256",
+    "time": 225334
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "43a97dfbbb4d402389d4ed69e0246256",
+     "change": 31,
+     "eloRate": 248
+    },
+    {
+     "uuid": "3a8799bd5dcf4929b08db0ef10f5f459",
+     "change": null,
+     "eloRate": null
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696560,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878425,
+   "type": 2,
+   "seed": {
+    "id": "m7236o0y1eb4k33r",
+    "overworld": "BURIED_TREASURE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     76,
+     88,
+     79,
+     82
+    ],
+    "variations": [
+     "biome:structure:deep_ocean",
+     "biome:structure:deep_ocean",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:56",
+     "end_tower:caged:back",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "308c7726698e4f82b200b75e3d7910e0",
+     "nickname": "MichaelMVS",
+     "roleType": 0,
+     "eloRate": 1256,
+     "eloRank": 2727,
+     "country": null
+    },
+    {
+     "uuid": "a694f9866f36496bbad07ec42320fdf4",
+     "nickname": "spaghetti444",
+     "roleType": 0,
+     "eloRate": 1299,
+     "eloRank": 2258,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "a694f9866f36496bbad07ec42320fdf4",
+    "time": 954542
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "a694f9866f36496bbad07ec42320fdf4",
+     "change": 20,
+     "eloRate": 1279
+    },
+    {
+     "uuid": "308c7726698e4f82b200b75e3d7910e0",
+     "change": -20,
+     "eloRate": 1276
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696557,
+   "seedType": "BURIED_TREASURE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878420,
+   "type": 2,
+   "seed": {
+    "id": "m7239g0cvzs3u6zk",
+    "overworld": "BURIED_TREASURE",
+    "nether": "STABLES",
+    "endTowers": [
+     97,
+     79,
+     82,
+     76
+    ],
+    "variations": [
+     "biome:structure:deep_lukewarm_ocean",
+     "biome:structure:deep_lukewarm_ocean",
+     "bastion:good_gap:1",
+     "bastion:triple:1",
+     "bastion:small_single:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:soul_sand_valley",
+     "end_spawn:buried:44",
+     "end_tower:caged:front_center",
+     "end_tower:caged:back"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "3c754dab26544a6588781768d0b11f27",
+     "nickname": "namimuri",
+     "roleType": 0,
+     "eloRate": 1439,
+     "eloRank": 1213,
+     "country": null
+    },
+    {
+     "uuid": "6815c5a68a044377908139aa9c34d336",
+     "nickname": "dra_BANANA",
+     "roleType": 0,
+     "eloRate": 1458,
+     "eloRank": 1136,
+     "country": "jp"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "3c754dab26544a6588781768d0b11f27",
+    "time": 856135
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [
+    {
+     "uuid": "6815c5a68a044377908139aa9c34d336",
+     "url": "https://www.twitch.tv/videos/2825918284",
+     "startsAt": 1784687752
+    }
+   ],
+   "changes": [
+    {
+     "uuid": "3c754dab26544a6588781768d0b11f27",
+     "change": 22,
+     "eloRate": 1417
+    },
+    {
+     "uuid": "6815c5a68a044377908139aa9c34d336",
+     "change": -22,
+     "eloRate": 1480
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696544,
+   "seedType": "BURIED_TREASURE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878419,
+   "type": 2,
+   "seed": {
+    "id": "m722xusu2qyjgx9g",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "TREASURE",
+    "endTowers": [
+     103,
+     88,
+     91,
+     79
+    ],
+    "variations": [
+     "chest:structure:diamond",
+     "chest:structure:egap",
+     "chest:structure:diamond",
+     "chest:structure:egap",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:back_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c1395df23587492db9e3179d8947a066",
+     "nickname": "Breezillyer",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    },
+    {
+     "uuid": "e68ad0c8fa3c4b94a23d3f054548900d",
+     "nickname": "gairon109",
+     "roleType": 0,
+     "eloRate": 654,
+     "eloRank": 15510,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "e68ad0c8fa3c4b94a23d3f054548900d",
+    "time": 920801
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "e68ad0c8fa3c4b94a23d3f054548900d",
+     "change": 17,
+     "eloRate": 637
+    },
+    {
+     "uuid": "c1395df23587492db9e3179d8947a066",
+     "change": null,
+     "eloRate": null
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696543,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "TREASURE",
+   "tag": null
+  },
+  {
+   "id": 11878415,
+   "type": 2,
+   "seed": {
+    "id": "m7239q5glc9nv359",
+    "overworld": "VILLAGE",
+    "nether": "HOUSING",
+    "endTowers": [
+     79,
+     76,
+     103,
+     88
+    ],
+    "variations": [
+     "biome:structure:plains",
+     "biome:structure:plains",
+     "bastion:triple:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "274d08c596904c03b158269048300fcb",
+     "nickname": "Sc0rpi0_o1",
+     "roleType": 0,
+     "eloRate": 439,
+     "eloRank": 21134,
+     "country": null
+    },
+    {
+     "uuid": "713c5d7db5b74f878c6631df6b483236",
+     "nickname": "xXSnowphoeniXx",
+     "roleType": 0,
+     "eloRate": null,
+     "eloRank": null,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "274d08c596904c03b158269048300fcb",
+    "time": 4387356
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "274d08c596904c03b158269048300fcb",
+     "change": 17,
+     "eloRate": 422
+    },
+    {
+     "uuid": "713c5d7db5b74f878c6631df6b483236",
+     "change": null,
+     "eloRate": null
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696536,
+   "seedType": "VILLAGE",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878413,
+   "type": 2,
+   "seed": {
+    "id": "m7234i7179f82mwh",
+    "overworld": "SHIPWRECK",
+    "nether": "STABLES",
+    "endTowers": [
+     100,
+     79,
+     88,
+     97
+    ],
+    "variations": [
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "biome:structure:deep_ocean",
+     "type:structure:upsidedown",
+     "bastion:good_gap:1",
+     "bastion:triple:2",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:56",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "1e0c8ca21bd24a9ba430bdbecfa00034",
+     "nickname": "Boreism",
+     "roleType": 1,
+     "eloRate": 1504,
+     "eloRank": 936,
+     "country": "us"
+    },
+    {
+     "uuid": "9bf99e15663748c1b18b48596d9e59ba",
+     "nickname": "sudoEllie",
+     "roleType": 0,
+     "eloRate": 1515,
+     "eloRank": 843,
+     "country": "bv"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 798074
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "9bf99e15663748c1b18b48596d9e59ba",
+     "change": 0,
+     "eloRate": 1515
+    },
+    {
+     "uuid": "1e0c8ca21bd24a9ba430bdbecfa00034",
+     "change": 0,
+     "eloRate": 1524
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696527,
+   "seedType": "SHIPWRECK",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878411,
+   "type": 2,
+   "seed": {
+    "id": "m723becidij3zbab",
+    "overworld": "RUINED_PORTAL",
+    "nether": "HOUSING",
+    "endTowers": [
+     85,
+     82,
+     76,
+     103
+    ],
+    "variations": [
+     "type:structure:lava",
+     "biome:structure:forest",
+     "type:structure:lava",
+     "biome:structure:forest",
+     "bastion:triple:2",
+     "biome:bastion:warped_forest",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "f9e37f7854ea44af8beb703ce0abe414",
+     "nickname": "LGNDMikasa",
+     "roleType": 2,
+     "eloRate": 950,
+     "eloRank": 9424,
+     "country": "sg"
+    },
+    {
+     "uuid": "af2e7d2f5ca34245b784c616c1583467",
+     "nickname": "DrumNott",
+     "roleType": 0,
+     "eloRate": 1045,
+     "eloRank": 7027,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "af2e7d2f5ca34245b784c616c1583467",
+    "time": 379987
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "af2e7d2f5ca34245b784c616c1583467",
+     "change": 18,
+     "eloRate": 1027
+    },
+    {
+     "uuid": "f9e37f7854ea44af8beb703ce0abe414",
+     "change": -18,
+     "eloRate": 968
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696516,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878409,
+   "type": 2,
+   "seed": {
+    "id": "m7237z6ydmkc3z3i",
+    "overworld": "RUINED_PORTAL",
+    "nether": "HOUSING",
+    "endTowers": [
+     88,
+     79,
+     91,
+     100
+    ],
+    "variations": [
+     "type:structure:completable",
+     "biome:structure:beach",
+     "type:structure:completable",
+     "biome:structure:beach",
+     "bastion:triple:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "34e746508b634d0ea1ded1e232acb90e",
+     "nickname": "Jazcon",
+     "roleType": 0,
+     "eloRate": 934,
+     "eloRank": 9801,
+     "country": null
+    },
+    {
+     "uuid": "2d6d84f41ff141808b0cc98e0a6e2364",
+     "nickname": "Spark_E24",
+     "roleType": 0,
+     "eloRate": 941,
+     "eloRank": 9650,
+     "country": "ca"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "2d6d84f41ff141808b0cc98e0a6e2364",
+    "time": 1090038
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "2d6d84f41ff141808b0cc98e0a6e2364",
+     "change": 21,
+     "eloRate": 920
+    },
+    {
+     "uuid": "34e746508b634d0ea1ded1e232acb90e",
+     "change": -21,
+     "eloRate": 955
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696513,
+   "seedType": "RUINED_PORTAL",
+   "bastionType": "HOUSING",
+   "tag": null
+  },
+  {
+   "id": 11878406,
+   "type": 2,
+   "seed": {
+    "id": "m7235fd852mytg06",
+    "overworld": "VILLAGE",
+    "nether": "STABLES",
+    "endTowers": [
+     88,
+     82,
+     103,
+     94
+    ],
+    "variations": [
+     "biome:structure:savanna",
+     "biome:structure:savanna",
+     "bastion:good_gap:1",
+     "bastion:triple:1",
+     "bastion:single:1",
+     "bastion:small_single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:nether_wastes",
+     "end_spawn:buried:56",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "f37c8e3756bf4f99862ad0651db6ae2f",
+     "nickname": "StanleyBoss",
+     "roleType": 0,
+     "eloRate": 733,
+     "eloRank": 13755,
+     "country": null
+    },
+    {
+     "uuid": "71f3c7c17b054d32b2b6357f4869e4ae",
+     "nickname": "JoeRuns",
+     "roleType": 3,
+     "eloRate": 709,
+     "eloRank": 14258,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "71f3c7c17b054d32b2b6357f4869e4ae",
+    "time": 853398
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "71f3c7c17b054d32b2b6357f4869e4ae",
+     "change": 23,
+     "eloRate": 686
+    },
+    {
+     "uuid": "f37c8e3756bf4f99862ad0651db6ae2f",
+     "change": -23,
+     "eloRate": 756
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696484,
+   "seedType": "VILLAGE",
+   "bastionType": "STABLES",
+   "tag": null
+  },
+  {
+   "id": 11878404,
+   "type": 2,
+   "seed": {
+    "id": "m7232wb1vby2c6fp",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "BRIDGE",
+    "endTowers": [
+     103,
+     97,
+     94,
+     100
+    ],
+    "variations": [
+     "bastion:triple:1",
+     "bastion:single:1",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:soul_sand_valley"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "3dc10067c8994f69804d1219c86005ba",
+     "nickname": "Sumner2_",
+     "roleType": 0,
+     "eloRate": 1220,
+     "eloRank": 3267,
+     "country": "vn"
+    },
+    {
+     "uuid": "53a530e28361495d9e4d49439ac798cd",
+     "nickname": "carykh",
+     "roleType": 1,
+     "eloRate": 1185,
+     "eloRank": 3973,
+     "country": "us"
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": null,
+    "time": 429278
+   },
+   "forfeited": true,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "53a530e28361495d9e4d49439ac798cd",
+     "change": 1,
+     "eloRate": 1184
+    },
+    {
+     "uuid": "3dc10067c8994f69804d1219c86005ba",
+     "change": -1,
+     "eloRate": 1241
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696475,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "BRIDGE",
+   "tag": null
+  },
+  {
+   "id": 11878403,
+   "type": 2,
+   "seed": {
+    "id": "m723avnerf9fjd47",
+    "overworld": "DESERT_TEMPLE",
+    "nether": "STABLES",
+    "endTowers": [
+     100,
+     79,
+     76,
+     94
+    ],
+    "variations": [
+     "bastion:good_gap:1",
+     "bastion:triple:1",
+     "bastion:small_single:2",
+     "biome:bastion:nether_wastes",
+     "biome:fortress:basalt_deltas",
+     "end_tower:caged:front_center"
+    ]
+   },
+   "category": "ANY",
+   "gameMode": "default",
+   "players": [
+    {
+     "uuid": "c46ef3d37af842748433139573ab9c72",
+     "nickname": "TechnoHail",
+     "roleType": 0,
+     "eloRate": 616,
+     "eloRank": 16565,
+     "country": null
+    },
+    {
+     "uuid": "c388683a2c134109a4fbb26c93a9e33b",
+     "nickname": "Goobplaysz",
+     "roleType": 0,
+     "eloRate": 616,
+     "eloRank": 16565,
+     "country": null
+    }
+   ],
+   "spectators": [],
+   "result": {
+    "uuid": "c388683a2c134109a4fbb26c93a9e33b",
+    "time": 814513
+   },
+   "forfeited": false,
+   "decayed": false,
+   "rank": {
+    "season": null,
+    "allTime": null
+   },
+   "vod": [],
+   "changes": [
+    {
+     "uuid": "c388683a2c134109a4fbb26c93a9e33b",
+     "change": 22,
+     "eloRate": 594
+    },
+    {
+     "uuid": "c46ef3d37af842748433139573ab9c72",
+     "change": -22,
+     "eloRate": 638
+    }
+   ],
+   "beginner": false,
+   "botSource": null,
+   "season": 11,
+   "date": 1784696471,
+   "seedType": "DESERT_TEMPLE",
+   "bastionType": "STABLES",
+   "tag": null
+  }
+ ]
+}

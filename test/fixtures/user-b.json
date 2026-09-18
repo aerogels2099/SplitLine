@@ -1,0 +1,391 @@
+{
+ "status": "success",
+ "data": {
+  "uuid": "a54e3bc4c6354b07a236b81efbcfe791",
+  "nickname": "Infume",
+  "roleType": 2,
+  "eloRate": 2564,
+  "eloRank": 2,
+  "achievements": {
+   "display": [
+    {
+     "id": "bestTime",
+     "date": 1761876457,
+     "data": [],
+     "level": 12,
+     "value": 347271,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1745193880,
+     "data": [
+      "7",
+      "1"
+     ],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1767312115,
+     "data": [
+      "9",
+      "1"
+     ],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1777507279,
+     "data": [
+      "10",
+      "1"
+     ],
+     "level": 1,
+     "value": null,
+     "goal": null
+    }
+   ],
+   "total": [
+    {
+     "id": "playoffsResult",
+     "date": 1769142234,
+     "data": [
+      "9"
+     ],
+     "level": 16,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "playtime",
+     "date": 1767235789,
+     "data": [],
+     "level": 8,
+     "value": 2600317576,
+     "goal": 3600000000
+    },
+    {
+     "id": "wins",
+     "date": 1765077737,
+     "data": [],
+     "level": 10,
+     "value": 3157,
+     "goal": 5000
+    },
+    {
+     "id": "netherite",
+     "date": 1761785182,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "playoffsResult",
+     "date": 1757276284,
+     "data": [
+      "8"
+     ],
+     "level": 2,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1755734804,
+     "data": [
+      "8",
+      "3"
+     ],
+     "level": 2,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "ironHoe",
+     "date": 1755219641,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "playedMatches",
+     "date": 1755215004,
+     "data": [],
+     "level": 10,
+     "value": 4624,
+     "goal": 5000
+    },
+    {
+     "id": "highestWinStreak",
+     "date": 1747953097,
+     "data": [],
+     "level": 8,
+     "value": 26,
+     "goal": null
+    },
+    {
+     "id": "playoffsResult",
+     "date": 1746998381,
+     "data": [
+      "7"
+     ],
+     "level": 16,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "foodless",
+     "date": 1739060322,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1734741052,
+     "data": [
+      "6",
+      "20"
+     ],
+     "level": 4,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "classicRun",
+     "date": 1733703080,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "armorless",
+     "date": 1732593455,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "ironPickless",
+     "date": 1732085105,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1724198413,
+     "data": [
+      "5",
+      "513"
+     ],
+     "level": 7,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1713658167,
+     "data": [
+      "4",
+      "208"
+     ],
+     "level": 6,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "seasonResult",
+     "date": 1679875227,
+     "data": [
+      "0",
+      "118"
+     ],
+     "level": 6,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "liveResult",
+     "date": 1778242483,
+     "data": [
+      "2026"
+     ],
+     "level": 16,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "playoffsResult",
+     "date": 1779054469,
+     "data": [
+      "10"
+     ],
+     "level": 2,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "summonWither",
+     "date": 1783474756,
+     "data": [],
+     "level": 1,
+     "value": null,
+     "goal": null
+    },
+    {
+     "id": "wcResult",
+     "date": 1783591799,
+     "data": [
+      "2026"
+     ],
+     "level": 3,
+     "value": null,
+     "goal": null
+    }
+   ]
+  },
+  "timestamp": {
+   "firstOnline": 1676250169,
+   "lastOnline": 1784665538,
+   "lastRanked": 1784161616,
+   "nextDecay": 1784809616
+  },
+  "statistics": {
+   "season": {
+    "bestTime": {
+     "ranked": 372705,
+     "casual": null
+    },
+    "highestWinStreak": {
+     "ranked": 14,
+     "casual": 0
+    },
+    "currentWinStreak": {
+     "ranked": 2,
+     "casual": 0
+    },
+    "playedMatches": {
+     "ranked": 502,
+     "casual": 0
+    },
+    "playtime": {
+     "ranked": 267797409,
+     "casual": 0
+    },
+    "completionTime": {
+     "ranked": 165421660,
+     "casual": 0
+    },
+    "forfeits": {
+     "ranked": 0,
+     "casual": 0
+    },
+    "completions": {
+     "ranked": 304,
+     "casual": 0
+    },
+    "wins": {
+     "ranked": 341,
+     "casual": 0
+    },
+    "loses": {
+     "ranked": 156,
+     "casual": 0
+    }
+   },
+   "total": {
+    "bestTime": {
+     "ranked": 347271,
+     "casual": 665461
+    },
+    "highestWinStreak": {
+     "ranked": 26,
+     "casual": 1
+    },
+    "currentWinStreak": {
+     "ranked": 2,
+     "casual": 0
+    },
+    "playedMatches": {
+     "ranked": 4624,
+     "casual": 9
+    },
+    "playtime": {
+     "ranked": 2600317576,
+     "casual": 4617077
+    },
+    "forfeits": {
+     "ranked": 40,
+     "casual": 1
+    },
+    "completions": {
+     "ranked": 2714,
+     "casual": 2
+    },
+    "wins": {
+     "ranked": 3157,
+     "casual": 2
+    },
+    "loses": {
+     "ranked": 1394,
+     "casual": 4
+    },
+    "completionTime": {
+     "ranked": 1567082145,
+     "casual": 1413074
+    }
+   }
+  },
+  "connections": {
+   "discord": {
+    "id": "514822290995937301",
+    "name": "infume"
+   },
+   "youtube": {
+    "id": "UCjnnCjLxONkFvljss5Dg2PQ",
+    "name": "infume"
+   },
+   "twitch": {
+    "id": "infume",
+    "name": "infume"
+   }
+  },
+  "weeklyRaces": [],
+  "country": "us",
+  "seasonResult": {
+   "last": {
+    "eloRate": 2564,
+    "eloRank": 2,
+    "phasePoint": 69
+   },
+   "highest": 2578,
+   "lowest": 1659,
+   "phases": [
+    {
+     "phase": 1,
+     "eloRate": 2229,
+     "eloRank": 2,
+     "point": 47
+    },
+    {
+     "phase": 2,
+     "eloRate": 2184,
+     "eloRank": 20,
+     "point": 22
+    }
+   ]
+  }
+ }
+}

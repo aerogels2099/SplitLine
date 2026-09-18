@@ -1,0 +1,246 @@
+{
+ "status": "success",
+ "data": {
+  "players": 691,
+  "liveMatches": [
+   {
+    "currentTime": 699860,
+    "players": [
+     {
+      "uuid": "70c090bbccf34dcfb0ad23287ba8aa19",
+      "nickname": "SnowyKirbs",
+      "roleType": 2,
+      "eloRate": 1478,
+      "eloRank": 1034,
+      "country": null
+     },
+     {
+      "uuid": "06a972aadc604d8b904835e41f2e6acf",
+      "nickname": "U1tr0",
+      "roleType": 1,
+      "eloRate": 1596,
+      "eloRank": 557,
+      "country": "us"
+     }
+    ],
+    "data": {
+     "70c090bbccf34dcfb0ad23287ba8aa19": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 672390,
+       "type": "story.enter_the_end"
+      }
+     },
+     "06a972aadc604d8b904835e41f2e6acf": {
+      "liveUrl": "https://twitch.tv/u1tr04k",
+      "timeline": {
+       "time": 680746,
+       "type": "story.follow_ender_eye"
+      }
+     }
+    }
+   },
+   {
+    "currentTime": 685489,
+    "players": [
+     {
+      "uuid": "cb86043954a74ba0abbdd21179d00bfa",
+      "nickname": "subdasfan5",
+      "roleType": 1,
+      "eloRate": 1821,
+      "eloRank": 168,
+      "country": "br"
+     },
+     {
+      "uuid": "e4808bc3e1e347988cbb59b55d723e0f",
+      "nickname": "dandannyboy",
+      "roleType": 1,
+      "eloRate": 2017,
+      "eloRank": 76,
+      "country": "ca"
+     }
+    ],
+    "data": {
+     "cb86043954a74ba0abbdd21179d00bfa": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 675452,
+       "type": "story.enter_the_end"
+      }
+     },
+     "e4808bc3e1e347988cbb59b55d723e0f": {
+      "liveUrl": "https://twitch.tv/dandannyboy",
+      "timeline": {
+       "time": 622540,
+       "type": "story.enter_the_end"
+      }
+     }
+    }
+   },
+   {
+    "currentTime": 402589,
+    "players": [
+     {
+      "uuid": "fcf90ec4d49e47a49c6bcaa8c28175d1",
+      "nickname": "Jabo_",
+      "roleType": 1,
+      "eloRate": 1335,
+      "eloRank": 1891,
+      "country": "us"
+     },
+     {
+      "uuid": "1f8cd3e0ada1480d9340fad49c1865e7",
+      "nickname": "diveyujin",
+      "roleType": 0,
+      "eloRate": 1336,
+      "eloRank": 1884,
+      "country": "us"
+     }
+    ],
+    "data": {
+     "fcf90ec4d49e47a49c6bcaa8c28175d1": {
+      "liveUrl": "https://twitch.tv/owjabo",
+      "timeline": {
+       "time": 223608,
+       "type": "nether.find_bastion"
+      }
+     },
+     "1f8cd3e0ada1480d9340fad49c1865e7": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 315348,
+       "type": "nether.find_bastion"
+      }
+     }
+    }
+   },
+   {
+    "currentTime": 247151,
+    "players": [
+     {
+      "uuid": "45ceb164f3de4d54b2324dc601956333",
+      "nickname": "oMojang",
+      "roleType": 1,
+      "eloRate": 1337,
+      "eloRank": 1874,
+      "country": null
+     },
+     {
+      "uuid": "c4ad0824de9b41f0b0b8dd1b9af10ec7",
+      "nickname": "Oohwo",
+      "roleType": 2,
+      "eloRate": 1353,
+      "eloRank": 1743,
+      "country": "ph"
+     }
+    ],
+    "data": {
+     "45ceb164f3de4d54b2324dc601956333": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 214877,
+       "type": "nether.find_bastion"
+      }
+     },
+     "c4ad0824de9b41f0b0b8dd1b9af10ec7": {
+      "liveUrl": "https://twitch.tv/oohwo",
+      "timeline": null
+     }
+    }
+   },
+   {
+    "currentTime": 55172,
+    "players": [
+     {
+      "uuid": "485afd8d37a949c390ccdb9f1f1ff3c6",
+      "nickname": "letsni",
+      "roleType": 0,
+      "eloRate": 1904,
+      "eloRank": 112,
+      "country": "ru"
+     },
+     {
+      "uuid": "c4f6f8c02c5b4eaa95bfad9bd9540e3d",
+      "nickname": "Fkhxy",
+      "roleType": 0,
+      "eloRate": 1830,
+      "eloRank": 178,
+      "country": "cn"
+     }
+    ],
+    "data": {
+     "485afd8d37a949c390ccdb9f1f1ff3c6": {
+      "liveUrl": "https://twitch.tv/lesternnn",
+      "timeline": null
+     },
+     "c4f6f8c02c5b4eaa95bfad9bd9540e3d": {
+      "liveUrl": null,
+      "timeline": null
+     }
+    }
+   },
+   {
+    "currentTime": 29814,
+    "players": [
+     {
+      "uuid": "adfa52f9cfec415fbe0e120459254169",
+      "nickname": "EatingYoshi",
+      "roleType": 0,
+      "eloRate": 1354,
+      "eloRank": 1730,
+      "country": null
+     },
+     {
+      "uuid": "bb7207fb8fac487a8d180c99d2c4bad9",
+      "nickname": "Fe4thercl4w",
+      "roleType": 1,
+      "eloRate": 1338,
+      "eloRank": 1863,
+      "country": "us"
+     }
+    ],
+    "data": {
+     "adfa52f9cfec415fbe0e120459254169": {
+      "liveUrl": null,
+      "timeline": null
+     },
+     "bb7207fb8fac487a8d180c99d2c4bad9": {
+      "liveUrl": "https://twitch.tv/featherrr_",
+      "timeline": null
+     }
+    }
+   },
+   {
+    "currentTime": 623,
+    "players": [
+     {
+      "uuid": "a8b07c3388684caf88348b98de4e4a60",
+      "nickname": "GishyJ",
+      "roleType": 3,
+      "eloRate": 1165,
+      "eloRank": 4301,
+      "country": "us"
+     },
+     {
+      "uuid": "d1bd995bffcd4d8f9f4d7818ed73c625",
+      "nickname": "dazednova",
+      "roleType": 0,
+      "eloRate": 1078,
+      "eloRank": 6195,
+      "country": "ca"
+     }
+    ],
+    "data": {
+     "a8b07c3388684caf88348b98de4e4a60": {
+      "liveUrl": "https://twitch.tv/gishyj",
+      "timeline": null
+     },
+     "d1bd995bffcd4d8f9f4d7818ed73c625": {
+      "liveUrl": null,
+      "timeline": null
+     }
+    }
+   }
+  ]
+ }
+}

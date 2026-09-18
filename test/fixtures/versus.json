@@ -1,0 +1,39 @@
+{
+ "status": "success",
+ "data": {
+  "players": [
+   {
+    "uuid": "635f35ee69ed4f0c94ff26ece4818956",
+    "nickname": "edcr",
+    "roleType": 1,
+    "eloRate": 2622,
+    "eloRank": 1,
+    "country": "gb"
+   },
+   {
+    "uuid": "a54e3bc4c6354b07a236b81efbcfe791",
+    "nickname": "Infume",
+    "roleType": 2,
+    "eloRate": 2564,
+    "eloRank": 2,
+    "country": "us"
+   }
+  ],
+  "results": {
+   "ranked": {
+    "total": 15,
+    "635f35ee69ed4f0c94ff26ece4818956": 8,
+    "a54e3bc4c6354b07a236b81efbcfe791": 7
+   },
+   "casual": {
+    "total": 0,
+    "635f35ee69ed4f0c94ff26ece4818956": 0,
+    "a54e3bc4c6354b07a236b81efbcfe791": 0
+   }
+  },
+  "changes": {
+   "635f35ee69ed4f0c94ff26ece4818956": -19,
+   "a54e3bc4c6354b07a236b81efbcfe791": 19
+  }
+ }
+}
