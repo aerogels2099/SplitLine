@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useApi, type GameRecord, type GameSplits, type PlayerHistory } from "../../api";
 import { fmtDate, fmtMs, fmtSigned } from "../../format";
 import { EloChart, type EloChartPoint } from "../../components/EloChart";
@@ -26,6 +26,10 @@ export default function GameHistory({
   const seasons = [...initial.seasons].reverse();
   const at = seasons.indexOf(season);
   const [range, setWindow] = useState(0);
+  // Which game's splits are expanded; the elo chart can set it too.
+  const [openMatch, setOpenMatch] = useState<number | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const pendingJump = useRef<number | null>(null);
 
   const games = view?.games;
   // Above the early returns so the hook order stays stable.
@@ -39,6 +43,8 @@ export default function GameHistory({
         elo: g.eloAfter,
         change: g.eloChange ?? 0,
         decayed: g.decayed,
+        outcome: g.outcome,
+        opponent: g.opponent?.nickname ?? null,
       }));
     const real = list.filter((g) => !g.decayed);
     return {
@@ -51,6 +57,23 @@ export default function GameHistory({
 
   // the range counts games back from the most recent, so 0 means the lot
   const shown = useMemo(() => (range === 0 ? points : points.slice(-range)), [points, range]);
+
+  /**
+   * Jump to a game picked on the chart. The scroll has to wait for the commit
+   * that opens the row, so it runs from an effect rather than the handler.
+   */
+  const openFromChart = (matchId: number) => {
+    setOpenMatch(matchId);
+    pendingJump.current = matchId;
+  };
+  useEffect(() => {
+    const target = pendingJump.current;
+    if (target === null) return;
+    pendingJump.current = null;
+    listRef.current
+      ?.querySelector(`[data-match="${target}"]`)
+      ?.scrollIntoView({ block: "center" });
+  }, [openMatch]);
 
   if (error) return <ErrorBox message={error} />;
   if (!games) return <div className="card">Loading season {season}…</div>;
@@ -106,7 +129,7 @@ export default function GameHistory({
             </button>
           ))}
         >
-          <EloChart points={shown} height={260} />
+          <EloChart points={shown} height={260} onSelect={openFromChart} />
         </ChartCard>
       )}
 
@@ -114,9 +137,15 @@ export default function GameHistory({
       {games.length === 0 ? (
         <div className="card">No ranked games in season {season}.</div>
       ) : (
-        <div className="game-list">
+        <div className="game-list" ref={listRef}>
           {games.map((g) => (
-            <GameRow key={g.matchId} id={id} game={g} />
+            <GameRow
+              key={g.matchId}
+              id={id}
+              game={g}
+              open={openMatch === g.matchId}
+              onToggle={() => setOpenMatch((m) => (m === g.matchId ? null : g.matchId))}
+            />
           ))}
         </div>
       )}
@@ -124,12 +153,20 @@ export default function GameHistory({
   );
 }
 
-const GameRow = memo(function GameRow({ id, game }: { id: string; game: GameRecord }) {
-  const [open, setOpen] = useState(false);
-
+const GameRow = memo(function GameRow({
+  id,
+  game,
+  open,
+  onToggle,
+}: {
+  id: string;
+  game: GameRecord;
+  open: boolean;
+  onToggle: () => void;
+}) {
   return (
-    <div className={`game${open ? " open" : ""}`}>
-      <button type="button" className="game-head" onClick={() => setOpen((o) => !o)}>
+    <div className={`game${open ? " open" : ""}`} data-match={game.matchId}>
+      <button type="button" className="game-head" onClick={onToggle}>
         <span className={`game-outcome ${game.outcome}`}>
           {game.decayed ? "decay" : game.outcome}
         </span>
