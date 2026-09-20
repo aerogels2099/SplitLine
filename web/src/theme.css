@@ -1136,6 +1136,13 @@ table.data tbody tr:hover {
   display: grid;
   gap: 6px;
 }
+.game-more {
+  padding: 14px;
+  text-align: center;
+  border: 2px dashed var(--border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
 .game {
   border: 2px solid var(--border);
   background: var(--surface-1);

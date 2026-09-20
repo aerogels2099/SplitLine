@@ -8,8 +8,8 @@ import type { CompletionEntry, MatchInfo, TimelineEntry, UserDetails } from "../
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-/** Bumped when the stored rows, not just the table definitions, need rewriting. */
-const SCHEMA_VERSION = 2;
+/** Bumped when stored rows, not just table definitions, need rewriting. */
+const SCHEMA_VERSION = 3;
 
 const INSERT_MATCH = `INSERT OR IGNORE INTO matches
    (id, season, type, date, forfeited, decayed, winner_uuid, result_time,
@@ -20,7 +20,7 @@ const INSERT_PLAYER = `INSERT OR IGNORE INTO match_players
    (match_id, uuid, nickname, elo_rate, elo_change, elo_after)
    VALUES (?, ?, ?, ?, ?, ?)`;
 
-/** The extra fields that come back only when a single match is fetched by id. */
+/** The extra fields only a single-match fetch returns. */
 interface AdvancedFields {
   completions?: CompletionEntry[];
   timelines?: TimelineEntry[];
@@ -67,7 +67,7 @@ export class Store {
     this.db.close();
   }
 
-  /** Statements are cached by their text, so values must always be bound, never pasted in. */
+  /** Cached by statement text, so values must be bound, never pasted in. */
   private stmt(sql: string): StatementSync {
     let s = this.statements.get(sql);
     if (!s) {
@@ -77,7 +77,7 @@ export class Store {
     return s;
   }
 
-  /** Re-entrant transaction wrapper: the database refuses a transaction opened inside another. */
+  /** Re-entrant: the database refuses a transaction opened inside another. */
   private tx<T>(fn: () => T): T {
     if (this.db.isTransaction) return fn();
     this.db.exec("BEGIN");
@@ -94,20 +94,22 @@ export class Store {
   /** Rewrites rows whose contents, not shape, are wrong. */
   private migrate() {
     const row = this.db.prepare("PRAGMA user_version").get() as { user_version: number };
-    if (row.user_version >= SCHEMA_VERSION) return;
-    const matches = this.db.prepare("SELECT data FROM matches").all() as { data: string }[];
+    const from = row.user_version;
+    if (from >= SCHEMA_VERSION) return;
+    const matches =
+      from < 2 ? (this.db.prepare("SELECT data FROM matches").all() as { data: string }[]) : [];
     this.tx(() => {
-      this.db.exec("DELETE FROM match_players");
-      for (const r of matches) this.insertPlayers(JSON.parse(r.data) as MatchInfo);
+      if (from < 2) {
+        this.db.exec("DELETE FROM match_players");
+        for (const r of matches) this.insertPlayers(JSON.parse(r.data) as MatchInfo);
+      }
+      // Older season rows could skip games or be invented outright, so they are rebuilt.
+      if (from < 3) this.db.exec("DELETE FROM player_seasons");
       this.db.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);
     });
   }
 
-  /**
-   * Ratings come from the per-match change record, which is the rating going
-   * into that match, not from the player summary, which always reports what
-   * they are rated now.
-   */
+  /** Ratings come from the per-match change record, not the player summary's current one. */
   private insertPlayers(m: MatchInfo) {
     const insert = this.stmt(INSERT_PLAYER);
     for (const p of m.players) {
@@ -178,7 +180,7 @@ export class Store {
     return this.stmt(`SELECT 1 FROM match_details WHERE id = ?`).get(matchId) !== undefined;
   }
 
-  /** The detail fields are applied last, so rows written before the two halves were separated still load. */
+  /** Detail fields go on last, so rows written before the split still load. */
   private mergeDetail(row: { list: string | null; adv: string }): MatchInfo {
     const list = row.list ? (JSON.parse(row.list) as MatchInfo) : ({} as MatchInfo);
     return { ...list, ...(JSON.parse(row.adv) as AdvancedFields) };
@@ -263,7 +265,7 @@ export class Store {
     return rows.map((r) => r.season);
   }
 
-  /** The newest stored match, which ingest uses both as its staleness check and as its starting point. */
+  /** The newest stored match: ingest's staleness check and starting point. */
   newestMatchForPlayer(uuid: string): { id: number; date: number } | null {
     const row = this.stmt(
       `SELECT m.id AS id, m.date AS date FROM matches m
@@ -313,6 +315,38 @@ export class Store {
        ON CONFLICT(uuid) DO UPDATE SET nickname = excluded.nickname,
          last_ingest = excluded.last_ingest, data = excluded.data`,
     ).run(user.uuid, user.nickname, nowEpochSeconds(), JSON.stringify(user));
+  }
+
+  /** Records the seasons the API reports the player has appeared in. */
+  setPlayedSeasons(uuid: string, seasons: number[]) {
+    const insert = this.stmt(
+      `INSERT OR IGNORE INTO player_seasons (uuid, season, ingested_at) VALUES (?, ?, NULL)`,
+    );
+    this.tx(() => {
+      for (const season of seasons) insert.run(uuid, season);
+    });
+  }
+
+  /** Seasons the API reports, newest first; empty until a profile is ingested. */
+  playedSeasons(uuid: string): number[] {
+    const rows = this.stmt(
+      `SELECT season FROM player_seasons WHERE uuid = ? ORDER BY season DESC`,
+    ).all(uuid) as { season: number }[];
+    return rows.map((r) => r.season);
+  }
+
+  isSeasonIngested(uuid: string, season: number): boolean {
+    const row = this.stmt(
+      `SELECT ingested_at FROM player_seasons WHERE uuid = ? AND season = ?`,
+    ).get(uuid, season) as { ingested_at: number | null } | undefined;
+    return row?.ingested_at != null;
+  }
+
+  /** Updates only: an insert would make a walked season look like a played one. */
+  markSeasonIngested(uuid: string, season: number) {
+    this.stmt(
+      `UPDATE player_seasons SET ingested_at = ? WHERE uuid = ? AND season = ?`,
+    ).run(nowEpochSeconds(), uuid, season);
   }
 
   getPlayer(identifier: string): { user: UserDetails; lastIngest: number } | null {

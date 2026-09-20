@@ -44,7 +44,7 @@ describe("split extraction", () => {
 
   it("extracts runs for both players of every detail", () => {
     const runs = extractAllRuns(details);
-    expect(runs.length).toBeGreaterThanOrEqual(details.length); // >= 1 per match
+    expect(runs.length).toBeGreaterThanOrEqual(details.length); // at least one run per match
     for (const r of runs) {
       // Cumulative splits never decrease relative to nether entry.
       if (r.splits.nether_enter !== null && r.splits.end_enter !== null) {

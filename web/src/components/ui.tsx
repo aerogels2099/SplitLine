@@ -1,10 +1,8 @@
 import { useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-/**
- * The pointer position is written to the childless glow span, not the card:
- * a property on the card would invalidate style for every node inside it.
- */
+/** The pointer position goes on the empty glow layer; on the card it would
+ *  invalidate style for every node inside. */
 function useCardGlow() {
   const ref = useRef<HTMLSpanElement>(null);
   const onMouseMove = (e: React.MouseEvent) => {
@@ -216,7 +214,7 @@ export function LoadingNote({ text }: { text?: string }) {
     <div className="card">
       <span className="shimmer-text" style={{ fontFamily: "var(--font-mono)", fontSize: 13 }}>
         {msg}
-        {/* the lit copy the sweep reveals; decoration only, so it stays out of the accessibility tree */}
+        {/* the lit copy the sweep reveals; decoration, so it is hidden from readers */}
         <span className="shimmer-sweep" aria-hidden>
           {msg}
         </span>

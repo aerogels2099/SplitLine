@@ -146,9 +146,8 @@ describe("sqlite store", () => {
   it("joins an open transaction instead of opening a second one", () => {
     const store = new Store(":memory:");
     const matches = userAMatches();
-    // The database refuses a transaction opened inside another, and an
-    // unguarded rollback here would discard the caller's work rather than
-    // the inner write's.
+    // The database refuses a transaction opened inside another, and an unguarded
+    // rollback would discard the caller's work rather than the inner write's.
     store.db.exec("BEGIN");
     expect(() => store.upsertMatches(matches)).not.toThrow();
     store.db.exec("COMMIT");
@@ -165,8 +164,8 @@ describe("sqlite store", () => {
     const mine = details.filter((d) => d.players.some((p) => p.uuid === uuid));
     expect(store.getDetails({ uuid })).toHaveLength(mine.length);
 
-    // A global window ordered by date can exclude a player's own matches,
-    // which is why the analysis must not filter the corpus by uuid.
+    // A global window ordered by date can leave out a player's own matches,
+    // which is why the analysis must not sift them out of the corpus.
     const oldest = [...details].sort((a, b) => a.date - b.date)[0]!;
     const newestFirst = store.getDetails({ limit: 1 });
     expect(newestFirst).toHaveLength(1);

@@ -26,7 +26,7 @@ interface IngestOpts {
   type?: MatchType;
 }
 
-/** Decay entries are stored and flagged; anything older than the first page is left to the background walk. */
+/** Decay entries are stored and flagged; older pages are left to the background walk. */
 export async function ingestPlayer(
   store: Store,
   api: RankedApi,
@@ -41,9 +41,8 @@ export async function ingestPlayer(
     const user = await api.getUser(identifier);
     store.upsertPlayer(user);
 
-    // The profile's last-ranked timestamp is exactly the date of the newest
-    // ranked match, verified against live responses, so nothing newer than the
-    // newest stored match means there is nothing to fetch.
+    // The profile's last-ranked timestamp is exactly the newest ranked match's
+    // date, verified against live responses, so nothing newer means nothing to fetch.
     if (user.timestamp.lastRanked <= newest.date) {
       return {
         user,
@@ -75,12 +74,16 @@ export async function ingestPlayer(
     // A full page means the delta has a hole; fall through to a full walk.
   }
 
-  // Cold start; the profile and the first page do not depend on each other.
-  const [user, firstPage] = await Promise.all([
+  // Cold start; none of these three depend on each other.
+  const [user, firstPage, seasons] = await Promise.all([
     api.getUser(identifier),
     api.getUserMatches(identifier, { count: PAGE, type, season: opts.season }),
+    api.getUserSeasons(identifier).catch(() => null),
   ]);
   store.upsertPlayer(user);
+  if (seasons) {
+    store.setPlayedSeasons(user.uuid, Object.keys(seasons.seasonResults).map(Number));
+  }
   const stored = store.upsertMatches(firstPage);
   const complete = firstPage.length < PAGE;
   return {
@@ -93,30 +96,32 @@ export async function ingestPlayer(
   };
 }
 
-/** Walks the rest of a player's history backwards from the given cursor. */
-export async function continueBackfill(
+/**
+ * Walks one season to the end and marks it stored. Uncapped on purpose: a heavy
+ * season runs to about nineteen pages and a cap would quietly truncate it.
+ * Always starts from the newest game, since the corpus crawl leaves arbitrary
+ * middle slices behind and resuming below one would skip everything above it.
+ */
+export async function ingestSeason(
   store: Store,
   api: RankedApi,
   identifier: string,
-  cursor: number,
-  opts: IngestOpts = {},
+  uuid: string,
+  season: number,
+  opts: { type?: MatchType } = {},
 ): Promise<number> {
-  const type = opts.type ?? DEFAULT_TYPE;
-  const maxMatches = opts.maxMatches ?? 300;
-  const params: MatchListParams = { count: PAGE, type, season: opts.season };
-
-  let before: number | undefined = cursor;
-  let seen = PAGE; // the first page was already stored by the initial ingest
+  const params: MatchListParams = { count: PAGE, type: opts.type ?? DEFAULT_TYPE, season };
+  let before: number | undefined = undefined;
   let stored = 0;
-  while (seen < maxMatches) {
+  for (;;) {
     const page = await api.getUserMatches(identifier, { ...params, before });
     // An empty page marks the end of the history, not a failure.
     if (page.length === 0) break;
     stored += store.upsertMatches(page);
-    seen += page.length;
     before = page[page.length - 1]!.id;
     if (page.length < PAGE) break;
   }
+  store.markSeasonIngested(uuid, season);
   return stored;
 }
 

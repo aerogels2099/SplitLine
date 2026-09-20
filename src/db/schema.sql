@@ -19,17 +19,15 @@ CREATE TABLE IF NOT EXISTS matches (
 CREATE INDEX IF NOT EXISTS idx_matches_date ON matches(date);
 CREATE INDEX IF NOT EXISTS idx_matches_season_type ON matches(season, type);
 
--- The detail-only fields come back only when a match is fetched by id, so they
--- live here and nothing else does. The rest of the match is stored once, in the
--- matches table, and reads merge the two halves.
+-- Holds only the fields a single-match fetch adds; the rest of the match is
+-- stored once in the matches table, and reads merge the two halves.
 CREATE TABLE IF NOT EXISTS match_details (
   id         INTEGER PRIMARY KEY REFERENCES matches(id),
   fetched_at INTEGER NOT NULL,             -- epoch seconds
   data       TEXT NOT NULL                 -- the detail-only fields
 );
 
--- Both rating columns come from the per-match change record, never from the
--- player summary, which always reports their current rating instead.
+-- Both ratings come from the per-match change record, not the player summary.
 CREATE TABLE IF NOT EXISTS match_players (
   match_id   INTEGER NOT NULL REFERENCES matches(id),
   uuid       TEXT NOT NULL,
@@ -50,3 +48,12 @@ CREATE TABLE IF NOT EXISTS players (
 );
 
 CREATE INDEX IF NOT EXISTS idx_players_nickname ON players(nickname COLLATE NOCASE);
+
+-- One row per season the API says the player appeared in; a season counts as
+-- stored only once its match list has been walked to the end.
+CREATE TABLE IF NOT EXISTS player_seasons (
+  uuid        TEXT NOT NULL,
+  season      INTEGER NOT NULL,
+  ingested_at INTEGER,                     -- epoch seconds; empty while the season is only partly stored
+  PRIMARY KEY (uuid, season)
+) WITHOUT ROWID;

@@ -44,7 +44,6 @@ export interface PlayerHistory {
 export interface PlayerAnalysis {
   user: UserDetails;
   seasons: number[];
-  /** null when the analysis spans every season. */
   season: number | null;
   runCount: number;
   corpusRunCount: number;
@@ -102,9 +101,8 @@ export async function apiPost<T>(path: string, payload: unknown): Promise<T> {
 }
 
 /**
- * Fetch on mount, backed by a cache that hands back the previous response
- * while a fresh one is on its way. The loading and stale flags describe
- * user-visible loads only, never background polls.
+ * Fetch on mount, serving the cached response while a fresh one arrives. The
+ * loading and stale flags cover user-visible loads, never background polls.
  */
 const responseCache = new Map<string, { data: unknown; time: number }>();
 const RESPONSE_TTL = 60_000;
