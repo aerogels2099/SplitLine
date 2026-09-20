@@ -1,7 +1,4 @@
-/**
- * Chart primitives: bars, lines with ringed markers, hairline gridlines and a
- * tooltip on every mark.
- */
+/** Chart primitives: bars, lines, gridlines, and a tooltip on every mark. */
 import { type ReactNode } from "react";
 import { useTooltip } from "./ui";
 
@@ -64,10 +61,7 @@ export interface DivergingItem {
   hint?: ReactNode;
 }
 
-/**
- * Diverging horizontal bars around a zero baseline. Negative is time saved
- * (ahead), positive is time lost (behind).
- */
+/** Diverging bars around a zero baseline; negative is time saved, positive time lost. */
 export function DivergingBars({ items, posColor, negColor }: {
   items: DivergingItem[];
   posColor?: string;

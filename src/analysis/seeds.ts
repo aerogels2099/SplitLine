@@ -1,7 +1,4 @@
-/**
- * Win rate per player, broken down by overworld structure and bastion type.
- * A match whose seed was not filtered has no archetype and is skipped.
- */
+/** Win rate per player by overworld and bastion type; unfiltered seeds are skipped. */
 import { median } from "./stats.js";
 import type { MatchInfo } from "../shared/types.js";
 

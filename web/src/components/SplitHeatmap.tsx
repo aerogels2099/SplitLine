@@ -1,8 +1,5 @@
-/**
- * Split-percentile heatmap: elo bands by milestone, each cell a median split
- * time. Columns are normalized independently, so brightness encodes speed
- * within a milestone rather than across them.
- */
+/** Elo bands by milestone; columns are normalized on their own, so brightness
+ *  compares bands within one split. */
 import type { SplitDistribution } from "../api";
 import { fmtMs } from "../format";
 import { useTooltip } from "./ui";
@@ -68,7 +65,7 @@ export function SplitHeatmap({ data }: { data: Record<string, SplitDistribution[
                 return <div key={l} style={{ height: 34, background: "var(--slot)" }} />;
               }
               const span = max - min;
-              const t = span > 0 ? (max - d.p50) / span : 0.6; // the fastest band in a column scores highest
+              const t = span > 0 ? (max - d.p50) / span : 0.6; // highest scores the fastest band
               const alpha = 0.1 + 0.82 * t;
               const dark = t > 0.52;
               return (

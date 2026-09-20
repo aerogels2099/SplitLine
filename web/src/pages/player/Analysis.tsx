@@ -1,5 +1,11 @@
 import { useSearchParams } from "react-router-dom";
-import { useApi, type ArchetypeStats, type GameSplits, type PlayerAnalysis } from "../../api";
+import {
+  useApi,
+  type ArchetypeStats,
+  type GameSplits,
+  type LabelledRun,
+  type PlayerAnalysis,
+} from "../../api";
 import { fmtDeltaMs, fmtMs, fmtPct, titleCase } from "../../format";
 import { DivergingBars, HBars } from "../../components/charts";
 import { RadarChart } from "../../components/RadarChart";
@@ -8,12 +14,12 @@ import { ChartCard, ErrorBox, Legend, LoadingNote } from "../../components/ui";
 import { usePlayer } from "../Player";
 
 export default function Analysis() {
-  const { id } = usePlayer();
+  const { id, season } = usePlayer();
   const [params] = useSearchParams();
   const match = params.get("match");
 
   const { data, error, loading, stale } = useApi<PlayerAnalysis>(
-    `/api/players/${encodeURIComponent(id)}/analysis`,
+    `/api/players/${encodeURIComponent(id)}/analysis?season=${season}`,
   );
   // Only when arriving from a game card: the run that prompted the question.
   const { data: run } = useApi<GameSplits>(
@@ -34,10 +40,13 @@ export default function Analysis() {
   const withBoth = cmp.segments.filter((s) => s.deltaMs !== null);
   const worst = cmp.segments.find((s) => s.key === cmp.worstSegment);
   const highlight = run?.bastion ?? null;
+  // The server drops runs with no timeline, so the player's is not always
+  // first; picking it out by identity avoids captioning an opponent's run.
+  const myRun = run?.runs.find((r) => r.uuid === data.user.uuid) ?? null;
 
   return (
     <div className="grid" style={{ gap: 16 }}>
-      {run && run.runs.length > 0 && <RunCard run={run} comparison={cmp} />}
+      {run && myRun && <RunCard run={run} mine={myRun} comparison={cmp} />}
 
       {worst && worst.deltaMs !== null && worst.deltaMs > 0 && (
         <div className="card">
@@ -109,12 +118,13 @@ export default function Analysis() {
 /** The run the game card linked from, against the player's own band. */
 function RunCard({
   run,
+  mine,
   comparison,
 }: {
   run: GameSplits;
+  mine: LabelledRun;
   comparison: PlayerAnalysis["comparison"];
 }) {
-  const mine = run.runs[0]!;
   const peer = new Map<string, number | null>(
     comparison.milestoneMedians.map((m) => [m.key, m.peer]),
   );

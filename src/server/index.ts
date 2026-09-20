@@ -58,7 +58,7 @@ app.get("/api/status", async () => ctx.api.getStatus());
 app.get("/api/overview", async (_req, reply) => {
   // Matches the cache lifetimes the API layer uses upstream.
   reply.header("cache-control", "public, max-age=30");
-  // The live and weekly figures are optional: a failure of either must not take down the page.
+  // The live and weekly figures are optional: either may fail without the page failing.
   const [leaderboard, live, weekly] = await Promise.all([
     ctx.api.getLeaderboard(),
     ctx.api.getLive().catch(() => null),
@@ -83,7 +83,7 @@ app.get("/api/overview", async (_req, reply) => {
 app.get("/api/leaderboard", async (req, reply) => {
   const { season, country } = req.query as { season?: string; country?: string };
   reply.header("cache-control", "public, max-age=30");
-  // Season zero is a real value meaning the current season, so a missing season has to be told apart from a zero one.
+  // Season zero means the current season, so a missing one must be told apart from it.
   return ctx.api.getLeaderboard(intParam(season), country);
 });
 

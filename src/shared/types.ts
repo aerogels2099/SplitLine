@@ -138,7 +138,7 @@ export interface MatchInfo {
   type: MatchType;
   season: number;
   category?: string | null;
-  /** Missing from the published documentation; confirmed against live responses in July 2026. */
+  /** Undocumented; confirmed against live responses in July 2026. */
   gameMode?: string | null;
   date: EpochSeconds;
   players: UserProfile[];
@@ -146,19 +146,19 @@ export interface MatchInfo {
   seed?: MatchSeed | null;
   result: MatchResult;
   forfeited: boolean;
-  /** Marks a synthetic entry simulating rank decay rather than a game that was played. */
+  /** A synthetic entry simulating rank decay, not a game that was played. */
   decayed: boolean;
   rank: MatchRank;
   changes: MatchChange[];
   vod?: MatchVod[];
-  /** The fields below come back only when a single match is fetched by id, never in a list. */
+  /** The fields below come back only from a single-match fetch. */
   completions?: CompletionEntry[];
   timelines?: TimelineEntry[];
   tag?: string | null;
   replayExist?: boolean;
   beginner: boolean;
   botSource: string | null;
-  /** Missing from the published documentation; confirmed against live responses in July 2026. */
+  /** Undocumented; confirmed against live responses in July 2026. */
   seedType?: string | null;
   bastionType?: string | null;
 }

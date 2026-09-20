@@ -1,7 +1,4 @@
-/**
- * Radar chart for one entity across a handful of axes, or two overlaid for
- * comparison. Used for seed-archetype win rates.
- */
+/** Radar chart over a handful of axes, one series or two overlaid. */
 import { useTooltip } from "./ui";
 
 export interface RadarSeries {

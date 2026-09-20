@@ -45,7 +45,7 @@ export function seasonsPlayed(matches: MatchInfo[]): number[] {
   return [...seen].sort((a, b) => b - a);
 }
 
-/** One record per match, newest first; decay entries are kept and flagged rather than dropped. */
+/** One record per match, newest first; decay entries are kept and flagged. */
 export function buildGameHistory(
   matches: MatchInfo[],
   uuid: string,
