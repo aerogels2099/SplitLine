@@ -3,7 +3,7 @@ import type { Envelope } from "../shared/types.js";
 export const PRIMARY_BASE = "https://api.mcsrranked.com";
 export const STATUS_BASE = "https://status.mcsrranked.com";
 
-/** Hard API limit is 500 req / 10 min; stay under it with headroom. */
+/** The published ceiling is 500 requests per ten minutes; this leaves headroom. */
 const WINDOW_MS = 10 * 60 * 1000;
 const BUDGET = 450;
 const MAX_CONCURRENT = 8;
@@ -113,7 +113,7 @@ export class RankedClient {
     }
   }
 
-  /** `ttlMs`: 0 for live endpoints, Infinity for immutable ones. */
+  /** Callers ask for no caching on live endpoints and unlimited caching on immutable ones. */
   async get<T>(
     path: string,
     opts: { ttlMs?: number; baseUrl?: string; withKey?: boolean } = {},

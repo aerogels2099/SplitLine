@@ -1,21 +1,35 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, Outlet, useOutletContext, useParams } from "react-router-dom";
 import { useApi, type PlayerHistory } from "../api";
 import { fmtDateTime, flag } from "../format";
 import { Avatar, TierChip } from "../components/Avatar";
 import { ErrorBox, LoadingNote } from "../components/ui";
 import { LadderSidebar } from "../components/LadderSidebar";
 import { tierOf } from "../tiers";
-import GameHistory from "./player/GameHistory";
 
 const BACKFILL_POLL_MS = 1500;
 
+export interface PlayerContext {
+  id: string;
+  history: PlayerHistory;
+  season: number;
+  filling: boolean;
+}
+
+/** Shared by the tabs under a player's header. */
+export function usePlayer() {
+  return useOutletContext<PlayerContext>();
+}
+
 export default function Player() {
   const { id = "" } = useParams();
+  // unset until the reader picks one, which leaves the server to choose the latest
+  const [season, setSeason] = useState<number | undefined>(undefined);
   // The server fills older pages after responding; poll until it says complete.
   const [poll, setPoll] = useState<number | undefined>(undefined);
+  const query = season === undefined ? "" : `?season=${season}`;
   const { data, error, loading } = useApi<PlayerHistory>(
-    id ? `/api/players/${encodeURIComponent(id)}/history` : null,
+    id ? `/api/players/${encodeURIComponent(id)}/history${query}` : null,
     poll,
   );
   const filling = data !== null && !data.complete;
@@ -25,6 +39,12 @@ export default function Player() {
 
   const u = data?.user;
   const tier = tierOf(u?.eloRate);
+  // the API lists seasons newest-first; show them left to right as a timeline
+  const seasons = data ? [...data.seasons].reverse() : [];
+  const at = data ? seasons.indexOf(data.season) : -1;
+  const real = data?.games.filter((g) => !g.decayed) ?? [];
+  const wins = real.filter((g) => g.outcome === "win").length;
+  const losses = real.filter((g) => g.outcome === "loss").length;
 
   return (
     <div className="player-layout">
@@ -61,7 +81,56 @@ export default function Player() {
               </div>
             </div>
 
-            <GameHistory id={id} initial={data} filling={filling} />
+            <div className="player-bar">
+              <nav className="tabs">
+                <NavLink to={`/player/${encodeURIComponent(id)}`} end>
+                  Games
+                </NavLink>
+                <NavLink to={`/player/${encodeURIComponent(id)}/analysis`}>
+                  Pacing &amp; seeds
+                </NavLink>
+              </nav>
+
+              <button
+                type="button"
+                disabled={at <= 0}
+                onClick={() => setSeason(seasons[at - 1])}
+                aria-label="Earlier season"
+              >
+                ◂
+              </button>
+              <div className="season-list">
+                {seasons.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    className={s === data.season ? "on" : ""}
+                    onClick={() => setSeason(s)}
+                  >
+                    S{s}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                disabled={at < 0 || at >= seasons.length - 1}
+                onClick={() => setSeason(seasons[at + 1])}
+                aria-label="Later season"
+              >
+                ▸
+              </button>
+
+              <span className="season-tally">
+                {wins}–{losses} in {real.length} ranked games
+                {filling && <span className="muted"> · loading older games…</span>}
+              </span>
+            </div>
+
+            <Outlet
+              context={
+                { id, history: data, season: data.season, filling } satisfies PlayerContext
+              }
+            />
           </>
         )}
       </div>

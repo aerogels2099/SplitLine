@@ -3,6 +3,8 @@ import { Navigate, NavLink, Route, Routes, useNavigate } from "react-router-dom"
 
 const Home = lazy(() => import("./pages/Home"));
 const Player = lazy(() => import("./pages/Player"));
+const GameHistory = lazy(() => import("./pages/player/GameHistory"));
+const Analysis = lazy(() => import("./pages/player/Analysis"));
 
 function Logo() {
   return (
@@ -57,7 +59,10 @@ export default function App() {
         {/* the dashboard is the home page; normalize the URL so the nav highlights */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Home />} />
-        <Route path="/player/:id" element={<Player />} />
+        <Route path="/player/:id" element={<Player />}>
+          <Route index element={<GameHistory />} />
+          <Route path="analysis" element={<Analysis />} />
+        </Route>
       </Routes>
       </Suspense>
     </div>

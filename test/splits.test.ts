@@ -28,7 +28,7 @@ describe("split extraction", () => {
 
   it("treats an empty timelines array as absent, not as a run of nulls", () => {
     const m = details[0]!;
-    // Array endpoints return [] rather than an error (gotcha 3).
+    // Endpoints that return lists answer with an empty list rather than an error.
     expect(extractRunSplits({ ...m, timelines: [] }, m.players[0]!.uuid)).toBeNull();
   });
 

@@ -9,10 +9,15 @@ import type {
   WeeklyRaceEntry,
 } from "../../src/shared/types.js";
 import type { GameRecord, LabelledRun } from "../../src/analysis/history.js";
+import type { PacingComparison, SplitDistribution } from "../../src/analysis/pacing.js";
+import type { ArchetypeStats } from "../../src/analysis/seeds.js";
 
 export type {
+  ArchetypeStats,
   GameRecord,
   LabelledRun,
+  PacingComparison,
+  SplitDistribution,
   Leaderboard,
   MatchInfo,
   UserDetails,
@@ -21,7 +26,7 @@ export type {
 export interface Overview {
   season: LeaderboardSeason;
   top: UserProfileWithSeasonResult[];
-  /** null when the live endpoint was unreachable; the ladder still renders. */
+  /** Absent when the live endpoint was unreachable; the ladder still renders. */
   playersOnline: number | null;
   liveMatchCount: number | null;
   weekly: { id: number; endsAt: number; podium: WeeklyRaceEntry[]; entrants: number } | null;
@@ -36,9 +41,25 @@ export interface PlayerHistory {
   complete: boolean;
 }
 
+export interface PlayerAnalysis {
+  user: UserDetails;
+  seasons: number[];
+  /** null when the analysis spans every season. */
+  season: number | null;
+  runCount: number;
+  corpusRunCount: number;
+  comparison: PacingComparison;
+  bandedDistributions: Record<string, SplitDistribution[]>;
+  byBastion: ArchetypeStats[];
+  byOverworld: ArchetypeStats[];
+  complete: boolean;
+}
+
 export interface GameSplits {
   matchId: number;
   runs: LabelledRun[];
+  bastion: string | null;
+  overworld: string | null;
 }
 
 export class HttpError extends Error {
@@ -81,8 +102,9 @@ export async function apiPost<T>(path: string, payload: unknown): Promise<T> {
 }
 
 /**
- * Fetch-on-mount with a stale-while-revalidate cache. `loading` and `stale`
- * apply only to user-visible loads, never to background polls.
+ * Fetch on mount, backed by a cache that hands back the previous response
+ * while a fresh one is on its way. The loading and stale flags describe
+ * user-visible loads only, never background polls.
  */
 const responseCache = new Map<string, { data: unknown; time: number }>();
 const RESPONSE_TTL = 60_000;
@@ -150,7 +172,7 @@ export function useApi<T>(path: string | null, pollMs?: number) {
     const hit = cachedResponse<T>(path);
     setData(hit);
     setError(null);
-    load(hit !== null); // fresh cache -> silent revalidate; else visible load
+    load(hit !== null); // a fresh cache refreshes quietly, otherwise the load is shown
   }, [load, path]);
 
   useEffect(() => {

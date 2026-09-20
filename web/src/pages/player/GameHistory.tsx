@@ -1,39 +1,24 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { useApi, type GameRecord, type GameSplits, type PlayerHistory } from "../../api";
+import { Link } from "react-router-dom";
+import { useApi, type GameRecord, type GameSplits } from "../../api";
+import { usePlayer } from "../Player";
 import { fmtDate, fmtMs, fmtSigned } from "../../format";
 import { EloChart, type EloChartPoint } from "../../components/EloChart";
 import { ChartCard, ErrorBox } from "../../components/ui";
 
 const RANGES = [0, 100, 50, 25];
 
-export default function GameHistory({
-  id,
-  initial,
-  filling = false,
-}: {
-  id: string;
-  initial: PlayerHistory;
-  /** Older pages are still landing, so counts here are not yet final. */
-  filling?: boolean;
-}) {
-  const [season, setSeason] = useState(initial.season);
-  // The page already loaded one season; re-fetch only when another is picked.
-  const path = `/api/players/${encodeURIComponent(id)}/history?season=${season}`;
-  const { data, error, stale } = useApi<PlayerHistory>(season === initial.season ? null : path);
-  const view = season === initial.season ? initial : data;
-
-  // the API lists seasons newest-first; show them left to right as a timeline
-  const seasons = [...initial.seasons].reverse();
-  const at = seasons.indexOf(season);
+export default function GameHistory() {
+  const { id, history, season } = usePlayer();
   const [range, setWindow] = useState(0);
   // Which game's splits are expanded; the elo chart can set it too.
   const [openMatch, setOpenMatch] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const pendingJump = useRef<number | null>(null);
 
-  const games = view?.games;
+  const games = history.games;
   // Above the early returns so the hook order stays stable.
-  const { points, wins, losses, played } = useMemo(() => {
+  const { points } = useMemo(() => {
     const list = games ?? [];
     const pts: EloChartPoint[] = list
       .filter((g): g is GameRecord & { eloAfter: number } => g.eloAfter !== null)
@@ -46,16 +31,10 @@ export default function GameHistory({
         outcome: g.outcome,
         opponent: g.opponent?.nickname ?? null,
       }));
-    const real = list.filter((g) => !g.decayed);
-    return {
-      points: pts,
-      wins: real.filter((g) => g.outcome === "win").length,
-      losses: real.filter((g) => g.outcome === "loss").length,
-      played: real.length,
-    };
+    return { points: pts };
   }, [games]);
 
-  // the range counts games back from the most recent, so 0 means the lot
+  // the range counts games back from the most recent, and none means all of them
   const shown = useMemo(() => (range === 0 ? points : points.slice(-range)), [points, range]);
 
   /**
@@ -75,46 +54,8 @@ export default function GameHistory({
       ?.scrollIntoView({ block: "center" });
   }, [openMatch]);
 
-  if (error) return <ErrorBox message={error} />;
-  if (!games) return <div className="card">Loading season {season}…</div>;
-
   return (
-    <div className={stale ? "stale" : ""}>
-      <div className="season-bar">
-        <button
-          type="button"
-          disabled={at <= 0}
-          onClick={() => setSeason(seasons[at - 1]!)}
-          aria-label="Earlier season"
-        >
-          ◂
-        </button>
-        <div className="season-list">
-          {seasons.map((s) => (
-            <button
-              key={s}
-              type="button"
-              className={s === season ? "on" : ""}
-              onClick={() => setSeason(s)}
-            >
-              S{s}
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          disabled={at >= seasons.length - 1}
-          onClick={() => setSeason(seasons[at + 1]!)}
-          aria-label="Later season"
-        >
-          ▸
-        </button>
-        <span className="season-tally">
-          {wins}–{losses} in {played} ranked games
-          {filling && <span className="muted"> · loading older games…</span>}
-        </span>
-      </div>
-
+    <div>
       {points.length > 1 && (
         <ChartCard
           title={`Season ${season} rating`}
@@ -222,7 +163,7 @@ function SplitCard({ id, matchId }: { id: string; matchId: number }) {
           {runs[0]!.splits.map((s, i) => (
             <tr key={s.key}>
               <td className="strong">{s.label}</td>
-              {/* labelRun emits splits in fixed milestone order. */}
+              {/* splits come back in a fixed milestone order, so position lines the rows up */}
               {runs.map((r) => (
                 <td key={r.uuid} className="num">
                   {fmtMs(r.splits[i]?.time)}
@@ -232,6 +173,11 @@ function SplitCard({ id, matchId }: { id: string; matchId: number }) {
           ))}
         </tbody>
       </table>
+      <div className="split-actions">
+        <Link to={`/player/${encodeURIComponent(id)}/analysis?match=${matchId}`}>
+          Analyse this run →
+        </Link>
+      </div>
       <div className="split-meta">
         {runs.map((r) => (
           <span key={r.uuid}>

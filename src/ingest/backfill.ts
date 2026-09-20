@@ -2,7 +2,7 @@ import type { MatchListParams, RankedApi } from "../api/endpoints.js";
 import type { Store } from "../db/db.js";
 import type { MatchInfo, MatchType, UserDetails } from "../shared/types.js";
 
-/** A page is 100 matches; the API rejects count > 100. */
+/** A page is 100 matches, the most the API will return at once. */
 const PAGE = 100;
 
 /** The player page only ever renders ranked games. */
@@ -15,7 +15,7 @@ export interface PlayerIngestResult {
   matchesFetched: number;
   matchesStored: number;
   mode: IngestMode;
-  /** False when older history is still missing; `cursor` resumes the walk. */
+  /** False while older history is still missing; the cursor is where to resume. */
   complete: boolean;
   cursor: number | null;
 }
@@ -26,7 +26,7 @@ interface IngestOpts {
   type?: MatchType;
 }
 
-/** Decayed matches are stored and flagged; older pages go to continueBackfill. */
+/** Decay entries are stored and flagged; anything older than the first page is left to the background walk. */
 export async function ingestPlayer(
   store: Store,
   api: RankedApi,
@@ -41,8 +41,9 @@ export async function ingestPlayer(
     const user = await api.getUser(identifier);
     store.upsertPlayer(user);
 
-    // lastRanked is exactly the newest ranked match's date (verified against
-    // live responses), so nothing newer means nothing to fetch.
+    // The profile's last-ranked timestamp is exactly the date of the newest
+    // ranked match, verified against live responses, so nothing newer than the
+    // newest stored match means there is nothing to fetch.
     if (user.timestamp.lastRanked <= newest.date) {
       return {
         user,
@@ -92,7 +93,7 @@ export async function ingestPlayer(
   };
 }
 
-/** Walks the rest of a player's history backwards from `cursor`. */
+/** Walks the rest of a player's history backwards from the given cursor. */
 export async function continueBackfill(
   store: Store,
   api: RankedApi,
@@ -105,11 +106,11 @@ export async function continueBackfill(
   const params: MatchListParams = { count: PAGE, type, season: opts.season };
 
   let before: number | undefined = cursor;
-  let seen = PAGE; // the page ingestPlayer already stored
+  let seen = PAGE; // the first page was already stored by the initial ingest
   let stored = 0;
   while (seen < maxMatches) {
     const page = await api.getUserMatches(identifier, { ...params, before });
-    // [] is the terminator, not an error.
+    // An empty page marks the end of the history, not a failure.
     if (page.length === 0) break;
     stored += store.upsertMatches(page);
     seen += page.length;
@@ -125,7 +126,7 @@ const CHUNK = 4;
 async function fetchDetails(store: Store, api: RankedApi, ids: number[]): Promise<number> {
   let fetched = 0;
   for (let i = 0; i < ids.length; i += CHUNK) {
-    // allSettled: one unreachable match must not discard the whole batch.
+    // One unreachable match must not discard the whole batch.
     const results = await Promise.allSettled(ids.slice(i, i + CHUNK).map((id) => api.getMatch(id)));
     const details = results
       .filter((r): r is PromiseFulfilledResult<MatchInfo> => r.status === "fulfilled")

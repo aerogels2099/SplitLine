@@ -37,7 +37,7 @@ describe("RankedClient", () => {
     const fetchImpl = vi.fn(async () => new Response("boom", { status: 500 }));
     const c = new RankedClient({ fetchImpl: fetchImpl as unknown as typeof fetch, sleepImpl: noSleep });
     await expect(c.get("/matches")).rejects.toThrowError(/server error/);
-    expect(fetchImpl).toHaveBeenCalledTimes(4); // initial + 3 retries
+    expect(fetchImpl).toHaveBeenCalledTimes(4); // the first attempt plus three retries
   });
 
   it("caches responses for ttlMs and tracks the request budget", async () => {

@@ -59,7 +59,7 @@ describe("sqlite store", () => {
     for (const row of rows) {
       const m = matches.find((x) => x.id === row.match_id)!;
       const change = m.changes.find((c) => c.uuid === row.uuid);
-      // elo_rate is the PRE-match rating from changes[], not the live rating.
+      // The stored rating is the one going into the match, not the player's current one.
       expect(row.elo_rate).toBe(change?.eloRate ?? null);
       expect(row.elo_change).toBe(change?.change ?? null);
       expect(row.elo_after).toBe(
@@ -134,8 +134,8 @@ describe("sqlite store", () => {
     const store = new Store(":memory:");
     const detail = matchDetails()[0]!;
     store.upsertMatches([detail]);
-    // Old format: match_details.data held the entire match. Merging it over
-    // the list row must still reproduce the original object.
+    // In the older format the detail row held the entire match; merging it
+    // over the list row must still reproduce the original.
     store.db
       .prepare(`INSERT OR REPLACE INTO match_details (id, fetched_at, data) VALUES (?, ?, ?)`)
       .run(detail.id, 0, JSON.stringify(detail));
@@ -146,12 +146,31 @@ describe("sqlite store", () => {
   it("joins an open transaction instead of opening a second one", () => {
     const store = new Store(":memory:");
     const matches = userAMatches();
-    // SQLite rejects a nested BEGIN, and an unguarded rollback here would
-    // discard the caller's work rather than the inner write's.
+    // The database refuses a transaction opened inside another, and an
+    // unguarded rollback here would discard the caller's work rather than
+    // the inner write's.
     store.db.exec("BEGIN");
     expect(() => store.upsertMatches(matches)).not.toThrow();
     store.db.exec("COMMIT");
     expect(store.matchCount()).toBe(matches.length);
+    store.close();
+  });
+
+  it("scopes getDetails by uuid rather than a global date window", () => {
+    const store = new Store(":memory:");
+    const details = matchDetails();
+    store.upsertDetails(details);
+    const uuid = userA().uuid;
+
+    const mine = details.filter((d) => d.players.some((p) => p.uuid === uuid));
+    expect(store.getDetails({ uuid })).toHaveLength(mine.length);
+
+    // A global window ordered by date can exclude a player's own matches,
+    // which is why the analysis must not filter the corpus by uuid.
+    const oldest = [...details].sort((a, b) => a.date - b.date)[0]!;
+    const newestFirst = store.getDetails({ limit: 1 });
+    expect(newestFirst).toHaveLength(1);
+    expect(newestFirst[0]!.id).not.toBe(oldest.id);
     store.close();
   });
 

@@ -10,14 +10,14 @@ export interface ErrorEnvelope {
 }
 export type Envelope<T> = SuccessEnvelope<T> | ErrorEnvelope;
 
-/** 1 casual, 2 ranked, 3 private, 4 event. */
+/** Numbered in the order casual, ranked, private, event. */
 export type MatchType = 1 | 2 | 3 | 4;
 
 export interface UserProfile {
-  uuid: string; // no dashes
+  uuid: string; // the API returns these without dashes
   nickname: string;
   roleType: number;
-  /** null until placement matches finish */
+  /** Unrated until the player has finished their placement matches. */
   eloRate: number | null;
   eloRank: number | null;
   country: string | null;
@@ -28,7 +28,7 @@ export interface Achievement {
   date: EpochSeconds;
   data: string[];
   level: number;
-  /** null for non-leveling achievements */
+  /** Absent for achievements that do not have levels. */
   value: number | null;
   goal: number | null;
 }
@@ -89,7 +89,7 @@ export interface UserSeasonSummary extends UserProfile {
 }
 
 export interface MatchSeed {
-  /** All fields null / [] when the seed is not filtered (gotcha 7). */
+  /** Every field here is empty unless the match ran on a filtered seed. */
   id: string | null;
   overworld: string | null;
   nether: string | null;
@@ -98,7 +98,7 @@ export interface MatchSeed {
 }
 
 export interface MatchResult {
-  /** null on a draw (gotcha 6) */
+  /** No winner is recorded when the match was drawn. */
   uuid: string | null;
   time: Millis;
 }
@@ -110,7 +110,7 @@ export interface MatchRank {
 
 export interface MatchChange {
   uuid: string;
-  /** null on placement games (gotcha 4) */
+  /** Neither figure is reported for placement games. */
   change: number | null;
   eloRate: number | null;
 }
@@ -118,7 +118,7 @@ export interface MatchChange {
 export interface MatchVod {
   uuid: string;
   url: string;
-  /** VOD offset for a moment = match.date - vod.startsAt (gotcha 9) */
+  /** When the recording began; the gap to the match time is the offset into it. */
   startsAt: EpochSeconds;
 }
 
@@ -138,7 +138,7 @@ export interface MatchInfo {
   type: MatchType;
   season: number;
   category?: string | null;
-  /** Undocumented in HTML docs; verified against live responses 2026-07. */
+  /** Missing from the published documentation; confirmed against live responses in July 2026. */
   gameMode?: string | null;
   date: EpochSeconds;
   players: UserProfile[];
@@ -146,19 +146,19 @@ export interface MatchInfo {
   seed?: MatchSeed | null;
   result: MatchResult;
   forfeited: boolean;
-  /** true = synthetic decay match, not a real game (gotcha 2) */
+  /** Marks a synthetic entry simulating rank decay rather than a game that was played. */
   decayed: boolean;
   rank: MatchRank;
   changes: MatchChange[];
   vod?: MatchVod[];
-  /** Advanced fields below only exist on /matches/{id} (gotcha 5). */
+  /** The fields below come back only when a single match is fetched by id, never in a list. */
   completions?: CompletionEntry[];
   timelines?: TimelineEntry[];
   tag?: string | null;
   replayExist?: boolean;
   beginner: boolean;
   botSource: string | null;
-  /** Undocumented in HTML docs; verified against live responses 2026-07. */
+  /** Missing from the published documentation; confirmed against live responses in July 2026. */
   seedType?: string | null;
   bastionType?: string | null;
 }
@@ -268,9 +268,9 @@ export interface WeeklyRace {
 }
 
 export interface StatusHeartbeat {
-  /** 0 down, 1 up, 2 pending, 3 maintenance */
+  /** Numbered in the order down, up, pending, maintenance. */
   status: 0 | 1 | 2 | 3;
-  time: string; // "YYYY-MM-DD HH:mm:ss"
+  time: string; // written out as text rather than a timestamp
   msg: string;
   ping: number | null;
 }

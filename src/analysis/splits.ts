@@ -1,8 +1,6 @@
-/**
- * Reconstructs run structure from `timelines[]` on /matches/{id}.
- */
+/** Reconstructs the shape of a run from the event timeline of a single match. */
 import { asMillis, type EpochSeconds, type Millis } from "../shared/brand.js";
-import type { MatchInfo } from "../shared/types.js";
+import type { MatchInfo, TimelineEntry } from "../shared/types.js";
 
 export const MILESTONES = [
   { key: "nether_enter", event: "story.enter_the_nether", label: "Nether Enter" },
@@ -81,8 +79,15 @@ export function extractRunSplits(detail: MatchInfo, uuid: string): RunSplits | n
   if (!detail.timelines?.length || detail.decayed) return null;
   const player = detail.players.find((p) => p.uuid === uuid);
   if (!player) return null;
+  return runFrom(detail, uuid, player.nickname, detail.timelines.filter((t) => t.uuid === uuid));
+}
 
-  const events = detail.timelines.filter((t) => t.uuid === uuid);
+function runFrom(
+  detail: MatchInfo,
+  uuid: string,
+  nickname: string,
+  events: TimelineEntry[],
+): RunSplits {
   const lastReset = events
     .filter((t) => t.type === RESET_EVENT)
     .reduce((max, t) => Math.max(max, t.time), -1);
@@ -114,7 +119,7 @@ export function extractRunSplits(detail: MatchInfo, uuid: string): RunSplits | n
     matchId: detail.id,
     date: detail.date,
     uuid,
-    nickname: player.nickname,
+    nickname,
     eloAtMatch: change?.eloRate ?? null,
     finished: completion !== undefined,
     won: detail.result.uuid === uuid,
@@ -130,9 +135,17 @@ export function extractRunSplits(detail: MatchInfo, uuid: string): RunSplits | n
 export function extractAllRuns(details: MatchInfo[]): RunSplits[] {
   const runs: RunSplits[] = [];
   for (const d of details) {
+    if (!d.timelines?.length || d.decayed) continue;
+    // Grouped once per match rather than rescanned for each player.
+    const byUuid = new Map<string, TimelineEntry[]>();
+    for (const t of d.timelines) {
+      const arr = byUuid.get(t.uuid);
+      if (arr) arr.push(t);
+      else byUuid.set(t.uuid, [t]);
+    }
     for (const p of d.players) {
-      const r = extractRunSplits(d, p.uuid);
-      if (r) runs.push(r);
+      const events = byUuid.get(p.uuid);
+      if (events) runs.push(runFrom(d, p.uuid, p.nickname, events));
     }
   }
   return runs;

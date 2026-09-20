@@ -10,12 +10,12 @@ export interface GameRecord {
   season: number;
   outcome: GameOutcome;
   forfeited: boolean;
-  /** Synthetic decay entry, not a real game (gotcha 2). */
+  /** Marks a synthetic rank-decay entry rather than a game that was played. */
   decayed: boolean;
-  /** The deciding completion time; null on a draw. */
+  /** The winning completion time, absent when the match was drawn. */
   time: Millis | null;
   opponent: { uuid: string; nickname: string; eloAtMatch: number | null } | null;
-  /** Pre-match rating; null on placement games (gotcha 4). */
+  /** The rating carried into the match, unavailable for placement games. */
   eloBefore: number | null;
   eloChange: number | null;
   eloAfter: number | null;
@@ -39,14 +39,13 @@ export interface LabelledRun {
   segments: LabelledSplit[];
 }
 
-/** Seasons the player has a match in, newest first. */
 export function seasonsPlayed(matches: MatchInfo[]): number[] {
   const seen = new Set<number>();
   for (const m of matches) seen.add(m.season);
   return [...seen].sort((a, b) => b - a);
 }
 
-/** One record per match, newest first. Decay entries are kept and flagged. */
+/** One record per match, newest first; decay entries are kept and flagged rather than dropped. */
 export function buildGameHistory(
   matches: MatchInfo[],
   uuid: string,

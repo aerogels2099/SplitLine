@@ -30,14 +30,14 @@ export function useTooltip() {
   const hide = () => setTip(null);
   let el = null;
   if (tip) {
-    // Positioned entirely by transform: `left` near the right edge would
-    // shrink the box before the translate runs and wrap the text.
+    // Placed entirely by translation: offsetting it from the left instead
+    // would shrink the box near the right edge and wrap the text.
     const flipX = tip.x > window.innerWidth * 0.62;
     const flipY = tip.y > window.innerHeight * 0.72;
     const tx = flipX ? `calc(${tip.x}px - 100% - 14px)` : `${tip.x + 14}px`;
     const ty = flipY ? `calc(${tip.y}px - 100% - 12px)` : `${tip.y + 16}px`;
-    // Portal to <body>: a transformed ancestor would otherwise become the
-    // containing block for this fixed-position box.
+    // Rendered at the end of the document: a transformed ancestor would
+    // otherwise anchor this fixed box to itself.
     el = createPortal(
       <div className="viz-tooltip" style={{ left: 0, top: 0, transform: `translate(${tx}, ${ty})` }}>
         {tip.content}
@@ -216,7 +216,7 @@ export function LoadingNote({ text }: { text?: string }) {
     <div className="card">
       <span className="shimmer-text" style={{ fontFamily: "var(--font-mono)", fontSize: 13 }}>
         {msg}
-        {/* the lit copy the clip band sweeps across; paint, so hidden from AT */}
+        {/* the lit copy the sweep reveals; decoration only, so it stays out of the accessibility tree */}
         <span className="shimmer-sweep" aria-hidden>
           {msg}
         </span>

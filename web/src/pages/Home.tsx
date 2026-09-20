@@ -13,7 +13,7 @@ export default function Home() {
 
   const podium = data?.top.slice(0, 3) ?? [];
   const rest = data?.top.slice(3) ?? [];
-  // live and weekly can be null; the server degrades them independently.
+  // The live and weekly figures may be missing; the server degrades them independently.
   const leader = data?.weekly?.podium[0] ?? null;
 
   return (

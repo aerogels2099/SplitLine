@@ -1,42 +1,42 @@
--- `date` columns are epoch SECONDS; `*_time` columns are MILLISECONDS.
+-- Date columns hold epoch seconds; duration columns hold milliseconds.
 
 CREATE TABLE IF NOT EXISTS matches (
-  id           INTEGER PRIMARY KEY,        -- API match id
+  id           INTEGER PRIMARY KEY,        -- match id as issued by the API
   season       INTEGER NOT NULL,
-  type         INTEGER NOT NULL,           -- 1 casual, 2 ranked, 3 private, 4 event
+  type         INTEGER NOT NULL,           -- numbered casual, ranked, private, event
   date         INTEGER NOT NULL,           -- epoch seconds
-  forfeited    INTEGER NOT NULL,           -- 0/1
-  decayed      INTEGER NOT NULL,           -- 0/1: synthetic decay entry, not a real game
-  winner_uuid  TEXT,                       -- NULL on draw
+  forfeited    INTEGER NOT NULL,
+  decayed      INTEGER NOT NULL,           -- a synthetic rank-decay entry, not a game
+  winner_uuid  TEXT,                       -- empty when the match was drawn
   result_time  INTEGER NOT NULL,           -- milliseconds
   seed_type    TEXT,
   bastion_type TEXT,
   category     TEXT,
   tag          TEXT,
-  data         TEXT NOT NULL               -- MatchInfo JSON, advanced fields stripped
+  data         TEXT NOT NULL               -- the match record, without the detail-only fields
 );
 
 CREATE INDEX IF NOT EXISTS idx_matches_date ON matches(date);
 CREATE INDEX IF NOT EXISTS idx_matches_season_type ON matches(season, type);
 
--- Advanced fields exist only on GET /matches/{id}, so they live here. `data`
--- holds ONLY those fields (completions, timelines, replayExist); the list-level
--- record is stored once, in matches.data. Reads merge the two halves.
+-- The detail-only fields come back only when a match is fetched by id, so they
+-- live here and nothing else does. The rest of the match is stored once, in the
+-- matches table, and reads merge the two halves.
 CREATE TABLE IF NOT EXISTS match_details (
   id         INTEGER PRIMARY KEY REFERENCES matches(id),
   fetched_at INTEGER NOT NULL,             -- epoch seconds
-  data       TEXT NOT NULL                 -- advanced fields JSON
+  data       TEXT NOT NULL                 -- the detail-only fields
 );
 
--- Both elo columns come from changes[], never from players[].eloRate, which is
--- the player's CURRENT rating at fetch time rather than their rating then.
+-- Both rating columns come from the per-match change record, never from the
+-- player summary, which always reports their current rating instead.
 CREATE TABLE IF NOT EXISTS match_players (
   match_id   INTEGER NOT NULL REFERENCES matches(id),
   uuid       TEXT NOT NULL,
   nickname   TEXT NOT NULL,
-  elo_rate   INTEGER,                      -- PRE-match rating (NULL in placements)
-  elo_change INTEGER,                      -- NULL in placements
-  elo_after  INTEGER,                      -- elo_rate + elo_change
+  elo_rate   INTEGER,                      -- the rating going into the match; empty in placements
+  elo_change INTEGER,                      -- empty in placements
+  elo_after  INTEGER,
   PRIMARY KEY (match_id, uuid)
 ) WITHOUT ROWID;
 
@@ -45,8 +45,8 @@ CREATE INDEX IF NOT EXISTS idx_match_players_uuid ON match_players(uuid, match_i
 CREATE TABLE IF NOT EXISTS players (
   uuid        TEXT PRIMARY KEY,
   nickname    TEXT NOT NULL,
-  last_ingest INTEGER,                     -- epoch seconds of last successful ingest
-  data        TEXT                         -- full UserDetails JSON
+  last_ingest INTEGER,                     -- epoch seconds of the last successful ingest
+  data        TEXT                         -- the full player record
 );
 
 CREATE INDEX IF NOT EXISTS idx_players_nickname ON players(nickname COLLATE NOCASE);

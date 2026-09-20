@@ -1,4 +1,4 @@
-// Fetches real API responses into test/fixtures/ (~25 requests).
+// Fetches real API responses into the test fixtures directory, about 25 requests.
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -15,7 +15,7 @@ async function get(path) {
     throw new Error(`${path} -> ${res.status} ${JSON.stringify(body.data).slice(0, 200)}`);
   }
   console.log(`ok  ${path}`);
-  return body; // full envelope, checked in as-is
+  return body; // the whole envelope is checked in unchanged
 }
 
 async function save(name, body) {

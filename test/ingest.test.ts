@@ -37,7 +37,7 @@ describe("ingestPlayer", () => {
     store.upsertMatches(ranked);
     const newest = store.newestMatchForPlayer(user.uuid)!;
 
-    // lastRanked is exactly the newest stored match's date: nothing to fetch.
+    // The profile's last-ranked timestamp equals the newest stored match's date, so there is nothing to fetch.
     const { api, calls } = fakeApi({ user: withLastRanked(user, newest.date) });
     const r = await ingestPlayer(store, api, user.nickname);
 

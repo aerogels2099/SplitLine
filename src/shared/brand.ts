@@ -1,9 +1,10 @@
 declare const brand: unique symbol;
 export type Brand<T, B extends string> = T & { readonly [brand]: B };
 
-/** Epoch timestamp in seconds (API `date`). */
+// The ranked API reports moments in seconds but durations in milliseconds.
+// Branding the two apart is what keeps one from being passed where the other
+// belongs.
 export type EpochSeconds = Brand<number, "EpochSeconds">;
-/** Duration in milliseconds (API `time`). */
 export type Millis = Brand<number, "Millis">;
 
 export const asEpochSeconds = (n: number): EpochSeconds => n as EpochSeconds;

@@ -13,8 +13,8 @@ export function LadderSidebar({ current }: { current?: string }) {
   const users = data?.users.slice(0, SHOWN) ?? [];
   const here = current?.toLowerCase();
 
-  // Once only: `data` gets a new identity on every poll, which would
-  // otherwise yank the list back under a scrolled user.
+  // Centre once only: every poll brings a fresh response, which would
+  // otherwise yank the list back under a reader who had scrolled away.
   const centredFor = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (!data || !here || centredFor.current === here) return;

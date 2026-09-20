@@ -1,5 +1,5 @@
-/* Latin subsets only; @fontsource-variable ships no per-subset entrypoint.
-   The font-weight RANGE is load-bearing: one value clamps the variable axis. */
+/* Latin subsets only; the font package ships no per-subset entry point.
+   The weight range is load-bearing: a single value clamps the variable axis. */
 @font-face {
   font-family: "Inter Variable";
   font-style: normal;
@@ -284,7 +284,7 @@ button,
   font-weight: 600;
   cursor: pointer;
   box-shadow: var(--bevel), 3px 3px 0 rgba(0, 0, 0, 0.45);
-  /* release only -- see button:active */
+  /* the eased timing covers the release; the press itself is instant */
   transition: transform 0.16s var(--ease-out), box-shadow 0.16s var(--ease-out);
 }
 button:hover,
@@ -292,8 +292,8 @@ button:hover,
   border-color: var(--gold-dim);
   color: var(--gold-hot);
 }
-/* transform and box-shadow share a duration so the shadow cannot snap
-   while the button is still travelling. */
+/* the offset and its shadow share a duration, so the shadow cannot snap
+   while the button is still travelling */
 button:active {
   transform: translate(2px, 2px);
   box-shadow: var(--bevel), 1px 1px 0 rgba(0, 0, 0, 0.45);
@@ -580,7 +580,6 @@ table.data tbody tr:hover {
 .tabs {
   display: flex;
   gap: 0;
-  margin: 24px 0 22px;
   flex-wrap: wrap;
   border: 2px solid var(--border);
   background: var(--surface-1);
@@ -589,6 +588,7 @@ table.data tbody tr:hover {
   width: fit-content;
   max-width: 100%;
 }
+.tabs a,
 .tabs button {
   background: none;
   border: 2px solid transparent;
@@ -600,16 +600,20 @@ table.data tbody tr:hover {
   letter-spacing: 0.5px;
   box-shadow: none;
 }
+.tabs a + a,
 .tabs button + button {
   border-left: 2px solid var(--border);
 }
 .tabs button:active {
   transform: none;
 }
+.tabs a:hover,
 .tabs button:hover {
   color: var(--text-primary);
   background: var(--surface-2);
+  text-decoration: none;
 }
+.tabs a.active,
 .tabs button.on {
   color: #171205;
   background: var(--gold);
@@ -789,8 +793,8 @@ table.data tbody tr:hover {
   box-shadow: var(--bevel-in);
   overflow: hidden;
 }
-/* Side A scales horizontally instead of resizing, and must stay AFTER side B
-   so the notch overlay paints over both. */
+/* The left side is scaled horizontally rather than resized, and must stay
+   after the right one so the notch overlay paints over both. */
 .tug .side-a,
 .tug .side-b {
   position: absolute;
@@ -969,8 +973,8 @@ table.data tbody tr:hover {
   border-color: var(--gold-dim);
 }
 
-/* The pointer position is written to this childless <span>, never to the
-   card: a property on the card invalidates style for every node inside it. */
+/* The pointer position is written to this empty glow layer, never to the
+   card: a variable on the card invalidates style for every node inside it. */
 .glow-card {
   position: relative;
 }
@@ -985,57 +989,22 @@ table.data tbody tr:hover {
   z-index: 2;
   padding: 2px;
   background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 0%), var(--gold), transparent 60%);
-  /* punch out the interior so only the 2px border shows the glow */
+  /* punch out the interior so only the border shows the glow */
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
-/* a tap fires :hover on touch and leaves it stuck, so gate both on a real pointer */
+/* a tap leaves the hover state stuck on a touch screen, so this needs a real pointer */
 @media (hover: hover) and (pointer: fine) {
   .glow-card:hover > .card-glow {
     opacity: 0.9;
   }
 }
 
-/* The row is duplicated: the copy is styled active and clipped to the
-   selected tab, so background and label can never disagree. Clip rect is
-   measured in Player.tsx. */
-.tabs {
-  position: relative;
-}
-.tabs-copy {
-  position: absolute;
-/* inset:0 is the padding box, so this mirrors .tabs' own padding */
-  inset: 0;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 3px;
-  pointer-events: none;
-  transition: clip-path 0.18s var(--ease-in-out);
-}
-.tabs-copy button {
-  color: #171205;
-  background: var(--gold);
-  border-color: var(--gold-hot);
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
-}
-.tabs-copy button + button {
-  border-left-color: var(--gold-hot);
-}
-.tabs button.on {
-  color: var(--text-muted);
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-}
-.tabs button:active {
-  color: var(--text-primary);
-}
-
-/* A gold copy of the text revealed by a sweeping clip band. Scrolling a
-   gradient under background-clip: text re-rasterizes the glyphs; this does not. */
+/* A gold copy of the text, revealed by a sweeping band. Sliding a gradient
+   behind clipped text redraws the glyphs every frame; this does not. */
 .shimmer-text {
   position: relative;
   display: inline-block;
@@ -1067,7 +1036,7 @@ table.data tbody tr:hover {
   margin-right: 7px;
   vertical-align: middle;
 }
-/* a scaled square, not a growing box-shadow: shadow spread repaints */
+/* a scaled square rather than a growing shadow, whose spread repaints each frame */
 .live-dot::after {
   content: "";
   position: absolute;
@@ -1112,14 +1081,14 @@ table.data tbody tr:hover {
   content: none;
 }
 
-.season-bar {
+/* one row: which tab, which season, and how the season went */
+.player-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin: 20px 0 16px;
 }
-.season-bar > button {
+.player-bar > button {
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1;
@@ -1267,6 +1236,25 @@ table.data tbody tr:hover {
 .split-won {
   color: var(--gold);
 }
+.split-actions {
+  margin-top: 10px;
+}
+.split-actions a {
+  font-family: var(--font-label);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 2px solid var(--gold-dim);
+  padding: 6px 10px;
+  display: inline-block;
+}
+.split-actions a:hover {
+  text-decoration: none;
+  background: var(--gold);
+  color: #171205;
+  border-color: var(--gold-hot);
+}
+
 .split-meta {
   display: flex;
   gap: 18px;

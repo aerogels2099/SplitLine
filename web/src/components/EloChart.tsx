@@ -35,7 +35,7 @@ function linePathOf(pts: { x: number; y: number }[]): string {
     .join(" ");
 }
 
-/** Index of the point nearest `target`; `xs` is ascending. */
+/** Index of the point nearest the target; the positions must be in ascending order. */
 function nearestIndex(xs: number[], target: number): number {
   let lo = 0;
   let hi = xs.length - 1;
@@ -200,7 +200,7 @@ export function EloChart({
           <g clipPath="url(#plot)">
             <path d={areaPath} fill="url(#eloArea)" />
             <path d={linePath} fill="none" stroke="var(--gold)" strokeWidth={2} strokeLinejoin="round" />
-            {/* decay entries: red squares (decay = losing time) */}
+            {/* decay entries, marked in the losing colour */}
             {sorted.filter((p) => p.decayed).map((p, i) => sq(p.X, p.Y, 7, "var(--behind)", i))}
           </g>
 

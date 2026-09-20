@@ -8,7 +8,7 @@ import type { CompletionEntry, MatchInfo, TimelineEntry, UserDetails } from "../
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-/** Bumped when stored rows, not just the DDL, need rewriting. */
+/** Bumped when the stored rows, not just the table definitions, need rewriting. */
 const SCHEMA_VERSION = 2;
 
 const INSERT_MATCH = `INSERT OR IGNORE INTO matches
@@ -20,7 +20,7 @@ const INSERT_PLAYER = `INSERT OR IGNORE INTO match_players
    (match_id, uuid, nickname, elo_rate, elo_change, elo_after)
    VALUES (?, ?, ?, ?, ?, ?)`;
 
-/** The fields only GET /matches/{id} returns (gotcha 5). */
+/** The extra fields that come back only when a single match is fetched by id. */
 interface AdvancedFields {
   completions?: CompletionEntry[];
   timelines?: TimelineEntry[];
@@ -47,7 +47,7 @@ export class Store {
     this.db.exec("PRAGMA journal_mode = WAL;");
     this.db.exec("PRAGMA synchronous = NORMAL;");
     this.db.exec("PRAGMA temp_store = MEMORY;");
-    // Without this a concurrent writer fails immediately with SQLITE_BUSY.
+    // Without this a second writer gives up at once instead of waiting its turn.
     this.db.exec("PRAGMA busy_timeout = 5000;");
     this.db.exec(readFileSync(join(HERE, "schema.sql"), "utf8"));
     // An older cache may still carry an index this project no longer creates.
@@ -67,7 +67,7 @@ export class Store {
     this.db.close();
   }
 
-  /** Memoized by SQL text — never interpolate a value into the string. */
+  /** Statements are cached by their text, so values must always be bound, never pasted in. */
   private stmt(sql: string): StatementSync {
     let s = this.statements.get(sql);
     if (!s) {
@@ -77,7 +77,7 @@ export class Store {
     return s;
   }
 
-  /** Re-entrant transaction wrapper; SQLite rejects a nested BEGIN. */
+  /** Re-entrant transaction wrapper: the database refuses a transaction opened inside another. */
   private tx<T>(fn: () => T): T {
     if (this.db.isTransaction) return fn();
     this.db.exec("BEGIN");
@@ -103,7 +103,11 @@ export class Store {
     });
   }
 
-  /** Elo comes from changes[] (PRE-match), not players[].eloRate (gotcha 10). */
+  /**
+   * Ratings come from the per-match change record, which is the rating going
+   * into that match, not from the player summary, which always reports what
+   * they are rated now.
+   */
   private insertPlayers(m: MatchInfo) {
     const insert = this.stmt(INSERT_PLAYER);
     for (const p of m.players) {
@@ -174,7 +178,7 @@ export class Store {
     return this.stmt(`SELECT 1 FROM match_details WHERE id = ?`).get(matchId) !== undefined;
   }
 
-  /** Advanced fields spread last, so rows written before the split still read. */
+  /** The detail fields are applied last, so rows written before the two halves were separated still load. */
   private mergeDetail(row: { list: string | null; adv: string }): MatchInfo {
     const list = row.list ? (JSON.parse(row.list) as MatchInfo) : ({} as MatchInfo);
     return { ...list, ...(JSON.parse(row.adv) as AdvancedFields) };
@@ -212,7 +216,7 @@ export class Store {
     return rows.map((r) => this.mergeDetail(r));
   }
 
-  /** Ids of recent ranked matches with no timelines yet, within `window`. */
+  /** Recent ranked matches whose timelines have not been fetched yet. */
   detailCandidates(opts: {
     uuid?: string;
     window: number;
@@ -250,7 +254,6 @@ export class Store {
     return row.n;
   }
 
-  /** Seasons the player has a ranked match in, newest first. */
   seasonsForPlayer(uuid: string): number[] {
     const rows = this.stmt(
       `SELECT DISTINCT m.season AS season FROM matches m
@@ -260,7 +263,7 @@ export class Store {
     return rows.map((r) => r.season);
   }
 
-  /** Newest stored match: the staleness check and `after` cursor for ingest. */
+  /** The newest stored match, which ingest uses both as its staleness check and as its starting point. */
   newestMatchForPlayer(uuid: string): { id: number; date: number } | null {
     const row = this.stmt(
       `SELECT m.id AS id, m.date AS date FROM matches m

@@ -20,7 +20,7 @@ export interface MatchListParams {
   before?: number;
   after?: number;
   sort?: "newest" | "oldest" | "fastest" | "slowest";
-  count?: number; // 1..100, default 20
+  count?: number;
   type?: MatchType;
   season?: number;
   tag?: string;
@@ -94,7 +94,7 @@ export class RankedApi {
     });
   }
 
-  /** season 0 = current season; omit = all-time. */
+  /** Season zero means the current season; omitting it covers all time. */
   getRecordLeaderboard(season?: number, distinct?: boolean): Promise<RecordLeaderboardEntry[]> {
     return this.client.get(`/record-leaderboard${qs({ season, distinct })}`, { ttlMs: MINUTE });
   }

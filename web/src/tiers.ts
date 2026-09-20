@@ -2,9 +2,9 @@ export interface Tier {
   key: string;
   label: string;
   min: number;
-  /** Exclusive upper bound; Infinity for the top tier. */
+  /** Exclusive upper bound, unbounded for the top tier. */
   max: number;
-  color: string; // CSS var, resolves in DOM + inline SVG
+  color: string; // a theme variable, resolved both in the page and in inline vector art
 }
 
 export const TIERS: Tier[] = [
