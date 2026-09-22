@@ -41,7 +41,6 @@ export default function Player() {
   const tier = tierOf(u?.eloRate);
   // the API lists seasons newest-first; show them left to right as a timeline
   const seasons = data ? [...data.seasons].reverse() : [];
-  const at = data ? seasons.indexOf(data.season) : -1;
   const real = data?.games.filter((g) => !g.decayed) ?? [];
   const wins = real.filter((g) => g.outcome === "win").length;
   const losses = real.filter((g) => g.outcome === "loss").length;
@@ -49,7 +48,12 @@ export default function Player() {
   return (
     <div className="player-layout">
       {/* Outside the loading branch: the ladder does not depend on this request. */}
-      <LadderSidebar current={u?.nickname} />
+      <LadderSidebar
+        current={u?.nickname}
+        season={data?.season}
+        seasons={seasons}
+        onSeason={setSeason}
+      />
       <div className="player-main">
         {error ? (
           <ErrorBox
@@ -90,35 +94,6 @@ export default function Player() {
                   Pacing &amp; seeds
                 </NavLink>
               </nav>
-
-              <button
-                type="button"
-                disabled={at <= 0}
-                onClick={() => setSeason(seasons[at - 1])}
-                aria-label="Earlier season"
-              >
-                ◂
-              </button>
-              <div className="season-list">
-                {seasons.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    className={s === data.season ? "on" : ""}
-                    onClick={() => setSeason(s)}
-                  >
-                    S{s}
-                  </button>
-                ))}
-              </div>
-              <button
-                type="button"
-                disabled={at < 0 || at >= seasons.length - 1}
-                onClick={() => setSeason(seasons[at + 1])}
-                aria-label="Later season"
-              >
-                ▸
-              </button>
 
               <span className="season-tally">
                 {wins}–{losses} in {real.length} ranked games

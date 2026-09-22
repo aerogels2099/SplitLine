@@ -139,7 +139,6 @@ body *:where(:not(svg, svg *)) {
 .ladder-side-list,
 .topnav,
 .tabs,
-.season-list,
 .card-actions,
 .split-actions,
 .game,
@@ -224,9 +223,9 @@ a:hover {
 }
 
 .shell {
-  max-width: 1240px;
+  max-width: 1560px;
   margin: 0 auto;
-  padding: 0 24px 96px;
+  padding: 0 28px 96px;
   position: relative;
   z-index: 1;
 }
@@ -813,8 +812,9 @@ table.data tbody tr:hover {
 .player-hero {
   position: relative;
   display: flex;
-  gap: 22px;
+  gap: 18px;
   align-items: center;
+  flex-wrap: wrap;
   padding: 24px 24px;
   border: 2px solid var(--border);
   background:
@@ -1134,43 +1134,34 @@ table.data tbody tr:hover {
   gap: 10px;
   flex-wrap: wrap;
 }
-.player-bar > button {
-  padding: 6px 12px;
-  font-size: 14px;
+.ladder-season {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ladder-season > button {
+  padding: 2px 6px;
+  font-size: 12px;
   line-height: 1;
 }
-.season-list {
-  display: flex;
-  gap: 0;
-  flex-wrap: wrap;
-  border: 2px solid var(--border);
-  background: var(--surface-1);
-  box-shadow: var(--bevel), var(--slab-shadow);
-  padding: 3px;
-}
-.season-list button {
-  background: none;
-  border: 2px solid transparent;
-  box-shadow: none;
-  color: var(--text-muted);
+
+.ladder-season select {
   font-family: var(--font-label);
   font-size: 10px;
   letter-spacing: 0.5px;
-  padding: 8px 12px 7px;
-}
-.season-list button + button {
-  border-left: 2px solid var(--border);
-}
-.season-list button:hover {
-  color: var(--text-primary);
+  text-transform: uppercase;
+  color: var(--gold);
   background: var(--surface-2);
+  border: 2px solid var(--border);
+  appearance: none;
+  padding: 4px 7px;
 }
-.season-list button.on {
-  color: #171205;
-  background: var(--gold);
-  border-color: var(--gold-hot);
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.25);
+
+.ladder-season select:hover {
+  border-color: var(--border-strong);
 }
+
 .season-tally {
   margin-left: auto;
   font-family: var(--font-mono);
@@ -1329,8 +1320,8 @@ table.data tbody tr:hover {
 
 .player-layout {
   display: grid;
-  grid-template-columns: 236px minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: 272px minmax(0, 1fr);
+  gap: 20px;
   align-items: start;
 }
 .player-main {
@@ -1352,9 +1343,9 @@ table.data tbody tr:hover {
 .ladder-side-head {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
-  padding: 9px 12px;
+  padding: 7px 10px;
   border-bottom: 2px solid var(--border);
   background: var(--slot);
   font-family: var(--font-label);
