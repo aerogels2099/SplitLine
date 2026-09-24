@@ -7,14 +7,18 @@ import {
   buildWinProbModel,
   headToHeadWinProb,
   modelForElo,
+  type LiveRunState,
+  type WinProbModel,
   projectFinish,
   scoreLiveMatch,
 } from "../src/analysis/winprob.js";
+import { eloExpectedScore } from "../src/analysis/stats.js";
 import { liveData, matchDetails } from "./helpers.js";
 
 describe("win probability model", () => {
   const runs = extractAllRuns(matchDetails());
   const model = buildWinProbModel(runs);
+  const banded = buildBandedWinProbModels(runs);
 
   it("learns remaining-time stats from historical timelines", () => {
     expect(model.overall.n).toBeGreaterThan(0);
@@ -42,24 +46,33 @@ describe("win probability model", () => {
     const elapsed = 9 * 60_000;
     const ahead = { lastEventType: "story.enter_the_end", lastEventTime: 8 * 60_000 };
     const behind = { lastEventType: "story.enter_the_nether", lastEventTime: 8 * 60_000 };
-    const { pA } = headToHeadWinProb(model, ahead, behind, elapsed, 1500, 1500);
+    const side = (state: LiveRunState) => ({ model, state, elo: 1500 });
+    const { pA } = headToHeadWinProb(side(ahead), side(behind), elapsed);
     expect(pA).toBeGreaterThan(0.5);
-    const rev = headToHeadWinProb(model, behind, ahead, elapsed, 1500, 1500);
+    const rev = headToHeadWinProb(side(behind), side(ahead), elapsed);
     expect(rev.pA).toBeLessThan(0.5);
   });
 
   it("falls back to the elo prior early in a run", () => {
     const blank = { lastEventType: null, lastEventTime: null };
-    const early = headToHeadWinProb(model, blank, blank, 30_000, 1800, 1200);
-    expect(early.pA).toBeGreaterThan(0.5); // 600 elo edge dominates
+    const early = headToHeadWinProb(
+      { model, state: blank, elo: 1800 },
+      { model, state: blank, elo: 1200 },
+      30_000,
+    );
+    expect(early.pA).toBeGreaterThan(0.5);
 
-    const even = headToHeadWinProb(model, blank, blank, 30_000, null, null);
+    const even = headToHeadWinProb(
+      { model, state: blank, elo: null },
+      { model, state: blank, elo: null },
+      30_000,
+    );
     expect(even.pA).toBeCloseTo(0.5, 6);
   });
 
   it("scores real live matches with probabilities summing to 1", () => {
     for (const lm of liveData().liveMatches) {
-      const scored = scoreLiveMatch(model, lm);
+      const scored = scoreLiveMatch(banded, lm);
       const sum = scored.players.reduce((s, p) => s + p.winProb, 0);
       expect(sum).toBeCloseTo(1, 5);
       for (const p of scored.players) {
@@ -157,7 +170,7 @@ describe("band selection", () => {
 
   it("falls back to the pooled model for a thin band", () => {
     const hit = modelForElo(banded, 1550);
-    expect(banded.bands["1500–1799"]!.overall.n).toBe(5); // present, but under the threshold
+    expect(banded.bands["1500–1799"]!.overall.n).toBe(5);
     expect(hit.fellBack).toBe(true);
     expect(hit.band).toBe("all");
     expect(hit.model).toBe(banded.global);
@@ -171,5 +184,58 @@ describe("band selection", () => {
     const placement = modelForElo(banded, null);
     expect(placement.fellBack).toBe(true);
     expect(placement.model).toBe(banded.global);
+  });
+});
+
+describe("elo and pace are counted once each", () => {
+  const paceModel = (meanFinalMs: number): WinProbModel => ({
+    milestones: {
+      bastion: { n: 50, meanRemaining: meanFinalMs * 0.65, sdRemaining: 60_000 },
+    },
+    overall: { n: 50, meanFinal: meanFinalMs, sdFinal: 90_000 },
+  });
+  const fast = paceModel(8 * 60_000);
+  const slow = paceModel(13 * 60_000);
+  const blank: LiveRunState = { lastEventType: null, lastEventTime: null };
+  const bastionAt = (t: number): LiveRunState => ({
+    lastEventType: "nether.find_bastion",
+    lastEventTime: t,
+  });
+
+  it("returns the elo prior alone when neither runner has events", () => {
+    const even = headToHeadWinProb(
+      { model: fast, state: blank, elo: 1500 },
+      { model: slow, state: blank, elo: 1500 },
+      60_000,
+    );
+    expect(even.pA).toBeCloseTo(0.5, 7);
+
+    const gap = headToHeadWinProb(
+      { model: fast, state: blank, elo: 2400 },
+      { model: slow, state: blank, elo: 1500 },
+      60_000,
+    );
+    expect(gap.pA).toBeCloseTo(eloExpectedScore(2400, 1500), 7);
+  });
+
+  it("judges a split against the runner own band", () => {
+    const against = (m: WinProbModel) =>
+      headToHeadWinProb(
+        { model: fast, state: bastionAt(3 * 60_000), elo: 1500 },
+        { model: m, state: bastionAt(3 * 60_000), elo: 1500 },
+        3 * 60_000,
+      ).pA;
+
+    expect(against(slow)).toBeLessThan(against(fast));
+    expect(against(fast)).toBeCloseTo(0.5, 6);
+  });
+
+  it("credits a runner for beating their own band pace", () => {
+    const ahead = headToHeadWinProb(
+      { model: fast, state: bastionAt(2 * 60_000), elo: 1500 },
+      { model: fast, state: bastionAt(4 * 60_000), elo: 1500 },
+      4 * 60_000,
+    );
+    expect(ahead.pA).toBeGreaterThan(0.5);
   });
 });

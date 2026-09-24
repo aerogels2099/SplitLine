@@ -58,9 +58,20 @@ export function normalCdf(z: number): number {
   return 0.5 * (1 + erf(z / Math.SQRT2));
 }
 
-export const ELO_DIVISOR = 400;
+export const ELO_DIVISOR = 570;
 
 /** Expected score for a against b, where 0.5 is an even matchup. */
 export function eloExpectedScore(a: number, b: number): number {
   return 1 / (1 + 10 ** ((b - a) / ELO_DIVISOR));
 }
+
+export const P_FLOOR = 0.01;
+
+export const clampProbability = (p: number) => Math.min(1 - P_FLOOR, Math.max(P_FLOOR, p));
+
+export function logit(p: number): number {
+  const q = clampProbability(p);
+  return Math.log(q / (1 - q));
+}
+
+export const logistic = (x: number) => 1 / (1 + Math.exp(-x));

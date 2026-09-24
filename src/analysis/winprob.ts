@@ -1,7 +1,7 @@
 import type { LiveMatch } from "../shared/types.js";
 import { eloBand } from "./pacing.js";
 import { MILESTONES, milestoneForEvent, type MilestoneKey, type RunSplits } from "./splits.js";
-import { eloExpectedScore, mean, normalCdf, stddev } from "./stats.js";
+import { eloExpectedScore, logistic, logit, mean, normalCdf, stddev } from "./stats.js";
 
 export interface MilestoneModel {
   n: number;
@@ -115,16 +115,19 @@ export function projectFinish(
   return { meanMs, sdMs, milestone };
 }
 
+export interface RunSide {
+  model: WinProbModel;
+  state: LiveRunState;
+  elo: number | null;
+}
+
 export function headToHeadWinProb(
-  model: WinProbModel,
-  a: LiveRunState,
-  b: LiveRunState,
+  a: RunSide,
+  b: RunSide,
   elapsedMs: number,
-  eloA: number | null = null,
-  eloB: number | null = null,
 ): { pA: number; projA: FinishProjection; projB: FinishProjection } {
-  const projA = projectFinish(model, a, elapsedMs);
-  const projB = projectFinish(model, b, elapsedMs);
+  const projA = projectFinish(a.model, a.state, elapsedMs);
+  const projB = projectFinish(b.model, b.state, elapsedMs);
 
   if (projA.milestone === "finish" && projB.milestone !== "finish") {
     return { pA: 0.99, projA, projB };
@@ -133,12 +136,13 @@ export function headToHeadWinProb(
     return { pA: 0.01, projA, projB };
   }
 
-  const z = (projB.meanMs - projA.meanMs) / Math.sqrt(projA.sdMs ** 2 + projB.sdMs ** 2);
-  const pTime = normalCdf(z);
+  const pElo = a.elo !== null && b.elo !== null ? eloExpectedScore(a.elo, b.elo) : 0.5;
 
-  const pElo = eloA !== null && eloB !== null ? eloExpectedScore(eloA, eloB) : 0.5;
-  const w = Math.min(1, elapsedMs / (8 * 60_000)) * 0.85;
-  const pA = w * pTime + (1 - w) * pElo;
+  const paceA = projA.meanMs - a.model.overall.meanFinal;
+  const paceB = projB.meanMs - b.model.overall.meanFinal;
+  const z = (paceB - paceA) / Math.sqrt(projA.sdMs ** 2 + projB.sdMs ** 2);
+
+  const pA = logistic(logit(pElo) + logit(normalCdf(z)));
   return { pA: Math.min(0.99, Math.max(0.01, pA)), projA, projB };
 }
 
@@ -157,40 +161,36 @@ export interface LiveWinProbEntry {
   }[];
 }
 
-export function scoreLiveMatch(model: WinProbModel, match: LiveMatch): LiveWinProbEntry {
-  const states = match.players.map((p) => {
-    const data = match.data[p.uuid];
-    return {
-      profile: p,
-      liveUrl: data?.liveUrl ?? null,
-      state: {
-        lastEventType: data?.timeline?.type ?? null,
-        lastEventTime: data?.timeline?.time !== undefined ? Number(data.timeline.time) : null,
-      } satisfies LiveRunState,
-    };
+export function scoreLiveMatch(banded: BandedWinProbModel, match: LiveMatch): LiveWinProbEntry {
+  const states = match.players.map((p) => ({
+    profile: p,
+    liveUrl: match.data[p.uuid]?.liveUrl ?? null,
+    elo: p.eloRate,
+    model: modelForElo(banded, p.eloRate).model,
+    state: {
+      lastEventType: match.data[p.uuid]?.timeline?.type ?? null,
+      lastEventTime:
+        match.data[p.uuid]?.timeline?.time !== undefined
+          ? Number(match.data[p.uuid]!.timeline!.time)
+          : null,
+    } satisfies LiveRunState,
+  }));
+
+  const mk = (s: (typeof states)[0], proj: FinishProjection, p: number) => ({
+    uuid: s.profile.uuid,
+    nickname: s.profile.nickname,
+    elo: s.profile.eloRate,
+    liveUrl: s.liveUrl,
+    lastEventType: s.state.lastEventType,
+    lastEventTimeMs: s.state.lastEventTime,
+    milestone: proj.milestone,
+    projectedFinishMs: Math.round(proj.meanMs),
+    winProb: p,
   });
 
   if (states.length === 2) {
     const [sa, sb] = states as [(typeof states)[0], (typeof states)[0]];
-    const { pA, projA, projB } = headToHeadWinProb(
-      model,
-      sa.state,
-      sb.state,
-      Number(match.currentTime),
-      sa.profile.eloRate,
-      sb.profile.eloRate,
-    );
-    const mk = (s: typeof sa, proj: FinishProjection, p: number) => ({
-      uuid: s.profile.uuid,
-      nickname: s.profile.nickname,
-      elo: s.profile.eloRate,
-      liveUrl: s.liveUrl,
-      lastEventType: s.state.lastEventType,
-      lastEventTimeMs: s.state.lastEventTime,
-      milestone: proj.milestone,
-      projectedFinishMs: Math.round(proj.meanMs),
-      winProb: p,
-    });
+    const { pA, projA, projB } = headToHeadWinProb(sa, sb, Number(match.currentTime));
     return {
       currentTimeMs: Number(match.currentTime),
       players: [mk(sa, projA, pA), mk(sb, projB, 1 - pA)],
@@ -199,19 +199,12 @@ export function scoreLiveMatch(model: WinProbModel, match: LiveMatch): LiveWinPr
 
   return {
     currentTimeMs: Number(match.currentTime),
-    players: states.map((s) => {
-      const proj = projectFinish(model, s.state, Number(match.currentTime));
-      return {
-        uuid: s.profile.uuid,
-        nickname: s.profile.nickname,
-        elo: s.profile.eloRate,
-        liveUrl: s.liveUrl,
-        lastEventType: s.state.lastEventType,
-        lastEventTimeMs: s.state.lastEventTime,
-        milestone: proj.milestone,
-        projectedFinishMs: Math.round(proj.meanMs),
-        winProb: 1 / Math.max(states.length, 1),
-      };
-    }),
+    players: states.map((s) =>
+      mk(
+        s,
+        projectFinish(s.model, s.state, Number(match.currentTime)),
+        1 / Math.max(states.length, 1),
+      ),
+    ),
   };
 }

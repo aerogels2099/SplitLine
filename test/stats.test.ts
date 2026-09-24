@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { eloExpectedScore, normalCdf, stddev } from "../src/analysis/stats.js";
+import { ELO_DIVISOR, eloExpectedScore, normalCdf, stddev } from "../src/analysis/stats.js";
 
 describe("stats primitives", () => {
   it("computes sample standard deviation", () => {
-    // Mean 4, squared deviations 4+1+0+1+4 = 10, over n-1 = 4.
     expect(stddev([2, 3, 4, 5, 6])).toBeCloseTo(Math.sqrt(2.5), 10);
     expect(stddev([7, 7, 7])).toBe(0);
   });
@@ -39,10 +38,14 @@ describe("stats primitives", () => {
   });
 
   it("scores a rating gap by its size, not its position", () => {
-    expect(eloExpectedScore(1900, 1500)).toBeCloseTo(0.909090909, 7);
-    expect(eloExpectedScore(1500, 1900)).toBeCloseTo(0.090909091, 7);
-    // Only the difference matters, so the same gap scores the same anywhere.
+    expect(eloExpectedScore(1900, 1500)).toBeCloseTo(0.834219, 5);
+    expect(eloExpectedScore(1500, 1900)).toBeCloseTo(0.165781, 5);
     expect(eloExpectedScore(2400, 2000)).toBeCloseTo(eloExpectedScore(1900, 1500), 10);
+  });
+
+  it("puts the fitted divisor on the odds it implies", () => {
+    expect(eloExpectedScore(1500 + ELO_DIVISOR, 1500)).toBeCloseTo(10 / 11, 10);
+    expect(ELO_DIVISOR).toBe(570);
   });
 
   it("keeps the two sides of a matchup complementary", () => {
