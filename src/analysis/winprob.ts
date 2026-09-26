@@ -11,6 +11,7 @@ export interface MilestoneModel {
 
 export interface WinProbModel {
   milestones: Partial<Record<MilestoneKey, MilestoneModel>>;
+  events: Record<string, MilestoneModel>;
   overall: { n: number; meanFinal: number; sdFinal: number };
 }
 
@@ -34,9 +35,26 @@ export function buildWinProbModel(runs: RunSplits[]): WinProbModel {
     }
   }
 
+  const events: Record<string, MilestoneModel> = {};
+  const seen = new Set<string>();
+  for (const r of finished) for (const t of Object.keys(r.eventTimes)) seen.add(t);
+  for (const type of seen) {
+    const remaining = finished
+      .filter((r) => r.eventTimes[type] !== undefined)
+      .map((r) => Number(r.splits.finish) - Number(r.eventTimes[type]));
+    if (remaining.length >= MIN_SAMPLES) {
+      events[type] = {
+        n: remaining.length,
+        meanRemaining: mean(remaining),
+        sdRemaining: Math.max(stddev(remaining), 30_000),
+      };
+    }
+  }
+
   const finals = finished.map((r) => Number(r.splits.finish));
   return {
     milestones,
+    events,
     overall: {
       n: finals.length,
       meanFinal: finals.length > 0 ? mean(finals) : 12 * 60_000,
@@ -64,18 +82,34 @@ export function buildBandedWinProbModels(runs: RunSplits[]): BandedWinProbModel 
   return { bands, global: buildWinProbModel(runs) };
 }
 
-const MIN_BAND_RUNS = 30;
-
 export interface ModelLookup {
   model: WinProbModel;
   band: string;
   fellBack: boolean;
 }
 
+function bandFloor(band: string): number | null {
+  const lo = Number(band.split("–")[0]);
+  return Number.isFinite(lo) ? lo : null;
+}
+
 export function modelForElo(banded: BandedWinProbModel, elo: number | null): ModelLookup {
   const band = eloBand(elo);
   const hit = banded.bands[band];
-  if (hit && hit.overall.n >= MIN_BAND_RUNS) return { model: hit, band, fellBack: false };
+  if (hit) return { model: hit, band, fellBack: false };
+
+  const floor = bandFloor(band);
+  if (floor !== null) {
+    let best: { band: string; model: WinProbModel; distance: number } | null = null;
+    for (const [other, model] of Object.entries(banded.bands)) {
+      const otherFloor = bandFloor(other);
+      if (otherFloor === null) continue;
+      const distance = Math.abs(otherFloor - floor);
+      if (best === null || distance < best.distance) best = { band: other, model, distance };
+    }
+    if (best !== null) return { model: best.model, band: best.band, fellBack: true };
+  }
+
   return { model: banded.global, band: "all", fellBack: true };
 }
 
@@ -99,7 +133,9 @@ export function projectFinish(
   if (milestone === "finish") {
     return { meanMs: state.lastEventTime ?? elapsedMs, sdMs: 1, milestone };
   }
-  const stats = milestone ? model.milestones[milestone] : undefined;
+  const stats =
+    (state.lastEventType ? model.events[state.lastEventType] : undefined) ??
+    (milestone ? model.milestones[milestone] : undefined);
   let meanMs: number;
   let sdMs: number;
   if (stats && state.lastEventTime !== null) {

@@ -237,6 +237,7 @@ describe("per-player pace models", () => {
       stronghold: { n: 50, meanRemaining: meanFinalMs * 0.2, sdRemaining: 60_000 },
       end_enter: { n: 50, meanRemaining: meanFinalMs * 0.1, sdRemaining: 60_000 },
     },
+    events: {},
     overall: { n: 50, meanFinal: meanFinalMs, sdFinal: 90_000 },
   });
 

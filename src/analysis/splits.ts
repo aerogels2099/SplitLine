@@ -73,6 +73,7 @@ export interface RunSplits {
   resets: number;
   splits: Record<MilestoneKey, Millis | null>;
   segments: Record<SegmentKey, Millis | null>;
+  eventTimes: Record<string, Millis>;
 }
 
 export function extractRunSplits(detail: MatchInfo, uuid: string): RunSplits | null {
@@ -92,6 +93,13 @@ function runFrom(
     .filter((t) => t.type === RESET_EVENT)
     .reduce((max, t) => Math.max(max, t.time), -1);
   const live = events.filter((t) => t.time > lastReset);
+
+  const eventTimes: Record<string, Millis> = {};
+  for (const t of live) {
+    if (milestoneForEvent(t.type) === null) continue;
+    const prev = eventTimes[t.type];
+    if (prev === undefined || t.time < prev) eventTimes[t.type] = asMillis(t.time);
+  }
 
   const splits = {} as Record<MilestoneKey, Millis | null>;
   for (const m of MILESTONES) {
@@ -129,6 +137,7 @@ function runFrom(
     resets: events.filter((t) => t.type === RESET_EVENT).length,
     splits,
     segments,
+    eventTimes,
   };
 }
 

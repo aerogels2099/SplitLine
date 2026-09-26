@@ -12,7 +12,7 @@ import {
   projectFinish,
   scoreLiveMatch,
 } from "../src/analysis/winprob.js";
-import { eloExpectedScore } from "../src/analysis/stats.js";
+import { eloExpectedScore, mean } from "../src/analysis/stats.js";
 import { liveData, matchDetails } from "./helpers.js";
 
 describe("win probability model", () => {
@@ -136,6 +136,7 @@ function syntheticRun(elo: number, finishMs: number, i: number): RunSplits {
       stronghold_to_end: at(0.1),
       end_fight: at(0.1),
     },
+    eventTimes: {},
   };
 }
 
@@ -168,23 +169,26 @@ describe("band selection", () => {
     expect(hit.model.overall.n).toBe(40);
   });
 
-  it("falls back to the pooled model for a thin band", () => {
+  it("uses a thin band own model rather than a busier neighbour", () => {
     const hit = modelForElo(banded, 1550);
     expect(banded.bands["1500–1799"]!.overall.n).toBe(5);
-    expect(hit.fellBack).toBe(true);
-    expect(hit.band).toBe("all");
-    expect(hit.model).toBe(banded.global);
+    expect(hit.fellBack).toBe(false);
+    expect(hit.band).toBe("1500–1799");
+    expect(hit.model).toBe(banded.bands["1500–1799"]);
   });
 
-  it("falls back for unknown bands and for missing ratings", () => {
+  it("borrows the nearest band only when the band is absent entirely", () => {
     const unknown = modelForElo(banded, 9000);
+    expect(banded.bands["9000–9299"]).toBeUndefined();
     expect(unknown.fellBack).toBe(true);
-    expect(unknown.model).toBe(banded.global);
+    expect(unknown.band).toBe("2400–2699");
 
     const placement = modelForElo(banded, null);
     expect(placement.fellBack).toBe(true);
+    expect(placement.band).toBe("all");
     expect(placement.model).toBe(banded.global);
   });
+
 });
 
 describe("elo and pace are counted once each", () => {
@@ -192,6 +196,7 @@ describe("elo and pace are counted once each", () => {
     milestones: {
       bastion: { n: 50, meanRemaining: meanFinalMs * 0.65, sdRemaining: 60_000 },
     },
+    events: {},
     overall: { n: 50, meanFinal: meanFinalMs, sdFinal: 90_000 },
   });
   const fast = paceModel(8 * 60_000);
@@ -237,5 +242,80 @@ describe("elo and pace are counted once each", () => {
       4 * 60_000,
     );
     expect(ahead.pA).toBeGreaterThan(0.5);
+  });
+});
+
+describe("alias events are timed on their own", () => {
+  const ANCHOR = "nether.find_bastion";
+  const ALIAS = "nether.obtain_crying_obsidian";
+
+  function aliasRun(i: number): RunSplits {
+    const base = syntheticRun(1850, 10 * 60_000, i);
+    return {
+      ...base,
+      eventTimes: {
+        [ANCHOR]: asMillis(2 * 60_000),
+        [ALIAS]: asMillis(3 * 60_000),
+      },
+    };
+  }
+
+  const model = buildWinProbModel(Array.from({ length: 20 }, (_, i) => aliasRun(i)));
+
+  it("fits a distribution for each reported event", () => {
+    expect(model.events[ANCHOR]).toBeDefined();
+    expect(model.events[ALIAS]).toBeDefined();
+    expect(model.events[ANCHOR]!.meanRemaining).toBeCloseTo(8 * 60_000, 0);
+    expect(model.events[ALIAS]!.meanRemaining).toBeCloseTo(7 * 60_000, 0);
+  });
+
+  it("projects a nearer finish for the later event at the same clock", () => {
+    const at = 3 * 60_000;
+    const anchor = projectFinish(model, { lastEventType: ANCHOR, lastEventTime: at }, at);
+    const alias = projectFinish(model, { lastEventType: ALIAS, lastEventTime: at }, at);
+    expect(alias.meanMs).toBeLessThan(anchor.meanMs);
+    expect(anchor.meanMs - alias.meanMs).toBeCloseTo(60_000, -3);
+    expect(alias.milestone).toBe("bastion");
+  });
+
+  it("falls back to the milestone when the event has no model of its own", () => {
+    const bare: WinProbModel = { ...model, events: {} };
+    const at = 3 * 60_000;
+    const viaAlias = projectFinish(bare, { lastEventType: ALIAS, lastEventTime: at }, at);
+    const viaAnchor = projectFinish(bare, { lastEventType: ANCHOR, lastEventTime: at }, at);
+    expect(viaAlias.meanMs).toBe(viaAnchor.meanMs);
+  });
+});
+
+describe("a pace-neutral run reads as the elo prior", () => {
+  const runs = extractAllRuns(matchDetails());
+  const banded = buildBandedWinProbModels(runs);
+  const blank: LiveRunState = { lastEventType: null, lastEventTime: null };
+
+  it("holds for every band the corpus produced, thin ones included", () => {
+    const bands = Object.keys(banded.bands).filter((b) => b !== "placement");
+    expect(bands.length).toBeGreaterThan(0);
+
+    for (const band of bands) {
+      const model = banded.bands[band]!;
+      if (!model.milestones.nether_enter) continue;
+      const reached = runs.filter(
+        (r) =>
+          eloBand(r.eloAtMatch) === band &&
+          r.finished &&
+          r.splits.finish !== null &&
+          r.splits.nether_enter !== null,
+      );
+      if (reached.length < 2) continue;
+
+      const typical = mean(reached.map((r) => Number(r.splits.nether_enter)));
+      const elo = Number(band.split("–")[0]) + 100;
+      const { pA } = headToHeadWinProb(
+        { model, state: { lastEventType: "story.enter_the_nether", lastEventTime: typical }, elo },
+        { model, state: blank, elo },
+        typical,
+      );
+      expect(pA).toBeCloseTo(0.5, 6);
+    }
   });
 });

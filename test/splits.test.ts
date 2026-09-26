@@ -64,3 +64,48 @@ describe("split extraction", () => {
     expect(milestoneForEvent("story.smelt_iron")).toBeNull();
   });
 });
+
+describe("event times", () => {
+  const runs = extractAllRuns(matchDetails());
+
+  it("records every mapped event, not just the milestone anchors", () => {
+    const seen = new Set<string>();
+    for (const r of runs) for (const k of Object.keys(r.eventTimes)) seen.add(k);
+    expect(seen.has("nether.find_bastion")).toBe(true);
+    expect(seen.has("nether.loot_bastion")).toBe(true);
+    expect(seen.has("nether.obtain_crying_obsidian")).toBe(true);
+    expect(seen.has("nether.obtain_blaze_rod")).toBe(true);
+  });
+
+  it("keeps unmapped advancement noise out", () => {
+    for (const r of runs) {
+      for (const k of Object.keys(r.eventTimes)) {
+        expect(milestoneForEvent(k)).not.toBeNull();
+      }
+      expect(r.eventTimes["story.root"]).toBeUndefined();
+      expect(r.eventTimes["story.smelt_iron"]).toBeUndefined();
+    }
+  });
+
+  it("agrees with the milestone split on the anchor event", () => {
+    const withBastion = runs.filter((r) => r.splits.bastion !== null);
+    expect(withBastion.length).toBeGreaterThan(0);
+    for (const r of withBastion) {
+      expect(r.eventTimes["nether.find_bastion"]).toBe(r.splits.bastion);
+    }
+  });
+
+  it("times an alias after the anchor it shares a milestone with", () => {
+    const both = runs.filter(
+      (r) =>
+        r.eventTimes["nether.find_bastion"] !== undefined &&
+        r.eventTimes["nether.obtain_crying_obsidian"] !== undefined,
+    );
+    expect(both.length).toBeGreaterThan(0);
+    for (const r of both) {
+      expect(r.eventTimes["nether.obtain_crying_obsidian"]!).toBeGreaterThanOrEqual(
+        r.eventTimes["nether.find_bastion"]!,
+      );
+    }
+  });
+});
