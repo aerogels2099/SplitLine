@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "build": "npm run typecheck && npm run build --prefix web",
-    "fixtures": "node scripts/fetch-fixtures.mjs"
+    "fixtures": "node scripts/fetch-fixtures.mjs",
+    "calibrate": "tsx scripts/calibrate.ts"
   },
   "dependencies": {
     "@fastify/compress": "^9.1.0",

@@ -61,8 +61,8 @@ export function normalCdf(z: number): number {
 export const ELO_DIVISOR = 570;
 
 /** Expected score for a against b, where 0.5 is an even matchup. */
-export function eloExpectedScore(a: number, b: number): number {
-  return 1 / (1 + 10 ** ((b - a) / ELO_DIVISOR));
+export function eloExpectedScore(a: number, b: number, divisor = ELO_DIVISOR): number {
+  return 1 / (1 + 10 ** ((b - a) / divisor));
 }
 
 export const P_FLOOR = 0.01;

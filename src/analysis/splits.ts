@@ -30,7 +30,7 @@ const DEATH_EVENTS = new Set([
   "projectelo.timeline.death",
   "projectelo.timeline.death_spawnpoint",
 ]);
-const RESET_EVENT = "projectelo.timeline.reset";
+export const RESET_EVENT = "projectelo.timeline.reset";
 
 export function milestoneForEvent(type: string): MilestoneKey | null {
   switch (type) {

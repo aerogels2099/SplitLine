@@ -314,6 +314,15 @@ export class Store {
     return row ?? null;
   }
 
+  getMatches(opts: { type?: number } = {}): MatchInfo[] {
+    const rows = (
+      opts.type === undefined
+        ? this.stmt(`SELECT data FROM matches ORDER BY date`).all()
+        : this.stmt(`SELECT data FROM matches WHERE type = ? ORDER BY date`).all(opts.type)
+    ) as { data: string }[];
+    return rows.map((r) => JSON.parse(r.data) as MatchInfo);
+  }
+
   getMatchesForPlayer(
     uuid: string,
     opts: { season?: number; type?: number; limit?: number } = {},
