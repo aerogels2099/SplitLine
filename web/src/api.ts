@@ -100,10 +100,7 @@ export async function apiPost<T>(path: string, payload: unknown): Promise<T> {
   return body as T;
 }
 
-/**
- * Fetch on mount, serving the cached response while a fresh one arrives. The
- * loading and stale flags cover user-visible loads, never background polls.
- */
+/** loading and stale track visible loads only, never background polls. */
 const responseCache = new Map<string, { data: unknown; time: number }>();
 const RESPONSE_TTL = 60_000;
 const MAX_RESPONSES = 200;

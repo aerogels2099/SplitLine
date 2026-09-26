@@ -17,8 +17,7 @@ const PRIVATE_KEY = process.env.MCSR_PRIVATE_KEY || null;
 const ctx = new AppContext(DB_PATH, PRIVATE_KEY);
 const app = Fastify({ logger: { level: "info" } });
 
-// Must be registered before the routes: a route captures its hook chain when
-// it is registered, so a plugin added afterwards never runs for it.
+// Before the routes: each route keeps only the hooks registered ahead of it.
 await app.register(fastifyCompress, { threshold: 1024 });
 
 app.setErrorHandler((err, _req, reply) => {
@@ -35,7 +34,6 @@ app.setErrorHandler((err, _req, reply) => {
   reply.code(500).send({ error: "internal error" });
 });
 
-/** Drops anything that is not a whole number rather than forwarding it upstream. */
 function intParam(raw: string | undefined): number | undefined {
   if (raw === undefined || raw === "") return undefined;
   const n = Number(raw);
@@ -58,7 +56,6 @@ app.get("/api/status", async () => ctx.api.getStatus());
 app.get("/api/overview", async (_req, reply) => {
   // Matches the cache lifetimes the API layer uses upstream.
   reply.header("cache-control", "public, max-age=30");
-  // The live and weekly figures are optional: either may fail without the page failing.
   const [leaderboard, live, weekly] = await Promise.all([
     ctx.api.getLeaderboard(),
     ctx.api.getLive().catch(() => null),
@@ -139,7 +136,6 @@ if (existsSync(dist)) {
   });
 }
 
-// Closing the store flushes the write-ahead log.
 let closing = false;
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.on(signal, () => {

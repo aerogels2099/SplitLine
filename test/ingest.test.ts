@@ -5,7 +5,6 @@ import { ingestPlayer, ingestSeason } from "../src/ingest/backfill.js";
 import type { MatchInfo, UserDetails } from "../src/shared/types.js";
 import { userA, userAMatches } from "./helpers.js";
 
-/** Records every call so a test can assert how many round trips were spent. */
 function fakeApi(opts: { user: UserDetails; pages?: MatchInfo[][]; seasons?: number[] }) {
   const calls: { method: string; params?: MatchListParams }[] = [];
   const pages = [...(opts.pages ?? [])];
@@ -74,7 +73,6 @@ describe("ingestPlayer", () => {
     expect(r.complete).toBe(true);
     expect(r.matchesStored).toBe(1);
     expect(calls).toHaveLength(2);
-    // The delta request must be anchored on the newest stored id, not a walk.
     expect(calls[1]!.params?.after).toBe(newest.id);
     expect(calls[1]!.params?.before).toBeUndefined();
     store.close();
@@ -97,7 +95,6 @@ describe("ingestPlayer", () => {
     // Profile, season list and one page, all in parallel.
     expect(calls).toHaveLength(3);
     expect(store.playedSeasons(user.uuid)).toEqual([12, 11, 10]);
-    // The player page renders ranked games, so that is what gets fetched.
     expect(calls[1]!.params?.type).toBe(2);
     const season = full[0]!.season;
     expect(r.seasonCursors[season]).toBe(Math.min(...full.map((m) => m.id)));

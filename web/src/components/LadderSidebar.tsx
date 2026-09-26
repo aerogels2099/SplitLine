@@ -6,7 +6,6 @@ import { tierOf } from "../tiers";
 
 const SHOWN = 150;
 
-/** The season ladder beside a player page, scrolled to whoever is open. */
 export function LadderSidebar({ current }: { current?: string }) {
   const { data } = useApi<Leaderboard>("/api/leaderboard", 60_000);
   const listRef = useRef<HTMLDivElement>(null);

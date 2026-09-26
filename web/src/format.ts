@@ -1,4 +1,4 @@
-/** Display formatting. Moments arrive in seconds, durations in milliseconds. */
+/** Moments arrive in seconds, durations in milliseconds. */
 
 export function fmtMs(ms: number | null | undefined): string {
   if (ms === null || ms === undefined || !Number.isFinite(ms)) return "—";

@@ -30,7 +30,6 @@ describe("pacing analysis", () => {
       expect(d.p75).toBeLessThanOrEqual(d.p90);
       expect(d.count).toBeGreaterThan(0);
     }
-    // Later milestones take longer than earlier ones at the median.
     const byKey = new Map(dists.map((d) => [d.key, d]));
     const ne = byKey.get("nether_enter");
     const ee = byKey.get("end_enter");

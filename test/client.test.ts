@@ -98,8 +98,8 @@ describe("RankedClient", () => {
     expect(c.cacheSize()).toBe(1);
     await new Promise((r) => setTimeout(r, 5));
     await c.get("/leaderboard", { ttlMs: 1 });
-    expect(fetchImpl).toHaveBeenCalledTimes(2); // expired, so refetched
-    expect(c.cacheSize()).toBe(1); // and not accumulated
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(c.cacheSize()).toBe(1);
   });
 
   it("does not cache when ttlMs is 0", async () => {
@@ -124,7 +124,7 @@ describe("RankedClient", () => {
 
     const both = Promise.all([c.get("/matches/1"), c.get("/matches/1")]);
     await new Promise((r) => setTimeout(r, 0));
-    expect(fetchImpl).toHaveBeenCalledTimes(1); // one request, two callers
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
     resolvers[0]!(ok("shared"));
     await expect(both).resolves.toEqual(["shared", "shared"]);
 

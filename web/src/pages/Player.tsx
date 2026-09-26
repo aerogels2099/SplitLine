@@ -16,7 +16,6 @@ export interface PlayerContext {
   filling: boolean;
 }
 
-/** Shared by the tabs under a player's header. */
 export function usePlayer() {
   return useOutletContext<PlayerContext>();
 }

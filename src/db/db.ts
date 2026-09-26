@@ -21,14 +21,12 @@ const INSERT_PLAYER = `INSERT OR IGNORE INTO match_players
    (match_id, uuid, nickname, elo_rate, elo_change, elo_after)
    VALUES (?, ?, ?, ?, ?, ?)`;
 
-/** The extra fields only a single-match fetch returns. */
 interface AdvancedFields {
   completions?: CompletionEntry[];
   timelines?: TimelineEntry[];
   replayExist?: boolean;
 }
 
-/** Splits a match so each half is stored once; merging them reproduces it. */
 function splitAdvanced(m: MatchInfo): { list: MatchInfo; advanced: AdvancedFields } {
   const { completions, timelines, replayExist, ...list } = m;
   const advanced: AdvancedFields = {};
@@ -48,7 +46,6 @@ export class Store {
     this.db.exec("PRAGMA journal_mode = WAL;");
     this.db.exec("PRAGMA synchronous = NORMAL;");
     this.db.exec("PRAGMA temp_store = MEMORY;");
-    // Without this a second writer gives up at once instead of waiting its turn.
     this.db.exec("PRAGMA busy_timeout = 5000;");
     this.db.exec(readFileSync(join(HERE, "schema.sql"), "utf8"));
     // An older cache may still carry an index this project no longer creates.
@@ -92,7 +89,6 @@ export class Store {
     }
   }
 
-  /** Rewrites rows whose contents, not shape, are wrong. */
   private migrate() {
     const row = this.db.prepare("PRAGMA user_version").get() as { user_version: number };
     const from = row.user_version;
@@ -133,7 +129,7 @@ export class Store {
     }
   }
 
-  /** Writes the list-level rows. The caller owns the transaction. */
+  /** The caller owns the transaction. */
   private insertMatches(matches: MatchInfo[]): number {
     const insert = this.stmt(INSERT_MATCH);
     let added = 0;
@@ -164,7 +160,6 @@ export class Store {
     return this.tx(() => this.insertMatches(matches));
   }
 
-  /** Stores a batch of details and their list-level rows in one transaction. */
   upsertDetails(details: MatchInfo[]) {
     const insert = this.stmt(
       `INSERT OR REPLACE INTO match_details (id, fetched_at, data) VALUES (?, ?, ?)`,
@@ -304,7 +299,6 @@ export class Store {
     return rows.map((r) => r.season);
   }
 
-  /** The newest stored match: ingest's staleness check and starting point. */
   newestMatchForPlayer(uuid: string): { id: number; date: number } | null {
     const row = this.stmt(
       `SELECT m.id AS id, m.date AS date FROM matches m
@@ -365,7 +359,6 @@ export class Store {
     ).run(user.uuid, user.nickname, nowEpochSeconds(), JSON.stringify(user));
   }
 
-  /** Records the seasons the API reports the player has appeared in. */
   setPlayedSeasons(uuid: string, seasons: number[]) {
     const insert = this.stmt(
       `INSERT OR IGNORE INTO player_seasons (uuid, season, ingested_at) VALUES (?, ?, NULL)`,
@@ -375,7 +368,7 @@ export class Store {
     });
   }
 
-  /** Seasons the API reports, newest first; empty until a profile is ingested. */
+  /** As the API reports them, unlike seasonsForPlayer, which reads stored matches. */
   playedSeasons(uuid: string): number[] {
     const rows = this.stmt(
       `SELECT season FROM player_seasons WHERE uuid = ? ORDER BY season DESC`,

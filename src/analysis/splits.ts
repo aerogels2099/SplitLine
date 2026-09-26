@@ -1,4 +1,3 @@
-/** Reconstructs the shape of a run from the event timeline of a single match. */
 import { asMillis, type EpochSeconds, type Millis } from "../shared/brand.js";
 import type { MatchInfo, TimelineEntry } from "../shared/types.js";
 
@@ -147,7 +146,6 @@ export function extractAllRuns(details: MatchInfo[]): RunSplits[] {
   const runs: RunSplits[] = [];
   for (const d of details) {
     if (!d.timelines?.length || d.decayed) continue;
-    // Grouped once per match rather than rescanned for each player.
     const byUuid = new Map<string, TimelineEntry[]>();
     for (const t of d.timelines) {
       const arr = byUuid.get(t.uuid);

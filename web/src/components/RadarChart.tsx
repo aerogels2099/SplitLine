@@ -1,4 +1,3 @@
-/** Radar chart over a handful of axes, one series or two overlaid. */
 import { useTooltip } from "./ui";
 
 export interface RadarSeries {
@@ -6,7 +5,6 @@ export interface RadarSeries {
   color: string;
   /** One entry per axis, in the same order; a missing value is drawn hollow at the centre. */
   values: (number | null)[];
-  /** Optional per-axis sample counts, for the tooltip. */
   counts?: (number | null)[];
 }
 
@@ -42,7 +40,6 @@ export function RadarChart({
   return (
     <div className="scroll-x">
       <svg viewBox={`0 0 ${VW} ${VH}`} style={{ width: "100%", maxWidth: 460, margin: "0 auto", display: "block" }}>
-        {/* rings */}
         {RINGS.map((lvl) => (
           <polygon
             key={lvl}
@@ -52,7 +49,6 @@ export function RadarChart({
             strokeWidth={1}
           />
         ))}
-        {/* spokes + axis labels */}
         {axes.map((ax, i) => {
           const [ex, ey] = pt(i, max);
           const [lx, ly] = [CX + (R + 18) * Math.cos(angle(i)), CY + (R + 18) * Math.sin(angle(i))];
@@ -73,12 +69,10 @@ export function RadarChart({
             </g>
           );
         })}
-        {/* outer-ring value label along the top spoke */}
         <text x={CX + 4} y={CY - R - 4} fontSize={8.5} fontFamily="var(--font-label)" fill="var(--text-muted)">
           {fmtValue(max)}
         </text>
 
-        {/* series polygons */}
         {series.map((s) => {
           const poly = axes
             .map((_, i) => {
@@ -92,7 +86,7 @@ export function RadarChart({
             </g>
           );
         })}
-        {/* vertex markers, drawn above the fills so they can be hovered */}
+        {/* above the fills, so they can be hovered */}
         {series.map((s) =>
           axes.map((ax, i) => {
             const v = s.values[i];

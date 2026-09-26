@@ -17,11 +17,9 @@ describe("seed archetype performance", () => {
       expect(s.wins + s.losses + s.draws).toBe(s.games);
       expect(s.winRate).toBeGreaterThanOrEqual(0);
       expect(s.winRate).toBeLessThanOrEqual(1);
-      // Bastion archetypes come from the API's known set.
       expect(typeof s.archetype).toBe("string");
       expect(s.archetype.length).toBeGreaterThan(0);
     }
-    // Total games across archetypes never exceeds the input match count.
     const total = stats.reduce((n, s) => n + s.games, 0);
     expect(total).toBeLessThanOrEqual(matches.length);
   });

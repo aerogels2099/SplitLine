@@ -27,7 +27,7 @@ interface IngestOpts {
   type?: MatchType;
 }
 
-/** Decay entries are stored and flagged; older pages are left to the background walk. */
+/** Older pages are left to the background season walk. */
 export async function ingestPlayer(
   store: Store,
   api: RankedApi,
@@ -77,7 +77,6 @@ export async function ingestPlayer(
     // A full page means the delta has a hole; fall through to a full walk.
   }
 
-  // Cold start; none of these three depend on each other.
   const [user, firstPage, seasons] = await Promise.all([
     api.getUser(identifier),
     api.getUserMatches(identifier, { count: PAGE, type, season: opts.season }),
@@ -106,11 +105,8 @@ export async function ingestPlayer(
 }
 
 /**
- * Walks one season to the end and marks it stored. Uncapped on purpose: a heavy
- * season runs to about nineteen pages and a cap would quietly truncate it.
- * Starts from the newest game unless `before` marks a page the caller already
- * stored in full; the corpus crawl leaves arbitrary middle slices behind, so
- * resuming below one of those would skip everything above it.
+ * Uncapped, or a heavy season would be cut short. `before` must follow a page stored
+ * in full: resuming below a slice the corpus crawl left would skip everything above it.
  */
 export async function ingestSeason(
   store: Store,
@@ -125,7 +121,6 @@ export async function ingestSeason(
   let stored = 0;
   for (;;) {
     const page = await api.getUserMatches(identifier, { ...params, before });
-    // An empty page marks the end of the history, not a failure.
     if (page.length === 0) break;
     stored += store.upsertMatches(page);
     before = page[page.length - 1]!.id;
@@ -141,7 +136,6 @@ const CHUNK = 4;
 async function fetchDetails(store: Store, api: RankedApi, ids: number[]): Promise<number> {
   let fetched = 0;
   for (let i = 0; i < ids.length; i += CHUNK) {
-    // One unreachable match must not discard the whole batch.
     const results = await Promise.allSettled(ids.slice(i, i + CHUNK).map((id) => api.getMatch(id)));
     const details = results
       .filter((r): r is PromiseFulfilledResult<MatchInfo> => r.status === "fulfilled")
@@ -152,7 +146,6 @@ async function fetchDetails(store: Store, api: RankedApi, ids: number[]): Promis
   return fetched;
 }
 
-/** Timelines for a player's recent ranked games that are not cached yet. */
 export async function fetchPlayerDetails(
   store: Store,
   api: RankedApi,

@@ -64,7 +64,6 @@ describe("sqlite store", () => {
     for (const row of rows) {
       const m = matches.find((x) => x.id === row.match_id)!;
       const change = m.changes.find((c) => c.uuid === row.uuid);
-      // The stored rating is the one going into the match, not the player's current one.
       expect(row.elo_rate).toBe(change?.eloRate ?? null);
       expect(row.elo_change).toBe(change?.change ?? null);
       expect(row.elo_after).toBe(
@@ -139,8 +138,7 @@ describe("sqlite store", () => {
     const store = new Store(":memory:");
     const detail = matchDetails()[0]!;
     store.upsertMatches([detail]);
-    // In the older format the detail row held the entire match; merging it
-    // over the list row must still reproduce the original.
+    // The older format held the entire match in the detail row.
     store.db
       .prepare(`INSERT OR REPLACE INTO match_details (id, fetched_at, data) VALUES (?, ?, ?)`)
       .run(detail.id, 0, JSON.stringify(detail));
@@ -151,8 +149,6 @@ describe("sqlite store", () => {
   it("joins an open transaction instead of opening a second one", () => {
     const store = new Store(":memory:");
     const matches = userAMatches();
-    // The database refuses a transaction opened inside another, and an unguarded
-    // rollback would discard the caller's work rather than the inner write's.
     store.db.exec("BEGIN");
     expect(() => store.upsertMatches(matches)).not.toThrow();
     store.db.exec("COMMIT");

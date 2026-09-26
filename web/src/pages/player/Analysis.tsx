@@ -130,7 +130,6 @@ export default function Analysis() {
   );
 }
 
-/** The run the game card linked from, against the player's own band. */
 function RunCard({
   run,
   mine,

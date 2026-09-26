@@ -10,12 +10,10 @@ export interface GameRecord {
   season: number;
   outcome: GameOutcome;
   forfeited: boolean;
-  /** Marks a synthetic rank-decay entry rather than a game that was played. */
   decayed: boolean;
   /** The winning completion time, absent when the match was drawn. */
   time: Millis | null;
   opponent: { uuid: string; nickname: string; eloAtMatch: number | null } | null;
-  /** The rating carried into the match, unavailable for placement games. */
   eloBefore: number | null;
   eloChange: number | null;
   eloAfter: number | null;
@@ -45,7 +43,7 @@ export function seasonsPlayed(matches: MatchInfo[]): number[] {
   return [...seen].sort((a, b) => b - a);
 }
 
-/** One record per match, newest first; decay entries are kept and flagged. */
+/** Decay entries are kept and flagged, not dropped. */
 export function buildGameHistory(
   matches: MatchInfo[],
   uuid: string,

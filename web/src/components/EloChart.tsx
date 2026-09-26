@@ -119,7 +119,6 @@ export function EloChart({
             </clipPath>
           </defs>
 
-          {/* plot slot */}
           <rect
             x={PAD.l}
             y={PAD.t}
@@ -131,7 +130,6 @@ export function EloChart({
             shapeRendering="crispEdges"
           />
 
-          {/* tier bands */}
           <g clipPath="url(#plot)">
             {bands.map((t) => {
               const top = sy(Math.min(t.max === Infinity ? yHi : t.max, yHi));
@@ -154,7 +152,6 @@ export function EloChart({
               );
             })}
           </g>
-          {/* tier labels in the right gutter */}
           {bands.map((t) => {
             const top = Math.min(t.max === Infinity ? yHi : t.max, yHi);
             const bot = Math.max(t.min, yLo);
@@ -176,7 +173,6 @@ export function EloChart({
             );
           })}
 
-          {/* grid + ticks */}
           {niceTicks(yLo, yHi).map((v) => (
             <g key={v}>
               <line x1={PAD.l} x2={W - PAD.r} y1={sy(v)} y2={sy(v)} stroke="var(--grid)" strokeWidth={1} shapeRendering="crispEdges" />
@@ -196,15 +192,12 @@ export function EloChart({
             RATED GAMES
           </text>
 
-          {/* stepped area + line */}
           <g clipPath="url(#plot)">
             <path d={areaPath} fill="url(#eloArea)" />
             <path d={linePath} fill="none" stroke="var(--gold)" strokeWidth={2} strokeLinejoin="round" />
-            {/* decay entries, marked in the losing colour */}
             {sorted.filter((p) => p.decayed).map((p, i) => sq(p.X, p.Y, 7, "var(--behind)", i))}
           </g>
 
-          {/* peak / floor flags */}
           {peak !== last && (
             <g>
               {sq(peak.X, peak.Y, 7, "var(--gold-hot)")}
@@ -224,7 +217,6 @@ export function EloChart({
 
     // Drawn after the crosshair, so it stays on top of it.
     const badge = (
-          /* end-value slab badge */
           <g>
             {sq(last.X, last.Y, 8, "var(--gold)")}
             <rect x={last.X + 9} y={last.Y - 12} width={52} height={22} fill="var(--gold)" stroke="var(--void)" strokeWidth={2} shapeRendering="crispEdges" />
@@ -294,7 +286,6 @@ export function EloChart({
       >
         {statics?.layers}
 
-        {/* crosshair */}
         {hover !== null && sorted[hover] && (
           <g>
             <line

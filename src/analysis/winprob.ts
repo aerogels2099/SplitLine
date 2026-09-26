@@ -29,6 +29,9 @@ const MIN_SAMPLES = 8;
 
 const SD_FLOOR_MS = 30_000;
 
+/** Fitted on held-out checkpoints: timing evidence beyond this many log-odds was not borne out. */
+const EVIDENCE_CAP = 2.5;
+
 function isFinished(r: RunSplits): boolean {
   return r.finished && r.splits.finish !== null;
 }
@@ -174,9 +177,6 @@ export function projectFinish(
   elapsedMs: number,
 ): FinishProjection {
   const milestone = state.lastEventType ? milestoneForEvent(state.lastEventType) : null;
-  if (milestone === "finish") {
-    return { meanMs: state.lastEventTime ?? elapsedMs, sdMs: 1, milestone };
-  }
   const stats =
     (state.lastEventType ? model.events[state.lastEventType] : undefined) ??
     (milestone ? model.milestones[milestone] : undefined);
@@ -189,6 +189,10 @@ export function projectFinish(
       meanMs = state.lastEventTime + stats.meanRemaining;
       sdMs = stats.sdRemaining;
     }
+  } else if (milestone === "finish") {
+    // A dragon kill nobody in this band was timed from: completion is seconds away, not certain.
+    meanMs = elapsedMs;
+    sdMs = SD_FLOOR_MS;
   } else if (model.overall.curve) {
     [meanMs, sdMs] = fromCurve(model.overall.curve, elapsedMs, elapsedMs);
   } else {
@@ -215,6 +219,7 @@ export function headToHeadWinProb(
   const projA = projectFinish(a.model, a.state, elapsedMs);
   const projB = projectFinish(b.model, b.state, elapsedMs);
 
+  // Only one dragon down: its killer completes first in 96-100% of held-out checkpoints.
   if (projA.milestone === "finish" && projB.milestone !== "finish") {
     return { pA: 0.99, projA, projB };
   }
@@ -229,7 +234,8 @@ export function headToHeadWinProb(
   const paceB = projB.meanMs - b.model.overall.meanFinal;
   const z = (paceB - paceA) / Math.sqrt(projA.sdMs ** 2 + projB.sdMs ** 2);
 
-  const pA = logistic(logit(pElo) + logit(normalCdf(z)));
+  const evidence = Math.min(EVIDENCE_CAP, Math.max(-EVIDENCE_CAP, logit(normalCdf(z))));
+  const pA = logistic(logit(pElo) + evidence);
   return { pA: Math.min(0.99, Math.max(0.01, pA)), projA, projB };
 }
 

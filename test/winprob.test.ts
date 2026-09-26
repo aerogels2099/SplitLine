@@ -12,7 +12,7 @@ import {
   projectFinish,
   scoreLiveMatch,
 } from "../src/analysis/winprob.js";
-import { eloExpectedScore, mean } from "../src/analysis/stats.js";
+import { eloExpectedScore, logistic, mean } from "../src/analysis/stats.js";
 import { liveData, matchDetails } from "./helpers.js";
 
 describe("win probability model", () => {
@@ -394,5 +394,68 @@ describe("unfinished runs are censored, not dropped", () => {
     // The quickest winner needs six minutes from the nether, so three minutes stuck says nothing.
     const early = projectFinish(model, state, 5 * 60_000);
     expect(early.meanMs).toBeCloseTo(fresh.meanMs, 6);
+  });
+});
+
+describe("the end of a race", () => {
+  const KILL = "end.kill_dragon";
+  const DEATH = "projectelo.timeline.dragon_death";
+  // A kill trails completion by 20s and the dragon's death by 10s, as in the real corpus.
+  const runs = Array.from({ length: 30 }, (_, i) => {
+    const base = syntheticRun(1850, 9 * 60_000 + i * 1000, i);
+    const done = Number(base.splits.finish);
+    return {
+      ...base,
+      eventTimes: { [KILL]: asMillis(done - 20_000), [DEATH]: asMillis(done - 10_000) },
+    };
+  });
+  const model = buildWinProbModel(runs);
+  const at = (type: string, time: number): LiveRunState => ({ lastEventType: type, lastEventTime: time });
+
+  it("all but hands it to the only runner past the dragon, whatever the ratings", () => {
+    const t = 8 * 60_000;
+    const { pA } = headToHeadWinProb(
+      { model, state: at(KILL, t), elo: 1500 },
+      { model, state: at("story.enter_the_end", t - 30_000), elo: 2000 },
+      t,
+    );
+    expect(pA).toBe(0.99);
+  });
+
+  it("ranks two runners past the dragon by projected completion, not by event time", () => {
+    // Killed at 8:34 and died at 8:38 look like a leads, but a death trails its kill by
+    // ten seconds, so b's kill came first and b completes at 8:48 against a's 8:54.
+    const { pA } = headToHeadWinProb(
+      { model, state: at(KILL, 514_000), elo: 1850 },
+      { model, state: at(DEATH, 518_000), elo: 1850 },
+      519_000,
+    );
+    expect(pA).toBeLessThan(0.5);
+  });
+});
+
+describe("timing evidence is capped", () => {
+  // Everyone finishes within two seconds of 9:00, so a runner entering the nether at 8:10
+  // is many spreads behind one already in the end.
+  const model = buildWinProbModel(
+    Array.from({ length: 30 }, (_, i) => syntheticRun(1850, 9 * 60_000 + (i % 3) * 1000, i)),
+  );
+  const t = 490_000;
+  const ahead: LiveRunState = { lastEventType: "story.enter_the_end", lastEventTime: 486_000 };
+  const behind: LiveRunState = { lastEventType: "story.enter_the_nether", lastEventTime: t };
+
+  it("stops a runner far ahead at the cap in an even matchup", () => {
+    const { pA } = headToHeadWinProb(
+      { model, state: ahead, elo: 1850 },
+      { model, state: behind, elo: 1850 },
+      t,
+    );
+    expect(pA).toBeCloseTo(logistic(2.5), 10);
+  });
+
+  it("still lets a rating edge count on top of a capped lead", () => {
+    const even = headToHeadWinProb({ model, state: ahead, elo: 1850 }, { model, state: behind, elo: 1850 }, t).pA;
+    const stronger = headToHeadWinProb({ model, state: ahead, elo: 2050 }, { model, state: behind, elo: 1850 }, t).pA;
+    expect(stronger).toBeGreaterThan(even);
   });
 });

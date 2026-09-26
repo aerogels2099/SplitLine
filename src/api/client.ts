@@ -114,7 +114,6 @@ export class RankedClient {
     }
   }
 
-  /** Callers ask for no caching on live endpoints and unlimited caching on immutable ones. */
   async get<T>(
     path: string,
     opts: { ttlMs?: number; baseUrl?: string; withKey?: boolean } = {},
@@ -138,7 +137,6 @@ export class RankedClient {
     });
   }
 
-  /** Shares one in-flight request between callers asking for the same URL. */
   private coalesce<T>(url: string, ttlMs: number, run: () => Promise<T>): Promise<T> {
     const pending = this.inFlightByUrl.get(url);
     if (pending) return pending as Promise<T>;
@@ -172,7 +170,6 @@ export class RankedClient {
     if (this.cache.size > MAX_CACHE_ENTRIES) this.evict();
   }
 
-  /** Expired entries first, then oldest-inserted, until back under the cap. */
   private evict() {
     const now = Date.now();
     for (const [k, v] of this.cache) {

@@ -1,8 +1,5 @@
-/** Chart primitives: bars, lines, gridlines, and a tooltip on every mark. */
 import { type ReactNode } from "react";
 import { useTooltip } from "./ui";
-
-// ------------------------------------------------------ horizontal bars
 
 export interface HBarItem {
   label: string;
@@ -52,8 +49,6 @@ export function HBars({ items, max }: { items: HBarItem[]; max?: number }) {
   );
 }
 
-// ------------------------------------------------------- diverging bars
-
 export interface DivergingItem {
   label: string;
   value: number;
@@ -61,7 +56,7 @@ export interface DivergingItem {
   hint?: ReactNode;
 }
 
-/** Diverging bars around a zero baseline; negative is time saved, positive time lost. */
+/** Negative is time saved, positive time lost. */
 export function DivergingBars({ items, posColor, negColor }: {
   items: DivergingItem[];
   posColor?: string;
@@ -122,8 +117,6 @@ function niceTicks(lo: number, hi: number, n = 4): number[] {
   return out;
 }
 
-// -------------------------------------------------------------- columns
-
 export interface ColumnItem {
   label: string;
   value: number;
@@ -175,8 +168,6 @@ export function Columns({ items, height, fmtValue }: {
     </div>
   );
 }
-
-// -------------------------------------------------------------- scatter
 
 export interface ScatterPoint {
   x: number;

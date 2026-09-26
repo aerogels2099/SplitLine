@@ -1,4 +1,3 @@
-/** Win rate per player by overworld and bastion type; unfiltered seeds are skipped. */
 import { median } from "./stats.js";
 import type { MatchInfo } from "../shared/types.js";
 
@@ -9,7 +8,6 @@ export interface ArchetypeStats {
   losses: number;
   draws: number;
   winRate: number;
-  /** Median finish time, in milliseconds, across the wins on this archetype. */
   medianWinTime: number | null;
 }
 

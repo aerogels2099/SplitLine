@@ -1,5 +1,4 @@
-/** Elo bands by milestone; columns are normalized on their own, so brightness
- *  compares bands within one split. */
+/** Each column is normalized on its own, so brightness compares bands within one split. */
 import type { SplitDistribution } from "../api";
 import { fmtMs } from "../format";
 import { useTooltip } from "./ui";
@@ -28,7 +27,6 @@ export function SplitHeatmap({ data }: { data: Record<string, SplitDistribution[
   return (
     <div className="scroll-x" style={{ marginTop: 10 }}>
       <div style={{ minWidth: 480, display: "grid", gridTemplateColumns: cols, gap: 2 }}>
-        {/* header */}
         <div />
         {labels.map((l) => (
           <div
@@ -49,7 +47,6 @@ export function SplitHeatmap({ data }: { data: Record<string, SplitDistribution[
           </div>
         ))}
 
-        {/* rows */}
         {rows.map(([band, byLabel], bi) => (
           <Row key={band}>
             <div

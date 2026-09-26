@@ -13,13 +13,11 @@ function pick(sorted: number[], p: number): number {
   return sorted[lo]! + (sorted[hi]! - sorted[lo]!) * (idx - lo);
 }
 
-/** Percentile interpolated between neighbouring values; the input need not be sorted. */
 export function percentile(xs: number[], p: number): number {
   if (xs.length === 0) return NaN;
   return pick([...xs].sort((a, b) => a - b), p);
 }
 
-/** Several percentiles off a single sort. */
 export function percentiles(xs: number[], ps: number[]): number[] {
   if (xs.length === 0) return ps.map(() => NaN);
   const sorted = [...xs].sort((a, b) => a - b);

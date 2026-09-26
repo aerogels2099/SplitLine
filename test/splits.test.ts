@@ -12,7 +12,7 @@ describe("split extraction", () => {
     expect(run.won).toBe(true);
     expect(run.finished).toBe(true);
     expect(run.splits.finish).toBe(completed.result.time);
-    // Milestones must be reached in canonical order when all present.
+    // Bastion and fortress come in either order depending on the route.
     const order = MILESTONES.filter((m) => m.key !== "bastion" && m.key !== "fortress");
     const times = order.map((m) => run.splits[m.key]).filter((t) => t !== null) as number[];
     const sorted = [...times].sort((a, b) => a - b);
@@ -28,7 +28,6 @@ describe("split extraction", () => {
 
   it("treats an empty timelines array as absent, not as a run of nulls", () => {
     const m = details[0]!;
-    // Endpoints that return lists answer with an empty list rather than an error.
     expect(extractRunSplits({ ...m, timelines: [] }, m.players[0]!.uuid)).toBeNull();
   });
 
@@ -44,9 +43,8 @@ describe("split extraction", () => {
 
   it("extracts runs for both players of every detail", () => {
     const runs = extractAllRuns(details);
-    expect(runs.length).toBeGreaterThanOrEqual(details.length); // at least one run per match
+    expect(runs.length).toBeGreaterThanOrEqual(details.length);
     for (const r of runs) {
-      // Cumulative splits never decrease relative to nether entry.
       if (r.splits.nether_enter !== null && r.splits.end_enter !== null) {
         expect(Number(r.splits.end_enter)).toBeGreaterThan(Number(r.splits.nether_enter));
       }

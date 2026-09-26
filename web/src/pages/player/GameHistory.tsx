@@ -42,7 +42,6 @@ export default function GameHistory() {
   // games arrive newest first, so the most recent ones are at the head, not the tail
   const shown = useMemo(() => (range === 0 ? points : points.slice(0, range)), [points, range]);
 
-  /** Jumps to a game picked on the chart, from an effect so the row exists first. */
   const openFromChart = (matchId: number) => {
     // The row has to exist before the effect below can scroll to it.
     const idx = games.findIndex((g) => g.matchId === matchId);
