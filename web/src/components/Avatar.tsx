@@ -23,6 +23,7 @@ export function Avatar({ uuid, name, size = 32 }: { uuid: string; name: string; 
       </span>
     );
   }
+  // Requested at twice the display size, so the head stays sharp on high-density screens.
   return (
     <img
       className="avatar"

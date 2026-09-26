@@ -51,7 +51,7 @@ describe("buildGameHistory", () => {
   it("chains: each game's post-match rating is the next game's pre-match rating", () => {
     const rated = [...games]
       .filter((g) => g.eloBefore !== null && g.eloAfter !== null)
-      .reverse();
+      .reverse(); // oldest first, so each game follows the one before it
     for (let i = 1; i < rated.length; i++) {
       expect(rated[i]!.eloBefore).toBe(rated[i - 1]!.eloAfter);
     }

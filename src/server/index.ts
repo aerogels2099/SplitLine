@@ -103,8 +103,9 @@ app.get("/api/players/:id/history", async (req) => {
 
 app.get("/api/players/:id/analysis", async (req, reply) => {
   const { season } = req.query as { season?: string };
-  reply.header("cache-control", "public, max-age=30");
-  return ctx.playerAnalysis((req.params as { id: string }).id, intParam(season));
+  const analysis = await ctx.playerAnalysis((req.params as { id: string }).id, intParam(season));
+  reply.header("cache-control", analysis.complete ? "public, max-age=30" : "no-store");
+  return analysis;
 });
 
 app.get("/api/players/:id/games/:matchId", async (req, reply) => {

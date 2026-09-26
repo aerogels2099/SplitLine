@@ -57,3 +57,14 @@ CREATE TABLE IF NOT EXISTS player_seasons (
   ingested_at INTEGER,                     -- epoch seconds; empty while the season is only partly stored
   PRIMARY KEY (uuid, season)
 ) WITHOUT ROWID;
+
+CREATE TABLE IF NOT EXISTS runs (
+  match_id INTEGER NOT NULL REFERENCES matches(id),
+  uuid     TEXT NOT NULL,
+  season   INTEGER NOT NULL,
+  date     INTEGER NOT NULL,
+  data     TEXT NOT NULL,
+  PRIMARY KEY (match_id, uuid)
+) WITHOUT ROWID;
+
+CREATE INDEX IF NOT EXISTS idx_runs_uuid_season ON runs(uuid, season);

@@ -20,6 +20,7 @@ const profile = (uuid: string): UserProfile => ({
   country: null,
 });
 
+// Only the fields the seed analysis reads; the rest of the match is left out.
 function seedMatch(uuid: string, foe: string, bastion: string, won: boolean, i: number): MatchInfo {
   return {
     id: i,

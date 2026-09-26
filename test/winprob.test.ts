@@ -137,9 +137,11 @@ function syntheticRun(elo: number, finishMs: number, i: number): RunSplits {
       end_fight: at(0.1),
     },
     eventTimes: {},
+    matchTime: asMillis(finishMs),
   };
 }
 
+// Two well-sampled bands, one fast and one slow, and a thin one between them.
 function syntheticCorpus(): RunSplits[] {
   const out: RunSplits[] = [];
   let i = 0;
@@ -288,34 +290,109 @@ describe("alias events are timed on their own", () => {
 });
 
 describe("a pace-neutral run reads as the elo prior", () => {
-  const runs = extractAllRuns(matchDetails());
-  const banded = buildBandedWinProbModels(runs);
   const blank: LiveRunState = { lastEventType: null, lastEventTime: null };
 
-  it("holds for every band the corpus produced, thin ones included", () => {
-    const bands = Object.keys(banded.bands).filter((b) => b !== "placement");
-    expect(bands.length).toBeGreaterThan(0);
+  // Nether time and finish time vary independently, so the identity being
+  // checked is not an artefact of one being a fixed fraction of the other.
+  const evenCorpus = Array.from({ length: 30 }, (_, i) => {
+    const base = syntheticRun(1850, (9 + (i % 7)) * 60_000, i);
+    return {
+      ...base,
+      splits: { ...base.splits, nether_enter: asMillis((90 + (i % 5) * 20) * 1000) },
+    };
+  });
 
-    for (const band of bands) {
+  const neutral = (model: WinProbModel, typical: number, eloA: number, eloB: number) =>
+    headToHeadWinProb(
+      {
+        model,
+        state: { lastEventType: "story.enter_the_nether", lastEventTime: typical },
+        elo: eloA,
+      },
+      { model, state: blank, elo: eloB },
+      typical,
+    ).pA;
+
+  it("returns the prior exactly when nothing is censored", () => {
+    const model = buildWinProbModel(evenCorpus);
+    const typical = mean(evenCorpus.map((r) => Number(r.splits.nether_enter)));
+
+    expect(neutral(model, typical, 1850, 1850)).toBeCloseTo(0.5, 8);
+    expect(neutral(model, typical, 2000, 1500)).toBeCloseTo(eloExpectedScore(2000, 1500), 8);
+  });
+
+  it("still credits a split faster or slower than that reference", () => {
+    const model = buildWinProbModel(evenCorpus);
+    const typical = mean(evenCorpus.map((r) => Number(r.splits.nether_enter)));
+    expect(neutral(model, typical - 30_000, 1850, 1850)).toBeGreaterThan(0.5);
+    expect(neutral(model, typical + 30_000, 1850, 1850)).toBeLessThan(0.5);
+  });
+
+  it("holds approximately on the real corpus, against every run that reached the split", () => {
+    const runs = extractAllRuns(matchDetails());
+    const banded = buildBandedWinProbModels(runs);
+    let checked = 0;
+
+    for (const band of Object.keys(banded.bands)) {
+      if (band === "placement") continue;
       const model = banded.bands[band]!;
       if (!model.milestones.nether_enter) continue;
+      // Every run that reached the split, not just the finishers: the model is
+      // fitted on the whole population now that losers are censored in.
       const reached = runs.filter(
-        (r) =>
-          eloBand(r.eloAtMatch) === band &&
-          r.finished &&
-          r.splits.finish !== null &&
-          r.splits.nether_enter !== null,
+        (r) => eloBand(r.eloAtMatch) === band && r.splits.nether_enter !== null,
       );
       if (reached.length < 2) continue;
 
       const typical = mean(reached.map((r) => Number(r.splits.nether_enter)));
       const elo = Number(band.split("–")[0]) + 100;
-      const { pA } = headToHeadWinProb(
-        { model, state: { lastEventType: "story.enter_the_nether", lastEventTime: typical }, elo },
-        { model, state: blank, elo },
-        typical,
-      );
-      expect(pA).toBeCloseTo(0.5, 6);
+      expect(neutral(model, typical, elo, elo)).toBeCloseTo(0.5, 1);
+      checked++;
     }
+
+    expect(checked).toBeGreaterThan(0);
+  });
+});
+
+describe("unfinished runs are censored, not dropped", () => {
+  const winner = (i: number, remainingMs: number) => {
+    const base = syntheticRun(1850, 2 * 60_000 + remainingMs, i);
+    return { ...base, splits: { ...base.splits, nether_enter: asMillis(2 * 60_000) } };
+  };
+  const loser = (i: number, endMs: number): RunSplits => {
+    const base = syntheticRun(1850, endMs, i);
+    return {
+      ...base,
+      finished: false,
+      won: false,
+      splits: { ...base.splits, nether_enter: asMillis(2 * 60_000), finish: null },
+      matchTime: asMillis(endMs),
+    };
+  };
+  const winners = Array.from({ length: 20 }, (_, i) => winner(i, (6 + (i % 5)) * 60_000));
+  const losers = Array.from({ length: 20 }, (_, i) => loser(100 + i, 9 * 60_000));
+
+  it("lengthens remaining time when losers are still running at the whistle", () => {
+    const winnersOnly = buildWinProbModel(winners).milestones.nether_enter!;
+    const everyone = buildWinProbModel([...winners, ...losers]).milestones.nether_enter!;
+    expect(everyone.n).toBe(winnersOnly.n);
+    expect(everyone.meanRemaining).toBeGreaterThan(winnersOnly.meanRemaining);
+  });
+
+  it("projects a runner stalled past typical finishes later than a fresh one", () => {
+    const model = buildWinProbModel([...winners, ...losers]);
+    const state = { lastEventType: "story.enter_the_nether", lastEventTime: 2 * 60_000 };
+    const fresh = projectFinish(model, state, 2 * 60_000);
+    const stalled = projectFinish(model, state, 10 * 60_000);
+    expect(stalled.meanMs).toBeGreaterThan(fresh.meanMs);
+  });
+
+  it("ignores time stuck before anyone could have finished", () => {
+    const model = buildWinProbModel([...winners, ...losers]);
+    const state = { lastEventType: "story.enter_the_nether", lastEventTime: 2 * 60_000 };
+    const fresh = projectFinish(model, state, 2 * 60_000);
+    // The quickest winner needs six minutes from the nether, so three minutes stuck says nothing.
+    const early = projectFinish(model, state, 5 * 60_000);
+    expect(early.meanMs).toBeCloseTo(fresh.meanMs, 6);
   });
 });

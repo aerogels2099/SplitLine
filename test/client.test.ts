@@ -33,6 +33,26 @@ describe("RankedClient", () => {
     expect(fetchImpl).toHaveBeenCalledTimes(3);
   });
 
+  it("retries a request that hangs past its deadline", async () => {
+    const hang = (_url: string, init?: RequestInit) =>
+      new Promise<Response>((_, reject) => {
+        init!.signal!.addEventListener("abort", () => reject(init!.signal!.reason));
+      });
+    const fetchImpl = vi.fn().mockImplementationOnce(hang).mockResolvedValueOnce(ok("late"));
+    const c = new RankedClient({ fetchImpl: fetchImpl as unknown as typeof fetch, sleepImpl: noSleep });
+    const signals: AbortSignal[] = [];
+    const timeout = vi.spyOn(AbortSignal, "timeout").mockImplementation(() => {
+      const ctl = new AbortController();
+      signals.push(ctl.signal);
+      queueMicrotask(() => ctl.abort(new DOMException("timed out", "TimeoutError")));
+      return ctl.signal;
+    });
+    await expect(c.get("/matches")).resolves.toBe("late");
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(signals).toHaveLength(2);
+    timeout.mockRestore();
+  });
+
   it("gives up after max retries", async () => {
     const fetchImpl = vi.fn(async () => new Response("boom", { status: 500 }));
     const c = new RankedClient({ fetchImpl: fetchImpl as unknown as typeof fetch, sleepImpl: noSleep });

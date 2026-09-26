@@ -5,7 +5,7 @@ import { fetchPlayerDetails, ingestPlayer, ingestSeason } from "../ingest/backfi
 import { buildGameHistory, labelRun } from "../analysis/history.js";
 import { buildBandedDistributions, comparePacing, type SplitDistribution } from "../analysis/pacing.js";
 import { bastionOf, overworldOf, performanceByBastion, performanceByOverworld } from "../analysis/seeds.js";
-import { extractAllRuns, extractRunSplits, type RunSplits } from "../analysis/splits.js";
+import { extractRunSplits, type RunSplits } from "../analysis/splits.js";
 import { buildBandedWinProbModels, type BandedWinProbModel } from "../analysis/winprob.js";
 import { nowEpochSeconds } from "../shared/brand.js";
 import type { UserDetails } from "../shared/types.js";
@@ -13,6 +13,7 @@ import type { UserDetails } from "../shared/types.js";
 const INGEST_STALE_SECONDS = 10 * 60;
 const SEASON_MAX_TRIES = 3;
 const SEASON_RETRY_BASE_MS = 30_000;
+const CORPUS_REFRESH_MS = 60_000;
 
 export class AppContext {
   readonly store: Store;
@@ -21,11 +22,14 @@ export class AppContext {
   private detailJobs = new Map<string, Promise<number>>();
   private seasonJobs = new Map<string, Promise<number>>();
   private seasonFailures = new Map<string, { tries: number; nextAt: number }>();
+  // Where each season leaves the first page, so its walk does not fetch that page again.
+  private seasonResume = new Map<string, number>();
   private corpus: {
     version: number;
+    builtAt: number;
     runs: RunSplits[];
     banded: Record<string, SplitDistribution[]>;
-    winProb: BandedWinProbModel;
+    winProb: BandedWinProbModel | null;
   } | null = null;
 
   constructor(dbPath: string, privateKey: string | null) {
@@ -45,10 +49,14 @@ export class AppContext {
     if (cached && nowEpochSeconds() - cached.lastIngest < INGEST_STALE_SECONDS) {
       return cached.user;
     }
-    const key = identifier.toLowerCase();
+    // By uuid when known, so a nickname and a uuid lookup share one ingest.
+    const key = cached?.user.uuid ?? identifier.toLowerCase();
     let pending = this.ingesting.get(key);
     if (!pending) {
       pending = ingestPlayer(this.store, this.api, identifier).then((r) => {
+        for (const [season, id] of Object.entries(r.seasonCursors)) {
+          this.seasonResume.set(`${r.user.uuid}:${season}`, id);
+        }
         this.startJob(this.detailJobs, r.user.uuid, () =>
           fetchPlayerDetails(this.store, this.api, r.user.uuid),
         );
@@ -57,7 +65,12 @@ export class AppContext {
       this.ingesting.set(key, pending);
       pending.finally(() => this.ingesting.delete(key)).catch(() => {});
     }
-    return pending;
+    // A known player is served from the store while the refresh runs behind it.
+    return cached ? cached.user : pending;
+  }
+
+  private refreshing(uuid: string): boolean {
+    return this.ingesting.has(uuid) || this.detailJobs.has(uuid);
   }
 
   private async seasonsFor(identifier: string, uuid: string): Promise<number[]> {
@@ -73,6 +86,7 @@ export class AppContext {
     }
   }
 
+  /** True once the season will not change: stored, never played, or given up on. */
   private ensureSeason(identifier: string, uuid: string, season: number): boolean {
     if (this.store.isSeasonIngested(uuid, season)) return true;
     const known = this.store.playedSeasons(uuid);
@@ -86,7 +100,9 @@ export class AppContext {
       if (Date.now() < failed.nextAt) return false;
     }
 
-    const p = ingestSeason(this.store, this.api, identifier, uuid, season)
+    const before = this.seasonResume.get(key);
+    this.seasonResume.delete(key);
+    const p = ingestSeason(this.store, this.api, identifier, uuid, season, { before })
       .then((n) => {
         this.seasonFailures.delete(key);
         return n;
@@ -116,22 +132,31 @@ export class AppContext {
       seasons,
       season: active,
       games: buildGameHistory(matches, user.uuid),
-      complete: settled,
+      complete: settled && !this.ingesting.has(user.uuid),
     };
   }
 
   private peerCorpus() {
     const version = this.store.detailCount();
-    if (this.corpus?.version !== version) {
-      const runs = extractAllRuns(this.store.getDetails({ limit: 2000 }));
+    // Rebuilt at most once a minute while details are still arriving.
+    const held = this.corpus;
+    if (!held || (held.version !== version && Date.now() - held.builtAt >= CORPUS_REFRESH_MS)) {
+      const runs = this.store.getRuns({ limit: 2000 });
       this.corpus = {
         version,
+        builtAt: Date.now(),
         runs,
         banded: buildBandedDistributions(runs),
-        winProb: buildBandedWinProbModels(runs),
+        winProb: null,
       };
     }
-    return this.corpus;
+    return this.corpus!;
+  }
+
+  winProbModels(): BandedWinProbModel {
+    const corpus = this.peerCorpus();
+    corpus.winProb ??= buildBandedWinProbModels(corpus.runs);
+    return corpus.winProb;
   }
 
   async playerAnalysis(identifier: string, season?: number) {
@@ -142,9 +167,7 @@ export class AppContext {
     const matches = this.store.getMatchesForPlayer(user.uuid, { type: 2, season: active });
 
     const corpus = this.peerCorpus();
-    const mine = extractAllRuns(this.store.getDetails({ uuid: user.uuid, season: active })).filter(
-      (r) => r.uuid === user.uuid,
-    );
+    const mine = this.store.getPlayerRuns(user.uuid, active);
 
     return {
       user,
@@ -156,12 +179,12 @@ export class AppContext {
       bandedDistributions: corpus.banded,
       byBastion: performanceByBastion(matches, user.uuid),
       byOverworld: performanceByOverworld(matches, user.uuid),
-      complete: settled,
+      complete: settled && !this.refreshing(user.uuid),
     };
   }
 
   async gameSplits(identifier: string, matchId: number) {
-    const user = await this.ensurePlayer(identifier);
+    const user = this.store.getPlayer(identifier)?.user ?? (await this.ensurePlayer(identifier));
     let detail = this.store.getDetail(matchId);
     if (!detail) {
       detail = await this.api.getMatch(matchId);

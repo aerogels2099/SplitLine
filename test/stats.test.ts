@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { ELO_DIVISOR, eloExpectedScore, normalCdf, stddev } from "../src/analysis/stats.js";
+import {
+  conditionalRemaining,
+  ELO_DIVISOR,
+  eloExpectedScore,
+  kaplanMeier,
+  mean,
+  normalCdf,
+  stddev,
+} from "../src/analysis/stats.js";
 
 describe("stats primitives", () => {
   it("computes sample standard deviation", () => {
@@ -52,5 +60,36 @@ describe("stats primitives", () => {
     for (const [a, b] of [[1500, 1500], [2000, 1200], [900, 1750], [2622, 2600]]) {
       expect(eloExpectedScore(a!, b!) + eloExpectedScore(b!, a!)).toBeCloseTo(1, 10);
     }
+  });
+});
+
+describe("survival estimates", () => {
+  it("matches the sample mean when nothing is censored", () => {
+    const xs = [3, 5, 5, 8, 9];
+    const curve = kaplanMeier(xs.map((time) => ({ time, observed: true })));
+    expect(curve.survival.at(-1)).toBeCloseTo(0, 10);
+    expect(conditionalRemaining(curve, 0)!.mean).toBeCloseTo(mean(xs), 10);
+  });
+
+  it("keeps censored observations in the risk set without counting them as events", () => {
+    const curve = kaplanMeier([
+      { time: 2, observed: true },
+      { time: 4, observed: false },
+      { time: 6, observed: true },
+    ]);
+    // Three are at risk at 2; by 6 the censored run has left, so only one is.
+    expect(curve.times).toEqual([0, 2, 6]);
+    expect(curve.survival[1]).toBeCloseTo(2 / 3, 10);
+    expect(curve.survival[2]).toBeCloseTo(0, 10);
+  });
+
+  it("conditions on time already survived", () => {
+    const curve = kaplanMeier([2, 4, 6, 8].map((time) => ({ time, observed: true })));
+    const fromStart = conditionalRemaining(curve, 0)!;
+    // Only the finishes at 6 and 8 remain, one and three away.
+    const afterFive = conditionalRemaining(curve, 5)!;
+    expect(afterFive.mean).toBeCloseTo(2, 10);
+    expect(5 + afterFive.mean).toBeGreaterThan(fromStart.mean);
+    expect(conditionalRemaining(curve, 8)).toBeNull();
   });
 });

@@ -1,64 +1,100 @@
 import type { LiveMatch } from "../shared/types.js";
 import { eloBand } from "./pacing.js";
 import { MILESTONES, milestoneForEvent, type MilestoneKey, type RunSplits } from "./splits.js";
-import { eloExpectedScore, logistic, logit, mean, normalCdf, stddev } from "./stats.js";
+import {
+  conditionalRemaining,
+  eloExpectedScore,
+  kaplanMeier,
+  logistic,
+  logit,
+  normalCdf,
+  type Observation,
+  type SurvivalCurve,
+} from "./stats.js";
 
 export interface MilestoneModel {
   n: number;
   meanRemaining: number;
   sdRemaining: number;
+  curve?: SurvivalCurve;
 }
 
 export interface WinProbModel {
   milestones: Partial<Record<MilestoneKey, MilestoneModel>>;
   events: Record<string, MilestoneModel>;
-  overall: { n: number; meanFinal: number; sdFinal: number };
+  overall: { n: number; meanFinal: number; sdFinal: number; curve?: SurvivalCurve };
 }
 
 const MIN_SAMPLES = 8;
 
-export function buildWinProbModel(runs: RunSplits[]): WinProbModel {
-  const finished = runs.filter((r) => r.finished && r.splits.finish !== null);
+const SD_FLOOR_MS = 30_000;
 
+function isFinished(r: RunSplits): boolean {
+  return r.finished && r.splits.finish !== null;
+}
+
+/** Every finished run is a win, so unfinished ones are censored at the match's end rather than dropped. */
+function remainingModel(
+  runs: RunSplits[],
+  startOf: (r: RunSplits) => number | null,
+): MilestoneModel | null {
+  const observations: Observation[] = [];
+  let n = 0;
+  for (const r of runs) {
+    const start = startOf(r);
+    if (start === null) continue;
+    if (isFinished(r)) {
+      observations.push({ time: Number(r.splits.finish) - start, observed: true });
+      n++;
+    } else {
+      observations.push({ time: Math.max(Number(r.matchTime) - start, 0), observed: false });
+    }
+  }
+  if (n < MIN_SAMPLES) return null;
+  const curve = kaplanMeier(observations);
+  const m = conditionalRemaining(curve, 0)!;
+  return { n, meanRemaining: m.mean, sdRemaining: Math.max(m.sd, SD_FLOOR_MS), curve };
+}
+
+export function buildWinProbModel(runs: RunSplits[]): WinProbModel {
   const milestones: Partial<Record<MilestoneKey, MilestoneModel>> = {};
   for (const m of MILESTONES) {
     if (m.key === "finish") continue;
-    const remaining = finished
-      .filter((r) => r.splits[m.key] !== null)
-      .map((r) => Number(r.splits.finish) - Number(r.splits[m.key]));
-    if (remaining.length >= MIN_SAMPLES) {
-      milestones[m.key] = {
-        n: remaining.length,
-        meanRemaining: mean(remaining),
-        sdRemaining: Math.max(stddev(remaining), 30_000),
-      };
-    }
+    const model = remainingModel(runs, (r) => (r.splits[m.key] !== null ? Number(r.splits[m.key]) : null));
+    if (model) milestones[m.key] = model;
   }
 
+  // Alias events, like crying obsidian for bastion, get timings of their own.
+  const types = new Set<string>();
+  for (const r of runs) for (const t of Object.keys(r.eventTimes)) types.add(t);
   const events: Record<string, MilestoneModel> = {};
-  const seen = new Set<string>();
-  for (const r of finished) for (const t of Object.keys(r.eventTimes)) seen.add(t);
-  for (const type of seen) {
-    const remaining = finished
-      .filter((r) => r.eventTimes[type] !== undefined)
-      .map((r) => Number(r.splits.finish) - Number(r.eventTimes[type]));
-    if (remaining.length >= MIN_SAMPLES) {
-      events[type] = {
-        n: remaining.length,
-        meanRemaining: mean(remaining),
-        sdRemaining: Math.max(stddev(remaining), 30_000),
-      };
-    }
+  for (const type of types) {
+    const model = remainingModel(runs, (r) =>
+      r.eventTimes[type] !== undefined ? Number(r.eventTimes[type]) : null,
+    );
+    if (model) events[type] = model;
   }
 
-  const finals = finished.map((r) => Number(r.splits.finish));
+  const finals = runs.filter(isFinished).length;
+  if (finals === 0) {
+    return { milestones, events, overall: { n: 0, meanFinal: 12 * 60_000, sdFinal: 150_000 } };
+  }
+  const curve = kaplanMeier(
+    runs.map((r) =>
+      isFinished(r)
+        ? { time: Number(r.splits.finish), observed: true }
+        : { time: Number(r.matchTime), observed: false },
+    ),
+  );
+  const m = conditionalRemaining(curve, 0)!;
   return {
     milestones,
     events,
     overall: {
-      n: finals.length,
-      meanFinal: finals.length > 0 ? mean(finals) : 12 * 60_000,
-      sdFinal: finals.length >= 2 ? Math.max(stddev(finals), 60_000) : 150_000,
+      n: finals,
+      meanFinal: m.mean,
+      sdFinal: finals >= 2 ? Math.max(m.sd, 60_000) : 150_000,
+      curve,
     },
   };
 }
@@ -124,6 +160,14 @@ export interface FinishProjection {
   milestone: MilestoneKey | null;
 }
 
+function fromCurve(curve: SurvivalCurve, elapsedMs: number, stuckMs: number): [number, number] {
+  const c = conditionalRemaining(curve, stuckMs);
+  // Stuck longer than any recorded run took, so the curve has nothing left to say.
+  if (!c) return [elapsedMs + SD_FLOOR_MS, 2 * SD_FLOOR_MS];
+  return [elapsedMs + c.mean, Math.max(c.sd, SD_FLOOR_MS)];
+}
+
+/** Conditioned on the time since the last event, or since the start when there is none. */
 export function projectFinish(
   model: WinProbModel,
   state: LiveRunState,
@@ -139,13 +183,19 @@ export function projectFinish(
   let meanMs: number;
   let sdMs: number;
   if (stats && state.lastEventTime !== null) {
-    meanMs = state.lastEventTime + stats.meanRemaining;
-    sdMs = stats.sdRemaining;
+    if (stats.curve) {
+      [meanMs, sdMs] = fromCurve(stats.curve, elapsedMs, Math.max(elapsedMs - state.lastEventTime, 0));
+    } else {
+      meanMs = state.lastEventTime + stats.meanRemaining;
+      sdMs = stats.sdRemaining;
+    }
+  } else if (model.overall.curve) {
+    [meanMs, sdMs] = fromCurve(model.overall.curve, elapsedMs, elapsedMs);
   } else {
     meanMs = model.overall.meanFinal;
     sdMs = model.overall.sdFinal;
   }
-  if (meanMs < elapsedMs) {
+  if (meanMs <= elapsedMs) {
     meanMs = elapsedMs + Math.max(0.15 * sdMs, 20_000);
   }
   return { meanMs, sdMs, milestone };
@@ -174,6 +224,7 @@ export function headToHeadWinProb(
 
   const pElo = a.elo !== null && b.elo !== null ? eloExpectedScore(a.elo, b.elo) : 0.5;
 
+  // Pace is judged against each runner's own band, so the rating is not counted twice.
   const paceA = projA.meanMs - a.model.overall.meanFinal;
   const paceB = projB.meanMs - b.model.overall.meanFinal;
   const z = (paceB - paceA) / Math.sqrt(projA.sdMs ** 2 + projB.sdMs ** 2);

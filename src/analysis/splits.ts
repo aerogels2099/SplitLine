@@ -74,6 +74,7 @@ export interface RunSplits {
   splits: Record<MilestoneKey, Millis | null>;
   segments: Record<SegmentKey, Millis | null>;
   eventTimes: Record<string, Millis>;
+  matchTime: Millis;
 }
 
 export function extractRunSplits(detail: MatchInfo, uuid: string): RunSplits | null {
@@ -138,6 +139,7 @@ function runFrom(
     splits,
     segments,
     eventTimes,
+    matchTime: detail.result.time,
   };
 }
 

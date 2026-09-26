@@ -18,6 +18,7 @@ export interface PlayerIngestResult {
   /** False while older history is still missing; the cursor is where to resume. */
   complete: boolean;
   cursor: number | null;
+  seasonCursors: Record<number, number>;
 }
 
 interface IngestOpts {
@@ -51,6 +52,7 @@ export async function ingestPlayer(
         mode: "skipped",
         complete: true,
         cursor: null,
+        seasonCursors: {},
       };
     }
 
@@ -69,6 +71,7 @@ export async function ingestPlayer(
         mode: "incremental",
         complete: true,
         cursor: null,
+        seasonCursors: {},
       };
     }
     // A full page means the delta has a hole; fall through to a full walk.
@@ -86,6 +89,11 @@ export async function ingestPlayer(
   }
   const stored = store.upsertMatches(firstPage);
   const complete = firstPage.length < PAGE;
+  const seasonCursors: Record<number, number> = {};
+  for (const m of firstPage) {
+    const held = seasonCursors[m.season];
+    if (held === undefined || m.id < held) seasonCursors[m.season] = m.id;
+  }
   return {
     user,
     matchesFetched: firstPage.length,
@@ -93,14 +101,16 @@ export async function ingestPlayer(
     mode: "first-page",
     complete,
     cursor: complete ? null : firstPage[firstPage.length - 1]!.id,
+    seasonCursors,
   };
 }
 
 /**
  * Walks one season to the end and marks it stored. Uncapped on purpose: a heavy
  * season runs to about nineteen pages and a cap would quietly truncate it.
- * Always starts from the newest game, since the corpus crawl leaves arbitrary
- * middle slices behind and resuming below one would skip everything above it.
+ * Starts from the newest game unless `before` marks a page the caller already
+ * stored in full; the corpus crawl leaves arbitrary middle slices behind, so
+ * resuming below one of those would skip everything above it.
  */
 export async function ingestSeason(
   store: Store,
@@ -108,10 +118,10 @@ export async function ingestSeason(
   identifier: string,
   uuid: string,
   season: number,
-  opts: { type?: MatchType } = {},
+  opts: { type?: MatchType; before?: number } = {},
 ): Promise<number> {
   const params: MatchListParams = { count: PAGE, type: opts.type ?? DEFAULT_TYPE, season };
-  let before: number | undefined = undefined;
+  let before: number | undefined = opts.before;
   let stored = 0;
   for (;;) {
     const page = await api.getUserMatches(identifier, { ...params, before });

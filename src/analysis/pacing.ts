@@ -77,6 +77,7 @@ export function comparePacing(
     [...bandCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ??
     "placement";
 
+  // Peers are the band the player spent most games in, minus the player's own runs.
   const playerUuids = new Set(playerRuns.map((r) => r.uuid));
   const peers = peerRuns.filter(
     (r) => eloBand(r.eloAtMatch) === band && !playerUuids.has(r.uuid),
@@ -148,6 +149,7 @@ export function conditionalWinProbability(
     .map((r) => ({ t: Number(r.splits[key]), score: r.won ? 1 : r.draw ? 0.5 : 0 }));
   if (reached.length < bins * 4) return [];
   const ts = reached.map((r) => r.t);
+  // Quantile edges, so each bin holds about the same number of runs.
   const edges: number[] = [];
   for (let i = 1; i <= bins; i++) edges.push(percentile(ts, (100 * i) / bins));
 

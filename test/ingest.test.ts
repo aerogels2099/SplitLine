@@ -99,6 +99,23 @@ describe("ingestPlayer", () => {
     expect(store.playedSeasons(user.uuid)).toEqual([12, 11, 10]);
     // The player page renders ranked games, so that is what gets fetched.
     expect(calls[1]!.params?.type).toBe(2);
+    const season = full[0]!.season;
+    expect(r.seasonCursors[season]).toBe(Math.min(...full.map((m) => m.id)));
+    store.close();
+  });
+
+  it("gives each season in the first page its own resume point", async () => {
+    const store = new Store(":memory:");
+    const user = userA();
+    const page = Array.from({ length: 100 }, (_, i) => ({
+      ...ranked[0]!,
+      id: 900000 - i,
+      season: i < 60 ? 12 : 11,
+      date: (1700000000 - i) as MatchInfo["date"],
+    }));
+    const { api } = fakeApi({ user, pages: [page] });
+    const r = await ingestPlayer(store, api, user.nickname);
+    expect(r.seasonCursors).toEqual({ 12: 900000 - 59, 11: 900000 - 99 });
     store.close();
   });
 
@@ -136,6 +153,16 @@ describe("ingestSeason", () => {
     expect(calls.every((c) => c.params?.season === 7)).toBe(true);
     expect(calls[0]!.params?.before).toBeUndefined();
     expect(calls[1]!.params?.before).toBe(pages[0]![99]!.id);
+    expect(store.isSeasonIngested("uuid-x", 7)).toBe(true);
+    store.close();
+  });
+
+  it("resumes below a page the caller already stored", async () => {
+    const store = new Store(":memory:");
+    const { api, calls } = fakeApi({ user: userA(), pages: [page(30, 700000, 7)] });
+    store.setPlayedSeasons("uuid-x", [7]);
+    await ingestSeason(store, api, "x", "uuid-x", 7, { before: 800000 });
+    expect(calls[0]!.params?.before).toBe(800000);
     expect(store.isSeasonIngested("uuid-x", 7)).toBe(true);
     store.close();
   });

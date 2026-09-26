@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { DatabaseSync } from "node:sqlite";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { Store } from "../src/db/db.js";
+import { extractAllRuns, type RunSplits } from "../src/analysis/splits.js";
 import { matchDetails, userA, userAMatches } from "./helpers.js";
 
 describe("sqlite store", () => {
@@ -170,6 +175,58 @@ describe("sqlite store", () => {
     const newestFirst = store.getDetails({ limit: 1 });
     expect(newestFirst).toHaveLength(1);
     expect(newestFirst[0]!.id).not.toBe(oldest.id);
+    store.close();
+  });
+
+  it("precomputes runs that match extracting them from stored details", () => {
+    const store = new Store(":memory:");
+    const details = matchDetails();
+    store.upsertDetails(details);
+    const uuid = userA().uuid;
+
+    const byKey = (rs: RunSplits[]) => [...rs].sort((a, b) => a.matchId - b.matchId || (a.uuid < b.uuid ? -1 : 1));
+    expect(byKey(store.getRuns({ limit: 2000 }))).toEqual(byKey(extractAllRuns(store.getDetails({ limit: 2000 }))));
+
+    const mine = extractAllRuns(store.getDetails({ uuid })).filter((r) => r.uuid === uuid);
+    expect(byKey(store.getPlayerRuns(uuid))).toEqual(byKey(mine));
+
+    const season = details[0]!.season;
+    expect(store.getPlayerRuns(uuid, season).every((r) => details.find((d) => d.id === r.matchId)!.season === season)).toBe(true);
+    store.close();
+  });
+
+  it("rebuilds cached runs when the schema version advances", () => {
+    const dir = mkdtempSync(join(tmpdir(), "splitline-runs-"));
+    const file = join(dir, "store.db");
+    try {
+      const store = new Store(file);
+      store.upsertDetails(matchDetails());
+      const expected = store.getRuns({ limit: 2000 });
+      expect(expected.length).toBeGreaterThan(0);
+      store.close();
+
+      // Runs are a cache of extractRunSplits output, so rows written by an
+      // older extractor have to be thrown away when the version moves.
+      const raw = new DatabaseSync(file);
+      raw.exec(`UPDATE runs SET data = '{"stale":true}'`);
+      raw.exec("PRAGMA user_version = 3");
+      raw.close();
+
+      const reopened = new Store(file);
+      expect(reopened.getRuns({ limit: 2000 })).toEqual(expected);
+      reopened.close();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("limits the run corpus by the most recent timed matches", () => {
+    const store = new Store(":memory:");
+    store.upsertDetails(matchDetails());
+    const newest = store.getDetails({ limit: 3 }).map((d) => d.id);
+    const runs = store.getRuns({ limit: 3 });
+    expect(runs.length).toBeGreaterThan(0);
+    expect(runs.every((r) => newest.includes(r.matchId))).toBe(true);
     store.close();
   });
 

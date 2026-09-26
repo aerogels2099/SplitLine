@@ -6,7 +6,8 @@ import { headToHeadWinProb, type WinProbModel } from "./winprob.js";
 import type { MatchInfo } from "../shared/types.js";
 
 const H2H_PRIOR_GAMES = 10;
-const SEED_PRIOR_GAMES = 8;
+/** Deliberately heavy: per-archetype records barely predict anything beyond rating. */
+const SEED_PRIOR_GAMES = 300;
 const MIN_SEED_GAMES = 3;
 const MIN_SPLIT_SAMPLES = 8;
 
@@ -111,6 +112,7 @@ function splitScenarios(a: MatchupSide, b: MatchupSide): SplitScenario[] {
       points: sweep.map(([percentile, timeMs]) => ({
         percentile,
         timeMs,
+        // The opponent's progress is unknown, so only their clock is modelled.
         p: headToHeadWinProb(
           { model: a.model, state: { lastEventType: m.event, lastEventTime: timeMs }, elo: a.elo },
           { model: b.model, state: { lastEventType: null, lastEventTime: null }, elo: b.elo },
@@ -130,6 +132,7 @@ export function predictMatchup(
   const pElo = a.elo !== null && b.elo !== null ? eloExpectedScore(a.elo, b.elo) : 0.5;
   const games = h2h.aWins + h2h.bWins + h2h.draws;
   const score = h2h.aWins + h2h.draws / 2;
+  // The elo prior stands in for H2H_PRIOR_GAMES games, so a short record moves it only a little.
   const pBase = (score + H2H_PRIOR_GAMES * pElo) / (games + H2H_PRIOR_GAMES);
 
   const panel = prematchPanel(a.matches, a.uuid, b.matches, b.uuid);

@@ -75,3 +75,69 @@ export function logit(p: number): number {
 }
 
 export const logistic = (x: number) => 1 / (1 + Math.exp(-x));
+
+export interface Observation {
+  time: number;
+  observed: boolean;
+}
+
+export interface SurvivalCurve {
+  times: number[];
+  survival: number[];
+}
+
+export function kaplanMeier(observations: Observation[]): SurvivalCurve {
+  const sorted = [...observations].sort((a, b) => a.time - b.time);
+  const times = [0];
+  const survival = [1];
+  let s = 1;
+  let atRisk = sorted.length;
+  let i = 0;
+  while (i < sorted.length) {
+    const t = sorted[i]!.time;
+    let events = 0;
+    let censored = 0;
+    while (i < sorted.length && sorted[i]!.time === t) {
+      if (sorted[i]!.observed) events++;
+      else censored++;
+      i++;
+    }
+    if (events > 0) {
+      s *= 1 - events / atRisk;
+      times.push(t);
+      survival.push(s);
+    }
+    atRisk -= events + censored;
+  }
+  return { times, survival };
+}
+
+export function conditionalRemaining(
+  curve: SurvivalCurve,
+  elapsed: number,
+): { mean: number; sd: number } | null {
+  const { times, survival } = curve;
+  let lo = 0;
+  let hi = times.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    if (times[mid]! <= elapsed) lo = mid;
+    else hi = mid - 1;
+  }
+  const base = survival[lo]!;
+  if (base <= 1e-9) return null;
+  let m1 = 0;
+  let m2 = 0;
+  let from = elapsed;
+  for (let k = lo; k + 1 < times.length; k++) {
+    const to = times[k + 1]!;
+    if (to <= from) continue;
+    const s = survival[k]! / base;
+    const a = from - elapsed;
+    const b = to - elapsed;
+    m1 += s * (b - a);
+    m2 += s * (b * b - a * a);
+    from = to;
+  }
+  return { mean: m1, sd: Math.sqrt(Math.max(m2 - m1 * m1, 0)) };
+}

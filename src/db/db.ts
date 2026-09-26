@@ -3,13 +3,14 @@ import { readFileSync } from "node:fs";
 import { mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { extractRunSplits, type RunSplits } from "../analysis/splits.js";
 import { nowEpochSeconds } from "../shared/brand.js";
 import type { CompletionEntry, MatchInfo, TimelineEntry, UserDetails } from "../shared/types.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
 /** Bumped when stored rows, not just table definitions, need rewriting. */
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 const INSERT_MATCH = `INSERT OR IGNORE INTO matches
    (id, season, type, date, forfeited, decayed, winner_uuid, result_time,
@@ -98,6 +99,7 @@ export class Store {
     if (from >= SCHEMA_VERSION) return;
     const matches =
       from < 2 ? (this.db.prepare("SELECT data FROM matches").all() as { data: string }[]) : [];
+    const details = from < 4 ? this.getDetails() : [];
     this.tx(() => {
       if (from < 2) {
         this.db.exec("DELETE FROM match_players");
@@ -105,6 +107,10 @@ export class Store {
       }
       // Older season rows could skip games or be invented outright, so they are rebuilt.
       if (from < 3) this.db.exec("DELETE FROM player_seasons");
+      if (from < 4) {
+        this.db.exec("DELETE FROM runs");
+        for (const d of details) this.insertRuns(d);
+      }
       this.db.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);
     });
   }
@@ -168,8 +174,41 @@ export class Store {
       this.insertMatches(details);
       for (const d of details) {
         insert.run(d.id, now, JSON.stringify(splitAdvanced(d).advanced));
+        this.insertRuns(d);
       }
     });
+  }
+
+  private insertRuns(detail: MatchInfo) {
+    const insert = this.stmt(
+      `INSERT OR REPLACE INTO runs (match_id, uuid, season, date, data) VALUES (?, ?, ?, ?, ?)`,
+    );
+    for (const p of detail.players) {
+      const run = extractRunSplits(detail, p.uuid);
+      if (run) insert.run(detail.id, p.uuid, detail.season, detail.date, JSON.stringify(run));
+    }
+  }
+
+  getRuns(opts: { limit: number }): RunSplits[] {
+    const rows = this.stmt(
+      `SELECT data FROM runs WHERE match_id IN (
+         SELECT m.id FROM match_details d JOIN matches m ON m.id = d.id
+         ORDER BY m.date DESC LIMIT ?)
+       ORDER BY date DESC`,
+    ).all(opts.limit) as { data: string }[];
+    return rows.map((r) => JSON.parse(r.data) as RunSplits);
+  }
+
+  getPlayerRuns(uuid: string, season?: number): RunSplits[] {
+    const rows = (
+      season === undefined
+        ? this.stmt(`SELECT data FROM runs WHERE uuid = ? ORDER BY date DESC`).all(uuid)
+        : this.stmt(`SELECT data FROM runs WHERE uuid = ? AND season = ? ORDER BY date DESC`).all(
+            uuid,
+            season,
+          )
+    ) as { data: string }[];
+    return rows.map((r) => JSON.parse(r.data) as RunSplits);
   }
 
   upsertDetail(detail: MatchInfo) {

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   useApi,
@@ -13,14 +14,22 @@ import { SplitHeatmap } from "../../components/SplitHeatmap";
 import { ChartCard, ErrorBox, Legend, LoadingNote } from "../../components/ui";
 import { usePlayer } from "../Player";
 
+const ANALYSIS_POLL_MS = 3000;
+
 export default function Analysis() {
   const { id, season } = usePlayer();
   const [params] = useSearchParams();
   const match = params.get("match");
 
+  const [poll, setPoll] = useState<number | undefined>(undefined);
   const { data, error, loading, stale } = useApi<PlayerAnalysis>(
     `/api/players/${encodeURIComponent(id)}/analysis?season=${season}`,
+    poll,
   );
+  const filling = data !== null && !data.complete;
+  useEffect(() => {
+    setPoll(filling ? ANALYSIS_POLL_MS : undefined);
+  }, [filling]);
   // Only when arriving from a game card: the run that prompted the question.
   const { data: run } = useApi<GameSplits>(
     match ? `/api/players/${encodeURIComponent(id)}/games/${match}` : null,
@@ -32,7 +41,13 @@ export default function Analysis() {
 
   if (data.runCount === 0) {
     return (
-      <ErrorBox message="No timed runs ingested for this player yet. Timelines are fetched in the background on first visit — re-open this tab shortly." />
+      <ErrorBox
+        message={
+          data.complete
+            ? "No timed runs are stored for this player this season."
+            : "No timed runs ingested for this player yet. Timelines are fetched in the background, and this tab updates as they arrive."
+        }
+      />
     );
   }
 

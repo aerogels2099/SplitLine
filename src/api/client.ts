@@ -9,6 +9,7 @@ const BUDGET = 450;
 const MAX_CONCURRENT = 8;
 const MAX_RETRIES = 3;
 const MAX_CACHE_ENTRIES = 2000;
+const REQUEST_TIMEOUT_MS = 10_000;
 
 export class ApiError extends Error {
   constructor(
@@ -214,6 +215,7 @@ export class RankedClient {
       try {
         const res = await this.fetchImpl(url, {
           headers: { "User-Agent": "SplitLine/0.1" },
+          signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
         });
         if (res.status >= 500 || res.status === 429) {
           await discard(res);
@@ -256,7 +258,7 @@ export class RankedClient {
 
       let res: Response;
       try {
-        res = await this.fetchImpl(url, { headers });
+        res = await this.fetchImpl(url, { headers, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
       } catch (err) {
         lastError = err;
         continue;
