@@ -400,7 +400,7 @@ describe("unfinished runs are censored, not dropped", () => {
 describe("the end of a race", () => {
   const KILL = "end.kill_dragon";
   const DEATH = "projectelo.timeline.dragon_death";
-  // A kill trails completion by 20s and the dragon's death by 10s, as in the real corpus.
+  // Completion comes 20s after the kill and 10s after the dragon's death, as in the real corpus.
   const runs = Array.from({ length: 30 }, (_, i) => {
     const base = syntheticRun(1850, 9 * 60_000 + i * 1000, i);
     const done = Number(base.splits.finish);
@@ -423,8 +423,8 @@ describe("the end of a race", () => {
   });
 
   it("ranks two runners past the dragon by projected completion, not by event time", () => {
-    // Killed at 8:34 and died at 8:38 look like a leads, but a death trails its kill by
-    // ten seconds, so b's kill came first and b completes at 8:48 against a's 8:54.
+    // a's kill at 8:34 looks earlier than b's dragon death at 8:38, but a death comes ten
+    // seconds after its kill, so b completes at 8:48 and a at 8:54.
     const { pA } = headToHeadWinProb(
       { model, state: at(KILL, 514_000), elo: 1850 },
       { model, state: at(DEATH, 518_000), elo: 1850 },

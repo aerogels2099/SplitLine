@@ -190,7 +190,7 @@ export function projectFinish(
       sdMs = stats.sdRemaining;
     }
   } else if (milestone === "finish") {
-    // A dragon kill nobody in this band was timed from: completion is seconds away, not certain.
+    // No timing from this kill in the band, so completion is taken as seconds away, not certain.
     meanMs = elapsedMs;
     sdMs = SD_FLOOR_MS;
   } else if (model.overall.curve) {

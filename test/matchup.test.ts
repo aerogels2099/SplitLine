@@ -109,30 +109,52 @@ describe("matchup prediction", () => {
     for (const row of ab.bastion) {
       const mirror = ba.bastion.find((r) => r.archetype === row.archetype);
       expect(mirror).toBeDefined();
-      expect(row.p + mirror!.p).toBeCloseTo(1, 10);
+      expect(mirror!.a).toEqual(row.b);
+      expect(mirror!.b).toEqual(row.a);
     }
   });
 });
 
-describe("seed conditioning", () => {
-  it("favours the player who is stronger on the archetype", () => {
-    const aMatches = [
-      ...Array.from({ length: 20 }, (_, i) => seedMatch("a", "x", "housing", true, i)),
-      ...Array.from({ length: 20 }, (_, i) => seedMatch("a", "x", "treasury", false, 100 + i)),
-    ];
-    const bMatches = [
-      ...Array.from({ length: 20 }, (_, i) => seedMatch("b", "y", "housing", false, 200 + i)),
-      ...Array.from({ length: 20 }, (_, i) => seedMatch("b", "y", "treasury", true, 300 + i)),
-    ];
-    const p = predictMatchup(side("a", 1500, aMatches), side("b", 1500, bMatches));
+describe("seed records", () => {
+  const aMatches = [
+    ...Array.from({ length: 20 }, (_, i) => seedMatch("a", "x", "housing", true, i)),
+    ...Array.from({ length: 20 }, (_, i) => seedMatch("a", "x", "treasury", false, 100 + i)),
+  ];
+  const bMatches = [
+    ...Array.from({ length: 20 }, (_, i) => seedMatch("b", "y", "housing", false, 200 + i)),
+    ...Array.from({ length: 20 }, (_, i) => seedMatch("b", "y", "treasury", true, 300 + i)),
+  ];
 
+  it("leaves the prediction untouched, whatever the seed history", () => {
+    const withHistory = predictMatchup(side("a", 1850, aMatches), side("b", 1600, bMatches));
+    const without = predictMatchup(side("a", 1850), side("b", 1600));
+    expect(withHistory.pElo).toBe(without.pElo);
+    expect(withHistory.pBase).toBe(without.pBase);
+    expect(withHistory.splits).toEqual(without.splits);
+  });
+
+  it("reads each record against the player's own overall rate", () => {
+    const p = predictMatchup(side("a", 1500, aMatches), side("b", 1500, bMatches));
     const housing = p.bastion.find((r) => r.archetype === "housing")!;
     const treasury = p.bastion.find((r) => r.archetype === "treasury")!;
-    expect(housing.p).toBeGreaterThan(p.pBase);
-    expect(treasury.p).toBeLessThan(p.pBase);
-    expect(housing.shift).toBeGreaterThan(0);
-    expect(treasury.shift).toBeLessThan(0);
-    expect(housing.shift).toBeCloseTo(-treasury.shift, 6);
+    // Both players are 20-20 overall, so each record sits 0.5 from their own rate.
+    expect(housing.a!.stats.winRate).toBe(1);
+    expect(housing.a!.relative).toBeCloseTo(0.5, 10);
+    expect(housing.b!.relative).toBeCloseTo(-0.5, 10);
+    expect(treasury.a!.relative).toBeCloseTo(-0.5, 10);
+    expect(treasury.b!.relative).toBeCloseTo(0.5, 10);
+  });
+
+  it("does not credit a player who wins on every seed for any one of them", () => {
+    const everywhere = [
+      ...Array.from({ length: 20 }, (_, i) => seedMatch("a", "x", "housing", true, i)),
+      ...Array.from({ length: 20 }, (_, i) => seedMatch("a", "x", "treasury", true, 100 + i)),
+    ];
+    const p = predictMatchup(side("a", 1500, everywhere), side("b", 1500));
+    for (const row of p.bastion) {
+      expect(row.a!.stats.winRate).toBe(1);
+      expect(row.a!.relative).toBeCloseTo(0, 10);
+    }
   });
 
   it("keeps every row auditable by its sample", () => {
@@ -141,9 +163,10 @@ describe("seed conditioning", () => {
     expect(p.overworld.length).toBeGreaterThan(0);
     for (const row of [...p.bastion, ...p.overworld]) {
       expect(row.a !== null || row.b !== null).toBe(true);
-      expect(Math.max(row.a?.games ?? 0, row.b?.games ?? 0)).toBeGreaterThanOrEqual(3);
-      expect(row.p).toBeGreaterThan(0);
-      expect(row.p).toBeLessThan(1);
+      expect(Math.max(row.a?.stats.games ?? 0, row.b?.stats.games ?? 0)).toBeGreaterThanOrEqual(3);
+      for (const s of [row.a, row.b]) {
+        if (s) expect(Math.abs(s.relative)).toBeLessThanOrEqual(1);
+      }
     }
   });
 

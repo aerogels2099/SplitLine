@@ -1,6 +1,5 @@
 import type { MatchInfo } from "../shared/types.js";
 import { predictMatchup, type HeadToHead, type MatchupSide } from "./matchup.js";
-import { bastionOf, overworldOf } from "./seeds.js";
 import { milestoneForEvent, RESET_EVENT } from "./splits.js";
 import { eloExpectedScore } from "./stats.js";
 import {
@@ -33,10 +32,19 @@ export interface Scores {
 
 const EPS = 1e-12;
 
+function binOf(p: number, bins: number): number {
+  return Math.min(bins - 1, Math.floor(p * bins));
+}
+
+/** Which player counts as "a" is arbitrary, so a bin and its mirror are the same evidence. */
+export function favouriteSide(pred: Prediction): Prediction {
+  return pred.p >= 0.5 ? pred : { p: 1 - pred.p, outcome: 1 - pred.outcome };
+}
+
 export function reliability(preds: Prediction[], bins = 10): ReliabilityBin[] {
   const acc = Array.from({ length: bins }, () => ({ n: 0, p: 0, o: 0 }));
   for (const { p, outcome } of preds) {
-    const bin = acc[Math.min(bins - 1, Math.floor(p * bins))]!;
+    const bin = acc[binOf(p, bins)]!;
     bin.n++;
     bin.p += p;
     bin.o += outcome;
@@ -61,7 +69,7 @@ export function score(preds: Prediction[], bins = 10): Scores {
   const n = preds.length;
   let brier = 0;
   for (const { p, outcome } of preds) brier += (p - outcome) ** 2;
-  const ece = reliability(preds, bins).reduce(
+  const ece = reliability(preds.map(favouriteSide), bins).reduce(
     (s, b) => s + (b.n / n) * Math.abs(b.observed - b.predicted),
     0,
   );
@@ -120,23 +128,16 @@ export function fitEloDivisor(games: RatedGame[], candidates: number[]): number 
 export interface PregameLayers {
   elo: Prediction[];
   base: Prediction[];
-  bastion: Prediction[];
-  overworld: Prediction[];
-  bastionRows: number;
-  overworldRows: number;
 }
 
-/** Seed history and head-to-head come from the training games only, so no test result can leak in. */
+/**
+ * A test result joins the head-to-head only after its own game is predicted, as it would
+ * live. Predictions come back in play order.
+ */
 export function pregamePredictions(train: MatchInfo[], test: MatchInfo[]): PregameLayers {
-  const byPlayer = new Map<string, MatchInfo[]>();
   const byPair = new Map<string, HeadToHead>();
-  for (const m of train) {
-    if (m.type !== 2 || m.decayed || m.players.length !== 2) continue;
-    for (const p of m.players) {
-      const list = byPlayer.get(p.uuid);
-      if (list) list.push(m);
-      else byPlayer.set(p.uuid, [m]);
-    }
+  const record = (m: MatchInfo) => {
+    if (m.type !== 2 || m.decayed || m.players.length !== 2) return;
     const [u, v] = m.players.map((p) => p.uuid).sort();
     const key = `${u}:${v}`;
     const h = byPair.get(key) ?? { aWins: 0, bWins: 0, draws: 0 };
@@ -144,43 +145,34 @@ export function pregamePredictions(train: MatchInfo[], test: MatchInfo[]): Prega
     else if (m.result.uuid === u) h.aWins++;
     else h.bWins++;
     byPair.set(key, h);
-  }
+  };
+  for (const m of train) record(m);
 
+  // No splits are passed, so predictMatchup never consults the pace model.
   const blank = buildWinProbModel([]);
   const side = (uuid: string, elo: number): MatchupSide => ({
     uuid,
     nickname: uuid,
     elo,
-    matches: byPlayer.get(uuid) ?? [],
+    matches: [],
     model: blank,
     splits: [],
     band: "",
   });
 
-  const out: PregameLayers = {
-    elo: [],
-    base: [],
-    bastion: [],
-    overworld: [],
-    bastionRows: 0,
-    overworldRows: 0,
-  };
-  for (const m of test) {
+  const out: PregameLayers = { elo: [], base: [] };
+  for (const m of [...test].sort((x, y) => x.date - y.date || x.id - y.id)) {
     const r = ratedPair(m);
-    if (!r) continue;
-    const pred = predictMatchup(
-      side(r.a.uuid, r.a.elo),
-      side(r.b.uuid, r.b.elo),
-      byPair.get(`${r.a.uuid}:${r.b.uuid}`),
-    );
-    const bastion = pred.bastion.find((row) => row.archetype === bastionOf(m));
-    const overworld = pred.overworld.find((row) => row.archetype === overworldOf(m));
-    if (bastion) out.bastionRows++;
-    if (overworld) out.overworldRows++;
-    out.elo.push({ p: pred.pElo, outcome: r.outcome });
-    out.base.push({ p: pred.pBase, outcome: r.outcome });
-    out.bastion.push({ p: bastion?.p ?? pred.pBase, outcome: r.outcome });
-    out.overworld.push({ p: overworld?.p ?? pred.pBase, outcome: r.outcome });
+    if (r) {
+      const pred = predictMatchup(
+        side(r.a.uuid, r.a.elo),
+        side(r.b.uuid, r.b.elo),
+        byPair.get(`${r.a.uuid}:${r.b.uuid}`),
+      );
+      out.elo.push({ p: pred.pElo, outcome: r.outcome });
+      out.base.push({ p: pred.pBase, outcome: r.outcome });
+    }
+    record(m);
   }
   return out;
 }
@@ -231,4 +223,25 @@ export function inRunPredictions(
     }
   }
   return out;
+}
+
+export interface MatchBin extends ReliabilityBin {
+  matches: number;
+}
+
+/** Checkpoints from one match move together, so each bin also counts the matches behind it. */
+export function inRunReliability(obs: InRunObservation[], bins = 10): MatchBin[] {
+  const ids = new Map<number, Set<number>>();
+  const folded = obs.map((o) => {
+    const f = favouriteSide(o.model);
+    const b = binOf(f.p, bins);
+    let set = ids.get(b);
+    if (!set) ids.set(b, (set = new Set()));
+    set.add(o.matchId);
+    return f;
+  });
+  return reliability(folded, bins).map((r) => ({
+    ...r,
+    matches: ids.get(Math.round(r.lo * bins))!.size,
+  }));
 }

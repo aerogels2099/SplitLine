@@ -56,6 +56,7 @@ export function normalCdf(z: number): number {
   return 0.5 * (1 + erf(z / Math.SQRT2));
 }
 
+/** Fitted to ranked results; the textbook 400 makes rating gaps look too decisive. */
 export const ELO_DIVISOR = 570;
 
 /** Expected score for a against b, where 0.5 is an even matchup. */
@@ -110,6 +111,7 @@ export function kaplanMeier(observations: Observation[]): SurvivalCurve {
   return { times, survival };
 }
 
+/** Given `elapsed` survived: E[X] integrates S, E[X²] integrates 2u·S. Null once nothing survives. */
 export function conditionalRemaining(
   curve: SurvivalCurve,
   elapsed: number,

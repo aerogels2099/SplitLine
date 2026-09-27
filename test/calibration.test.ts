@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   eloPredictions,
+  favouriteSide,
   fitEloDivisor,
   inRunPredictions,
+  inRunReliability,
   logLoss,
   pregamePredictions,
   ratedGames,
@@ -64,6 +66,21 @@ describe("scoring", () => {
     ];
     // Both bins observe 0.5 against predictions a quarter away.
     expect(score(preds).ece).toBeCloseTo(0.25, 10);
+  });
+
+  it("reads a prediction from the favourite's side", () => {
+    expect(favouriteSide({ p: 0.3, outcome: 1 })).toEqual({ p: 0.7, outcome: 0 });
+    expect(favouriteSide({ p: 0.3, outcome: 0.5 })).toEqual({ p: 0.7, outcome: 0.5 });
+    expect(favouriteSide({ p: 0.8, outcome: 0 })).toEqual({ p: 0.8, outcome: 0 });
+  });
+
+  it("pools a bin with its mirror when measuring calibration", () => {
+    // Unpooled, 0.9 misses by 0.1 and 0.1 by 0.9; from the favourite's side both are 0.9 against 0.5.
+    const preds = [
+      { p: 0.9, outcome: 1 },
+      { p: 0.1, outcome: 1 },
+    ];
+    expect(score(preds).ece).toBeCloseTo(0.4, 10);
   });
 });
 
@@ -190,13 +207,13 @@ describe("pre-match backtest", () => {
     0.7,
   );
   const train = list.filter((m) => m.date < cut);
-  const test = list.filter((m) => m.date >= cut);
+  const test = list.filter((m) => m.date >= cut).sort((x, y) => x.date - y.date || x.id - y.id);
   const out = pregamePredictions(train, test);
   const games = ratedGames(test);
 
   it("scores every rated test game on every layer", () => {
     expect(games.length).toBeGreaterThan(0);
-    for (const layer of [out.elo, out.base, out.bastion, out.overworld]) {
+    for (const layer of [out.elo, out.base]) {
       expect(layer.length).toBe(games.length);
     }
   });
@@ -208,17 +225,38 @@ describe("pre-match backtest", () => {
     });
   });
 
-  it("adds nothing to the prior without training history", () => {
+  it("adds nothing to the prior the first time a pair meets", () => {
     const bare = pregamePredictions([], test);
-    bare.base.forEach((p, i) => expect(p.p).toBeCloseTo(bare.elo[i]!.p, 12));
-    bare.bastion.forEach((p, i) => expect(p.p).toBeCloseTo(bare.elo[i]!.p, 12));
-    expect(bare.bastionRows).toBe(0);
-    expect(bare.overworldRows).toBe(0);
+    const met = new Set<string>();
+    let i = 0;
+    for (const m of test) {
+      const key = m.players.map((p) => p.uuid).sort().join(":");
+      if (ratedPair(m)) {
+        if (!met.has(key)) expect(bare.base[i]!.p).toBeCloseTo(bare.elo[i]!.p, 12);
+        i++;
+      }
+      if (m.type === 2 && !m.decayed && m.players.length === 2) met.add(key);
+    }
+    expect(i).toBe(bare.elo.length);
+    expect(met.size).toBeLessThan(i);
   });
 
-  it("moves off the prior once it has history to use", () => {
-    expect(out.bastionRows).toBeGreaterThan(0);
-    expect(out.bastion.some((p, i) => Math.abs(p.p - out.base[i]!.p) > 1e-9)).toBe(true);
+  it("counts a test result only once its own game has been predicted", () => {
+    const rated = versusMatches()
+      .filter((m) => ratedPair(m) !== null)
+      .sort((x, y) => x.date - y.date || x.id - y.id);
+    const first = rated[0]!;
+    // A different result, so predicting the games out of order would show.
+    const second = rated.find((m) => ratedPair(m)!.outcome !== ratedPair(first)!.outcome)!;
+    const out = pregamePredictions([], [second, first]);
+    expect(out.base[0]!.p).toBeCloseTo(out.elo[0]!.p, 12);
+    // One game against a prior worth ten moves the base an eleventh of the way to its result.
+    const expected = (ratedPair(first)!.outcome - out.elo[1]!.p) / 11;
+    expect(out.base[1]!.p - out.elo[1]!.p).toBeCloseTo(expected, 12);
+  });
+
+  it("moves off the prior once the pair has played before", () => {
+    expect(out.base.some((p, i) => Math.abs(p.p - out.elo[i]!.p) > 1e-9)).toBe(true);
   });
 });
 
@@ -244,6 +282,21 @@ describe("in-run backtest", () => {
     const onTheMinute = { ...details[0]!, result: { ...details[0]!.result, time: asMillis(180_000) } };
     const banded = buildBandedWinProbModels(extractAllRuns(details));
     expect(inRunPredictions(banded, [onTheMinute]).map((o) => o.elapsedMs)).toEqual([60_000, 120_000]);
+  });
+
+  it("bins checkpoints from the favourite's side and counts the matches behind each bin", () => {
+    const at = (matchId: number, p: number, outcome: number) => ({
+      matchId,
+      elapsedMs: 60_000,
+      model: { p, outcome },
+      elo: { p: 0.5, outcome },
+    });
+    const bins = inRunReliability([at(1, 0.85, 1), at(1, 0.15, 0), at(1, 0.84, 1), at(2, 0.82, 0), at(3, 0.55, 1)]);
+    expect(bins.map((b) => b.lo)).toEqual([0.5, 0.8]);
+    const tail = bins.find((b) => b.lo === 0.8)!;
+    expect(tail.n).toBe(4);
+    expect(tail.matches).toBe(2);
+    expect(tail.observed).toBe(0.75);
   });
 
   it("scores each checkpoint against that match result", () => {

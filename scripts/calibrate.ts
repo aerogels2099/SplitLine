@@ -1,14 +1,17 @@
 import {
   eloPredictions,
+  favouriteSide,
   fitEloDivisor,
   inRunPredictions,
+  inRunReliability,
   pregamePredictions,
   ratedGames,
   reliability,
   score,
   temporalCutoff,
   type InRunObservation,
-  type Prediction,
+  type MatchBin,
+  type ReliabilityBin,
   type Scores,
 } from "../src/analysis/calibration.js";
 import { extractAllRuns } from "../src/analysis/splits.js";
@@ -19,6 +22,7 @@ import { Store } from "../src/db/db.js";
 const TRAIN_SHARE = 0.7;
 const DIVISORS = Array.from({ length: 201 }, (_, i) => 200 + i * 5);
 const ELAPSED_BUCKETS_MIN = [0, 2, 4, 6, 8, 10, Infinity];
+const MIN_TAIL_MATCHES = 30;
 
 const store = new Store(process.argv[2] ?? "data/splitline.db");
 
@@ -26,11 +30,11 @@ const day = (s: number) => new Date(s * 1000).toISOString().slice(0, 10);
 const pct = (x: number) => `${(x * 100).toFixed(1).padStart(5)}%`;
 const line = (s: Scores) =>
   `n=${String(s.n).padStart(6)}  logloss ${s.logLoss.toFixed(4)}  brier ${s.brier.toFixed(4)}  ece ${s.ece.toFixed(4)}`;
-const curve = (preds: Prediction[]) =>
-  reliability(preds)
+const curve = (bins: (ReliabilityBin & Partial<MatchBin>)[]) =>
+  bins
     .map(
       (b) =>
-        `     ${b.lo.toFixed(1)}–${b.hi.toFixed(1)}  n=${String(b.n).padStart(6)}  predicted ${pct(b.predicted)}  observed ${pct(b.observed)}`,
+        `     ${b.lo.toFixed(1)}–${b.hi.toFixed(1)}  n=${String(b.n).padStart(6)}${b.matches === undefined ? "" : `  matches=${String(b.matches).padStart(4)}`}  predicted ${pct(b.predicted)}  observed ${pct(b.observed)}`,
     )
     .join("\n");
 
@@ -59,28 +63,17 @@ for (const season of [...new Set(ranked.map((m) => m.season))].sort((a, b) => a 
     console.log(`     S${season}  n=${String(games.length).padStart(5)}  d=${fitEloDivisor(games, DIVISORS)}`);
   }
 }
-console.log(`   reliability on test, d=${fitted}:`);
-console.log(curve(eloPredictions(testGames, fitted)));
+console.log(`   reliability on test from the favourite's side, d=${fitted}:`);
+console.log(curve(reliability(eloPredictions(testGames, fitted).map(favouriteSide))));
 
 const pre = pregamePredictions(trainA, testA);
-const preScores = {
-  elo: score(pre.elo),
-  base: score(pre.base),
-  bastion: score(pre.bastion),
-  overworld: score(pre.overworld),
-};
-console.log(`\nB. Pre-match layers on the same test games (d=${ELO_DIVISOR})`);
-// Each layer is judged against the one it sits on: seed deltas are applied to the head-to-head base.
-const gains = {
-  "head-to-head": preScores.base.logLoss - preScores.elo.logLoss,
-  bastion: preScores.bastion.logLoss - preScores.base.logLoss,
-  overworld: preScores.overworld.logLoss - preScores.base.logLoss,
-};
-const gain = (g: number) => `${g <= 0 ? "" : "+"}${g.toFixed(4)} vs its base`;
+const preScores = { elo: score(pre.elo), base: score(pre.base) };
+const h2hGain = preScores.base.logLoss - preScores.elo.logLoss;
+console.log(`\nB. Pre-match prediction on the same test games (d=${ELO_DIVISOR})`);
 console.log(`   elo only       ${line(preScores.elo)}`);
-console.log(`   + head-to-head ${line(preScores.base)}   ${gain(gains["head-to-head"])}`);
-console.log(`   + bastion      ${line(preScores.bastion)}   ${gain(gains.bastion)}, rows ${pre.bastionRows}`);
-console.log(`   + overworld    ${line(preScores.overworld)}   ${gain(gains.overworld)}, rows ${pre.overworldRows}`);
+console.log(
+  `   + head-to-head ${line(preScores.base)}   ${h2hGain <= 0 ? "" : "+"}${h2hGain.toFixed(4)} vs elo only`,
+);
 
 const details = store.getDetails();
 const cutC = temporalCutoff(
@@ -112,17 +105,13 @@ for (let i = 0; i + 1 < ELAPSED_BUCKETS_MIN.length; i++) {
   byBucket.push({ label, model: m, elo: e });
   console.log(`     ${label.padEnd(9)} n=${String(inBucket.length).padStart(5)}      ${m.toFixed(4)}         ${e.toFixed(4)}`);
 }
-console.log(`   reliability, model:`);
-console.log(curve(obs.map((o) => o.model)));
+const calibrationC = inRunReliability(obs);
+console.log(`   reliability from the favourite's side, model:`);
+console.log(curve(calibrationC));
 
 const gateA = eloScores.get(fitted)!.logLoss <= eloScores.get(400)!.logLoss;
-const noHelp = Object.entries(gains)
-  .filter(([, g]) => g >= 0)
-  .map(([k]) => k);
-const gateB = noHelp.length === 0;
-const tails = reliability(obs.map((o) => o.model)).filter(
-  (b) => b.n >= 30 && (b.predicted >= 0.8 || b.predicted <= 0.2),
-);
+const gateB = h2hGain < 0;
+const tails = calibrationC.filter((b) => b.matches >= MIN_TAIL_MATCHES && b.predicted >= 0.8);
 const worstTail = Math.max(0, ...tails.map((b) => Math.abs(b.observed - b.predicted)));
 const gateC =
   inRun.model.logLoss < inRun.elo.logLoss &&
@@ -134,7 +123,7 @@ const gateC =
 console.log(`\nGate`);
 console.log(`   A  train-fitted divisor beats 400 on held-out games        ${gateA ? "pass" : "FAIL"}`);
 console.log(
-  `   B  every pre-match layer improves on the one beneath it    ${gateB ? "pass" : `FAIL (${noHelp.join(", ")})`}`,
+  `   B  head-to-head improves on elo alone                      ${gateB ? "pass" : "FAIL"}`,
 );
 console.log(
   `   C  in-run beats elo, calibrated overall and in the tails  ${gateC ? "pass" : `FAIL (worst tail bin off by ${(worstTail * 100).toFixed(1)} pts)`}`,

@@ -1,13 +1,11 @@
 import type { SplitDistribution } from "./pacing.js";
 import { prematchPanel, type ArchetypeStats, type PrematchPanel } from "./seeds.js";
 import { MILESTONES, type MilestoneKey } from "./splits.js";
-import { eloExpectedScore, logistic, logit } from "./stats.js";
+import { eloExpectedScore } from "./stats.js";
 import { headToHeadWinProb, type WinProbModel } from "./winprob.js";
 import type { MatchInfo } from "../shared/types.js";
 
 const H2H_PRIOR_GAMES = 10;
-/** Deliberately heavy: per-archetype records barely predict anything beyond rating. */
-const SEED_PRIOR_GAMES = 300;
 const MIN_SEED_GAMES = 3;
 const MIN_SPLIT_SAMPLES = 8;
 
@@ -27,12 +25,17 @@ export interface HeadToHead {
   draws: number;
 }
 
-export interface SeedProbability {
+export interface SeedRecordSide {
+  stats: ArchetypeStats;
+  /** Measured against the player's own rate across archetypes, so their usual opposition mostly cancels out. */
+  relative: number;
+}
+
+/** History only: held-out games showed per-archetype records add nothing to the prediction. */
+export interface SeedRecord {
   archetype: string;
-  p: number;
-  shift: number;
-  a: ArchetypeStats | null;
-  b: ArchetypeStats | null;
+  a: SeedRecordSide | null;
+  b: SeedRecordSide | null;
 }
 
 export interface SplitScenario {
@@ -56,8 +59,8 @@ export interface MatchupPrediction {
   pElo: number;
   pBase: number;
   h2h: { aWins: number; bWins: number; draws: number; games: number };
-  bastion: SeedProbability[];
-  overworld: SeedProbability[];
+  bastion: SeedRecord[];
+  overworld: SeedRecord[];
   splits: SplitScenario[];
 }
 
@@ -71,24 +74,16 @@ function baselineRate(stats: ArchetypeStats[]): number {
   return games > 0 ? score / games : 0.5;
 }
 
-function seedDelta(s: ArchetypeStats | null, baseline: number): number {
-  if (!s || s.games === 0) return 0;
-  const score = s.wins + s.draws / 2;
-  const shrunk = (score + SEED_PRIOR_GAMES * baseline) / (s.games + SEED_PRIOR_GAMES);
-  return logit(shrunk) - logit(baseline);
-}
-
-function seedProbabilities(rows: PrematchPanel["bastion"], pBase: number): SeedProbability[] {
+function seedRecords(rows: PrematchPanel["bastion"]): SeedRecord[] {
   const notNull = (s: ArchetypeStats | null): s is ArchetypeStats => s !== null;
   const baseA = baselineRate(rows.map((r) => r.a).filter(notNull));
   const baseB = baselineRate(rows.map((r) => r.b).filter(notNull));
+  const side = (s: ArchetypeStats | null, base: number): SeedRecordSide | null =>
+    s ? { stats: s, relative: s.winRate - base } : null;
 
   return rows
     .filter((r) => (r.a?.games ?? 0) >= MIN_SEED_GAMES || (r.b?.games ?? 0) >= MIN_SEED_GAMES)
-    .map((r) => {
-      const p = logistic(logit(pBase) + seedDelta(r.a, baseA) - seedDelta(r.b, baseB));
-      return { archetype: r.archetype, p, shift: p - pBase, a: r.a, b: r.b };
-    });
+    .map((r) => ({ archetype: r.archetype, a: side(r.a, baseA), b: side(r.b, baseB) }));
 }
 
 function splitScenarios(a: MatchupSide, b: MatchupSide): SplitScenario[] {
@@ -150,8 +145,8 @@ export function predictMatchup(
     pElo,
     pBase,
     h2h: { aWins: h2h.aWins, bWins: h2h.bWins, draws: h2h.draws, games },
-    bastion: seedProbabilities(panel.bastion, pBase),
-    overworld: seedProbabilities(panel.overworld, pBase),
+    bastion: seedRecords(panel.bastion),
+    overworld: seedRecords(panel.overworld),
     splits: splitScenarios(a, b),
   };
 }
