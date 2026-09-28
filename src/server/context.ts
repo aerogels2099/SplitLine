@@ -3,10 +3,16 @@ import { RankedApi } from "../api/endpoints.js";
 import { Store } from "../db/db.js";
 import { fetchPlayerDetails, ingestPlayer, ingestSeason } from "../ingest/backfill.js";
 import { buildGameHistory, labelRun } from "../analysis/history.js";
-import { buildBandedDistributions, comparePacing, type SplitDistribution } from "../analysis/pacing.js";
+import { H2H_SEASONS, headToHeadFromVersus, predictMatchup, type MatchupSide } from "../analysis/matchup.js";
+import {
+  buildBandedDistributions,
+  buildSplitDistributions,
+  comparePacing,
+  type SplitDistribution,
+} from "../analysis/pacing.js";
 import { bastionOf, overworldOf, performanceByBastion, performanceByOverworld } from "../analysis/seeds.js";
 import { extractRunSplits, type RunSplits } from "../analysis/splits.js";
-import { buildBandedWinProbModels, type BandedWinProbModel } from "../analysis/winprob.js";
+import { buildBandedWinProbModels, modelForElo, type BandedWinProbModel } from "../analysis/winprob.js";
 import { nowEpochSeconds } from "../shared/brand.js";
 import type { UserDetails } from "../shared/types.js";
 
@@ -180,6 +186,55 @@ export class AppContext {
       byBastion: performanceByBastion(matches, user.uuid),
       byOverworld: performanceByOverworld(matches, user.uuid),
       complete: settled && !this.refreshing(user.uuid),
+    };
+  }
+
+  async matchup(identifierA: string, identifierB: string) {
+    const [userA, userB] = await Promise.all([
+      this.ensurePlayer(identifierA),
+      this.ensurePlayer(identifierB),
+    ]);
+    if (userA.uuid === userB.uuid) return null;
+
+    const [playedA, playedB] = await Promise.all([
+      this.seasonsFor(identifierA, userA.uuid),
+      this.seasonsFor(identifierB, userB.uuid),
+    ]);
+    const latest = Math.max(0, ...playedA, ...playedB);
+    const seasons = Array.from({ length: H2H_SEASONS }, (_, i) => latest - i).filter((s) => s > 0);
+
+    let settled = true;
+    for (const season of seasons) {
+      settled = this.ensureSeason(identifierA, userA.uuid, season) && settled;
+      settled = this.ensureSeason(identifierB, userB.uuid, season) && settled;
+    }
+
+    const versus = await Promise.all(
+      seasons.map((season) => this.api.getVersus(userA.uuid, userB.uuid, season)),
+    );
+
+    const corpus = this.peerCorpus();
+    const banded = this.winProbModels();
+    const side = (user: UserDetails): MatchupSide => {
+      const lookup = modelForElo(banded, user.eloRate);
+      return {
+        uuid: user.uuid,
+        nickname: user.nickname,
+        elo: user.eloRate,
+        matches: seasons.flatMap((season) =>
+          this.store.getMatchesForPlayer(user.uuid, { type: 2, season }),
+        ),
+        model: lookup.model,
+        // The pooled "all" model has no banded splits.
+        splits: corpus.banded[lookup.band] ?? buildSplitDistributions(corpus.runs),
+        band: lookup.band,
+      };
+    };
+
+    return {
+      ...predictMatchup(side(userA), side(userB), headToHeadFromVersus(versus, userA.uuid, userB.uuid)),
+      seasons,
+      complete: settled && !this.refreshing(userA.uuid) && !this.refreshing(userB.uuid),
     };
   }
 

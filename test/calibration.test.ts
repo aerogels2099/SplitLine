@@ -14,6 +14,7 @@ import {
   score,
   temporalCutoff,
 } from "../src/analysis/calibration.js";
+import { H2H_SEASONS } from "../src/analysis/matchup.js";
 import { extractAllRuns, RESET_EVENT } from "../src/analysis/splits.js";
 import { eloExpectedScore } from "../src/analysis/stats.js";
 import { buildBandedWinProbModels } from "../src/analysis/winprob.js";
@@ -75,7 +76,6 @@ describe("scoring", () => {
   });
 
   it("pools a bin with its mirror when measuring calibration", () => {
-    // Unpooled, 0.9 misses by 0.1 and 0.1 by 0.9; from the favourite's side both are 0.9 against 0.5.
     const preds = [
       { p: 0.9, outcome: 1 },
       { p: 0.1, outcome: 1 },
@@ -89,7 +89,6 @@ describe("elo divisor fit", () => {
   const candidates = Array.from({ length: 161 }, (_, i) => 200 + i * 5);
 
   it("recovers the divisor that generated the games", () => {
-    // Labels set to the exact expected score make the generating divisor the unique minimum.
     for (const truth of [400, 570, 750]) {
       const games = gaps.map((gap) => ({ gap, outcome: eloExpectedScore(gap, 0, truth) }));
       expect(fitEloDivisor(games, candidates)).toBe(truth);
@@ -246,13 +245,22 @@ describe("pre-match backtest", () => {
       .filter((m) => ratedPair(m) !== null)
       .sort((x, y) => x.date - y.date || x.id - y.id);
     const first = rated[0]!;
-    // A different result, so predicting the games out of order would show.
     const second = rated.find((m) => ratedPair(m)!.outcome !== ratedPair(first)!.outcome)!;
     const out = pregamePredictions([], [second, first]);
     expect(out.base[0]!.p).toBeCloseTo(out.elo[0]!.p, 12);
-    // One game against a prior worth ten moves the base an eleventh of the way to its result.
-    const expected = (ratedPair(first)!.outcome - out.elo[1]!.p) / 11;
+    const expected = (ratedPair(first)!.outcome - out.elo[1]!.p) / 81;
     expect(out.base[1]!.p - out.elo[1]!.p).toBeCloseTo(expected, 12);
+  });
+
+  it("forgets games older than the head-to-head window", () => {
+    const rated = versusMatches()
+      .filter((m) => ratedPair(m) !== null)
+      .sort((x, y) => x.date - y.date || x.id - y.id);
+    const [first, second] = [rated[0]!, rated[1]!];
+    const inWindow = pregamePredictions([first], [second]);
+    const outside = pregamePredictions([{ ...first, season: second.season - H2H_SEASONS }], [second]);
+    expect(inWindow.base[0]!.p).not.toBeCloseTo(inWindow.elo[0]!.p, 12);
+    expect(outside.base[0]!.p).toBeCloseTo(outside.elo[0]!.p, 12);
   });
 
   it("moves off the prior once the pair has played before", () => {

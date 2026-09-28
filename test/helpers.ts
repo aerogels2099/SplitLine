@@ -7,6 +7,7 @@ import type {
   PublicLiveData,
   SuccessEnvelope,
   UserDetails,
+  VersusStats,
   WeeklyRace,
 } from "../src/shared/types.js";
 
@@ -26,6 +27,7 @@ export const userBMatches = () => loadFixture<MatchInfo[]>("user-b-matches.json"
 export const matchDetails = () => loadFixture<MatchInfo[]>("match-details.json");
 export const recentMatches = () => loadFixture<MatchInfo[]>("recent-matches.json");
 export const versusMatches = () => loadFixture<MatchInfo[]>("versus-matches.json");
+export const versus = () => loadFixture<VersusStats>("versus.json");
 export const weeklyRace = () => loadFixture<WeeklyRace>("weekly-race.json");
 export const liveData = () => loadFixture<PublicLiveData>("live.json");
 export const leaderboard = () => loadFixture<Leaderboard>("leaderboard.json");

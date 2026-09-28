@@ -1,5 +1,5 @@
 import type { MatchInfo } from "../shared/types.js";
-import { predictMatchup, type HeadToHead, type MatchupSide } from "./matchup.js";
+import { H2H_SEASONS, predictMatchup, type HeadToHead, type MatchupSide } from "./matchup.js";
 import { milestoneForEvent, RESET_EVENT } from "./splits.js";
 import { eloExpectedScore } from "./stats.js";
 import {
@@ -36,7 +36,7 @@ function binOf(p: number, bins: number): number {
   return Math.min(bins - 1, Math.floor(p * bins));
 }
 
-/** Which player counts as "a" is arbitrary, so a bin and its mirror are the same evidence. */
+/** Side "a" is arbitrary, so a bin and its mirror are the same evidence. */
 export function favouriteSide(pred: Prediction): Prediction {
   return pred.p >= 0.5 ? pred : { p: 1 - pred.p, outcome: 1 - pred.outcome };
 }
@@ -87,7 +87,7 @@ export interface RatedPair {
   outcome: number;
 }
 
-/** Sides are ordered by uuid so which player counts as "a" never depends on who won. */
+/** Ordered by uuid, so side "a" never depends on who won. */
 export function ratedPair(m: MatchInfo): RatedPair | null {
   if (m.type !== 2 || m.decayed || m.changes.length !== 2) return null;
   const [x, y] = [...m.changes].sort((p, q) => (p.uuid < q.uuid ? -1 : 1));
@@ -130,25 +130,34 @@ export interface PregameLayers {
   base: Prediction[];
 }
 
-/**
- * A test result joins the head-to-head only after its own game is predicted, as it would
- * live. Predictions come back in play order.
- */
+/** Each result counts only after its own game is predicted; output is in play order. */
 export function pregamePredictions(train: MatchInfo[], test: MatchInfo[]): PregameLayers {
-  const byPair = new Map<string, HeadToHead>();
+  const byPairSeason = new Map<string, HeadToHead>();
   const record = (m: MatchInfo) => {
     if (m.type !== 2 || m.decayed || m.players.length !== 2) return;
     const [u, v] = m.players.map((p) => p.uuid).sort();
-    const key = `${u}:${v}`;
-    const h = byPair.get(key) ?? { aWins: 0, bWins: 0, draws: 0 };
+    const key = `${u}:${v}:${m.season}`;
+    const h = byPairSeason.get(key) ?? { aWins: 0, bWins: 0, draws: 0 };
     if (m.result.uuid === null) h.draws++;
     else if (m.result.uuid === u) h.aWins++;
     else h.bWins++;
-    byPair.set(key, h);
+    byPairSeason.set(key, h);
+  };
+  const recent = (pair: string, season: number): HeadToHead => {
+    const h = { aWins: 0, bWins: 0, draws: 0 };
+    for (let s = season - H2H_SEASONS + 1; s <= season; s++) {
+      const x = byPairSeason.get(`${pair}:${s}`);
+      if (x) {
+        h.aWins += x.aWins;
+        h.bWins += x.bWins;
+        h.draws += x.draws;
+      }
+    }
+    return h;
   };
   for (const m of train) record(m);
 
-  // No splits are passed, so predictMatchup never consults the pace model.
+  // No splits, so the pace model is never used.
   const blank = buildWinProbModel([]);
   const side = (uuid: string, elo: number): MatchupSide => ({
     uuid,
@@ -167,7 +176,7 @@ export function pregamePredictions(train: MatchInfo[], test: MatchInfo[]): Prega
       const pred = predictMatchup(
         side(r.a.uuid, r.a.elo),
         side(r.b.uuid, r.b.elo),
-        byPair.get(`${r.a.uuid}:${r.b.uuid}`),
+        recent(`${r.a.uuid}:${r.b.uuid}`, m.season),
       );
       out.elo.push({ p: pred.pElo, outcome: r.outcome });
       out.base.push({ p: pred.pBase, outcome: r.outcome });
@@ -177,7 +186,7 @@ export function pregamePredictions(train: MatchInfo[], test: MatchInfo[]): Prega
   return out;
 }
 
-/** What a live poll at `at` would report: the latest mapped event since the last reset. */
+/** The state a live poll at `at` would have seen. */
 export function replayState(detail: MatchInfo, uuid: string, at: number): LiveRunState {
   const seen = (detail.timelines ?? []).filter((t) => t.uuid === uuid && Number(t.time) <= at);
   const reset = seen
@@ -229,7 +238,7 @@ export interface MatchBin extends ReliabilityBin {
   matches: number;
 }
 
-/** Checkpoints from one match move together, so each bin also counts the matches behind it. */
+/** Checkpoints within a match aren't independent, so bins also count matches. */
 export function inRunReliability(obs: InRunObservation[], bins = 10): MatchBin[] {
   const ids = new Map<number, Set<number>>();
   const folded = obs.map((o) => {

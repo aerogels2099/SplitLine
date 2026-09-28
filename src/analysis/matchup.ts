@@ -3,9 +3,10 @@ import { prematchPanel, type ArchetypeStats, type PrematchPanel } from "./seeds.
 import { MILESTONES, type MilestoneKey } from "./splits.js";
 import { eloExpectedScore } from "./stats.js";
 import { headToHeadWinProb, type WinProbModel } from "./winprob.js";
-import type { MatchInfo } from "../shared/types.js";
+import type { MatchInfo, VersusStats } from "../shared/types.js";
 
-const H2H_PRIOR_GAMES = 10;
+const H2H_PRIOR_GAMES = 80;
+export const H2H_SEASONS = 2;
 const MIN_SEED_GAMES = 3;
 const MIN_SPLIT_SAMPLES = 8;
 
@@ -25,13 +26,24 @@ export interface HeadToHead {
   draws: number;
 }
 
+export function headToHeadFromVersus(seasons: VersusStats[], uuidA: string, uuidB: string): HeadToHead {
+  const h: HeadToHead = { aWins: 0, bWins: 0, draws: 0 };
+  for (const v of seasons) {
+    const r = v.results.ranked;
+    const a = r[uuidA] ?? 0;
+    const b = r[uuidB] ?? 0;
+    h.aWins += a;
+    h.bWins += b;
+    h.draws += (r.total ?? a + b) - a - b;
+  }
+  return h;
+}
+
 export interface SeedRecordSide {
   stats: ArchetypeStats;
-  /** Measured against the player's own rate across archetypes, so their usual opposition mostly cancels out. */
   relative: number;
 }
 
-/** History only: held-out games showed per-archetype records add nothing to the prediction. */
 export interface SeedRecord {
   archetype: string;
   a: SeedRecordSide | null;
@@ -127,7 +139,7 @@ export function predictMatchup(
   const pElo = a.elo !== null && b.elo !== null ? eloExpectedScore(a.elo, b.elo) : 0.5;
   const games = h2h.aWins + h2h.bWins + h2h.draws;
   const score = h2h.aWins + h2h.draws / 2;
-  // The elo prior stands in for H2H_PRIOR_GAMES games, so a short record moves it only a little.
+  // The elo prior counts as H2H_PRIOR_GAMES games.
   const pBase = (score + H2H_PRIOR_GAMES * pElo) / (games + H2H_PRIOR_GAMES);
 
   const panel = prematchPanel(a.matches, a.uuid, b.matches, b.uuid);

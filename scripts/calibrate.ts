@@ -14,6 +14,7 @@ import {
   type ReliabilityBin,
   type Scores,
 } from "../src/analysis/calibration.js";
+import { H2H_SEASONS } from "../src/analysis/matchup.js";
 import { extractAllRuns } from "../src/analysis/splits.js";
 import { ELO_DIVISOR } from "../src/analysis/stats.js";
 import { buildBandedWinProbModels } from "../src/analysis/winprob.js";
@@ -69,7 +70,9 @@ console.log(curve(reliability(eloPredictions(testGames, fitted).map(favouriteSid
 const pre = pregamePredictions(trainA, testA);
 const preScores = { elo: score(pre.elo), base: score(pre.base) };
 const h2hGain = preScores.base.logLoss - preScores.elo.logLoss;
-console.log(`\nB. Pre-match prediction on the same test games (d=${ELO_DIVISOR})`);
+console.log(
+  `\nB. Pre-match prediction on the same test games (d=${ELO_DIVISOR}, head-to-head over ${H2H_SEASONS} seasons)`,
+);
 console.log(`   elo only       ${line(preScores.elo)}`);
 console.log(
   `   + head-to-head ${line(preScores.base)}   ${h2hGain <= 0 ? "" : "+"}${h2hGain.toFixed(4)} vs elo only`,

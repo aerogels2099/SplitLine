@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { predictMatchup, type MatchupSide } from "../src/analysis/matchup.js";
+import { headToHeadFromVersus, predictMatchup, type MatchupSide } from "../src/analysis/matchup.js";
 import { buildSplitDistributions } from "../src/analysis/pacing.js";
 import { extractAllRuns } from "../src/analysis/splits.js";
 import { buildWinProbModel, type WinProbModel } from "../src/analysis/winprob.js";
 import { asEpochSeconds, asMillis } from "../src/shared/brand.js";
-import type { MatchInfo, UserProfile } from "../src/shared/types.js";
-import { matchDetails, userA, userAMatches, userB, userBMatches } from "./helpers.js";
+import type { MatchInfo, UserProfile, VersusStats } from "../src/shared/types.js";
+import { matchDetails, userA, userAMatches, userB, userBMatches, versus } from "./helpers.js";
 
 const runs = extractAllRuns(matchDetails());
 const model = buildWinProbModel(runs);
@@ -73,16 +73,17 @@ describe("matchup prediction", () => {
     const thick = predictMatchup(...even(), { aWins: 20, bWins: 0, draws: 0 });
 
     expect(thin.pBase).toBeGreaterThan(0.5);
-    expect(thin.pBase).toBeLessThan(0.56);
-    expect(thick.pBase).toBeGreaterThan(0.8);
-    expect(thick.pBase).toBeLessThan(1);
+    expect(thin.pBase).toBeLessThan(0.52);
+    expect(thick.pBase).toBeCloseTo(0.6, 10);
   });
 
-  it("lets a losing record pull against the rating", () => {
+  it("lets a losing record pull against the rating, and a long one overturn it", () => {
     const favoured = predictMatchup(side("a", 1900), side("b", 1500));
     const haunted = predictMatchup(side("a", 1900), side("b", 1500), { aWins: 0, bWins: 12, draws: 0 });
+    const buried = predictMatchup(side("a", 1900), side("b", 1500), { aWins: 0, bWins: 60, draws: 0 });
     expect(haunted.pBase).toBeLessThan(favoured.pBase);
-    expect(haunted.pBase).toBeLessThan(0.5);
+    expect(haunted.pBase).toBeGreaterThan(0.5);
+    expect(buried.pBase).toBeLessThan(0.5);
   });
 
   it("counts a drawn game as half a win and as a whole game", () => {
@@ -137,7 +138,6 @@ describe("seed records", () => {
     const p = predictMatchup(side("a", 1500, aMatches), side("b", 1500, bMatches));
     const housing = p.bastion.find((r) => r.archetype === "housing")!;
     const treasury = p.bastion.find((r) => r.archetype === "treasury")!;
-    // Both players are 20-20 overall, so each record sits 0.5 from their own rate.
     expect(housing.a!.stats.winRate).toBe(1);
     expect(housing.a!.relative).toBeCloseTo(0.5, 10);
     expect(housing.b!.relative).toBeCloseTo(-0.5, 10);
@@ -284,5 +284,33 @@ describe("per-player pace models", () => {
     expect(p.b.band).toBe("900–1199");
     expect(p.a.modelRuns).toBe(50);
     expect(p.b.modelRuns).toBe(50);
+  });
+});
+
+describe("head-to-head from the versus endpoint", () => {
+  const v = versus();
+  const [edcr, infume] = v.players.map((p) => p.uuid) as [string, string];
+  const season = (total: number, a: number, b: number): VersusStats => ({
+    ...v,
+    results: { ...v.results, ranked: { total, [edcr]: a, [infume]: b } },
+  });
+
+  it("reads one season's record from either side", () => {
+    expect(headToHeadFromVersus([v], edcr, infume)).toEqual({ aWins: 8, bWins: 7, draws: 0 });
+    expect(headToHeadFromVersus([v], infume, edcr)).toEqual({ aWins: 7, bWins: 8, draws: 0 });
+  });
+
+  it("sums seasons and recovers draws from the total", () => {
+    expect(headToHeadFromVersus([v, season(41, 15, 25)], edcr, infume)).toEqual({
+      aWins: 23,
+      bWins: 32,
+      draws: 1,
+    });
+  });
+
+  it("adds nothing for a season the pair never met", () => {
+    expect(headToHeadFromVersus([season(0, 0, 0)], edcr, infume)).toEqual({ aWins: 0, bWins: 0, draws: 0 });
+    const noKeys = { ...v, results: { ...v.results, ranked: { total: 0 } } };
+    expect(headToHeadFromVersus([noKeys], edcr, infume)).toEqual({ aWins: 0, bWins: 0, draws: 0 });
   });
 });

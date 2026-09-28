@@ -292,8 +292,7 @@ describe("alias events are timed on their own", () => {
 describe("a pace-neutral run reads as the elo prior", () => {
   const blank: LiveRunState = { lastEventType: null, lastEventTime: null };
 
-  // Nether time and finish time vary independently, so the identity being
-  // checked is not an artefact of one being a fixed fraction of the other.
+  // Nether and finish times vary independently, so the identity isn't an artefact of a fixed ratio.
   const evenCorpus = Array.from({ length: 30 }, (_, i) => {
     const base = syntheticRun(1850, (9 + (i % 7)) * 60_000, i);
     return {
@@ -337,8 +336,7 @@ describe("a pace-neutral run reads as the elo prior", () => {
       if (band === "placement") continue;
       const model = banded.bands[band]!;
       if (!model.milestones.nether_enter) continue;
-      // Every run that reached the split, not just the finishers: the model is
-      // fitted on the whole population now that losers are censored in.
+      // All runs that reached the split, since losers are censored into the model.
       const reached = runs.filter(
         (r) => eloBand(r.eloAtMatch) === band && r.splits.nether_enter !== null,
       );
@@ -423,8 +421,7 @@ describe("the end of a race", () => {
   });
 
   it("ranks two runners past the dragon by projected completion, not by event time", () => {
-    // a's kill at 8:34 looks earlier than b's dragon death at 8:38, but a death comes ten
-    // seconds after its kill, so b completes at 8:48 and a at 8:54.
+    // b's death at 8:38 means a kill at 8:28, so b completes first despite a's kill at 8:34.
     const { pA } = headToHeadWinProb(
       { model, state: at(KILL, 514_000), elo: 1850 },
       { model, state: at(DEATH, 518_000), elo: 1850 },
@@ -435,8 +432,7 @@ describe("the end of a race", () => {
 });
 
 describe("timing evidence is capped", () => {
-  // Everyone finishes within two seconds of 9:00, so a runner entering the nether at 8:10
-  // is many spreads behind one already in the end.
+  // Everyone finishes near 9:00, so a runner entering the nether at 8:10 is far behind one in the end.
   const model = buildWinProbModel(
     Array.from({ length: 30 }, (_, i) => syntheticRun(1850, 9 * 60_000 + (i % 3) * 1000, i)),
   );

@@ -114,6 +114,14 @@ app.get("/api/players/:id/games/:matchId", async (req, reply) => {
   return ctx.gameSplits(p.id, matchId);
 });
 
+app.get("/api/players/:id/versus/:other", async (req, reply) => {
+  const p = req.params as { id: string; other: string };
+  const view = await ctx.matchup(p.id, p.other);
+  if (!view) return reply.code(400).send({ error: "a player cannot be matched against themselves" });
+  reply.header("cache-control", view.complete ? "public, max-age=30" : "no-store");
+  return view;
+});
+
 const dist = join(ROOT, "web", "dist");
 if (existsSync(dist)) {
   await app.register(fastifyStatic, {
