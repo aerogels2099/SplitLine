@@ -9,6 +9,7 @@ import type {
   WeeklyRaceEntry,
 } from "../../src/shared/types.js";
 import type { GameRecord, LabelledRun } from "../../src/analysis/history.js";
+import type { MatchupPrediction } from "../../src/analysis/matchup.js";
 import type { PacingComparison, SplitDistribution } from "../../src/analysis/pacing.js";
 import type { ArchetypeStats } from "../../src/analysis/seeds.js";
 
@@ -51,6 +52,11 @@ export interface PlayerAnalysis {
   bandedDistributions: Record<string, SplitDistribution[]>;
   byBastion: ArchetypeStats[];
   byOverworld: ArchetypeStats[];
+  complete: boolean;
+}
+
+export interface PlayerMatchup extends MatchupPrediction {
+  seasons: number[];
   complete: boolean;
 }
 

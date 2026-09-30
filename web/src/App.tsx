@@ -5,6 +5,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Player = lazy(() => import("./pages/Player"));
 const GameHistory = lazy(() => import("./pages/player/GameHistory"));
 const Analysis = lazy(() => import("./pages/player/Analysis"));
+const Versus = lazy(() => import("./pages/player/Versus"));
 
 function Logo() {
   return (
@@ -59,6 +60,8 @@ export default function App() {
         <Route path="/player/:id" element={<Player />}>
           <Route index element={<GameHistory />} />
           <Route path="analysis" element={<Analysis />} />
+          <Route path="versus" element={<Versus />} />
+          <Route path="versus/:other" element={<Versus />} />
         </Route>
       </Routes>
       </Suspense>

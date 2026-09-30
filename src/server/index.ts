@@ -21,8 +21,12 @@ await app.register(fastifyCompress, { threshold: 1024 });
 
 app.setErrorHandler((err, _req, reply) => {
   if (err instanceof ApiError) {
-    const code = err.httpStatus === 400 ? 404 : err.httpStatus === 429 ? 503 : 502;
-    reply.code(code).send({ error: err.message, source: "mcsr-ranked-api" });
+    // The API answers 400 when there is no data, often with no message at all.
+    if (err.httpStatus === 400) {
+      reply.code(404).send({ error: "not found", source: "mcsr-ranked-api" });
+      return;
+    }
+    reply.code(err.httpStatus === 429 ? 503 : 502).send({ error: err.message, source: "mcsr-ranked-api" });
     return;
   }
   if (err instanceof RateBudgetError) {
