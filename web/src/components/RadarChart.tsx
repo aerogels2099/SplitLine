@@ -99,6 +99,7 @@ export function RadarChart({
                 y={y - 4}
                 width={8}
                 height={8}
+                rx={2}
                 fill={hollow ? "var(--slot)" : s.color}
                 stroke={s.color}
                 strokeWidth={2}

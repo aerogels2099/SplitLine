@@ -41,9 +41,6 @@ export default function App() {
             Split<em>Line</em>
           </span>
         </NavLink>
-        <nav className="topnav">
-          <NavLink to="/dashboard">Dashboard</NavLink>
-        </nav>
         <form className="search" onSubmit={onSearch}>
           <input
             value={query}

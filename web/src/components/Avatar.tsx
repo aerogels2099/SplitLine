@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { tierOf } from "../tiers";
 
+const MAX_SKIN_PX = 300;
+
 export function Avatar({ uuid, name, size = 32 }: { uuid: string; name: string; size?: number }) {
   const [failed, setFailed] = useState(false);
   if (failed) {
@@ -27,7 +29,7 @@ export function Avatar({ uuid, name, size = 32 }: { uuid: string; name: string; 
   return (
     <img
       className="avatar"
-      src={`https://mc-heads.net/avatar/${uuid}/${size * 2}`}
+      src={`https://minotar.net/helm/${uuid}/${Math.min(size * 2, MAX_SKIN_PX)}`}
       width={size}
       height={size}
       alt=""

@@ -56,6 +56,7 @@ const sq = (x: number, y: number, s: number, fill: string, key?: string | number
     y={y - s / 2}
     width={s}
     height={s}
+    rx={2}
     fill={fill}
     stroke="var(--void)"
     strokeWidth={2}
@@ -115,7 +116,7 @@ export function EloChart({
               <stop offset="100%" stopColor="var(--gold)" stopOpacity="0" />
             </linearGradient>
             <clipPath id="plot">
-              <rect x={PAD.l} y={PAD.t} width={W - PAD.l - PAD.r} height={H - PAD.t - PAD.b} />
+              <rect x={PAD.l} y={PAD.t} width={W - PAD.l - PAD.r} height={H - PAD.t - PAD.b} rx={8} />
             </clipPath>
           </defs>
 
@@ -124,6 +125,7 @@ export function EloChart({
             y={PAD.t}
             width={W - PAD.l - PAD.r}
             height={H - PAD.t - PAD.b}
+            rx={8}
             fill="var(--slot)"
             stroke="var(--border)"
             strokeWidth={2}
@@ -219,7 +221,7 @@ export function EloChart({
     const badge = (
           <g>
             {sq(last.X, last.Y, 8, "var(--gold)")}
-            <rect x={last.X + 9} y={last.Y - 12} width={52} height={22} fill="var(--gold)" stroke="var(--void)" strokeWidth={2} shapeRendering="crispEdges" />
+            <rect x={last.X + 9} y={last.Y - 12} width={52} height={22} rx={5} fill="var(--gold)" stroke="var(--void)" strokeWidth={2} />
             <text x={last.X + 35} y={last.Y + 4} textAnchor="middle" fontSize={12} fontWeight={700} fontFamily="var(--font-mono)" fill="#171205">
               {last.elo}
             </text>
