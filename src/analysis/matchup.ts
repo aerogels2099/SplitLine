@@ -1,14 +1,26 @@
 import type { SplitDistribution } from "./pacing.js";
 import { prematchPanel, type ArchetypeStats, type PrematchPanel } from "./seeds.js";
 import { MILESTONES, type MilestoneKey } from "./splits.js";
-import { eloExpectedScore } from "./stats.js";
-import { headToHeadWinProb, type WinProbModel } from "./winprob.js";
+import { clampProbability, eloExpectedScore, logistic, logit } from "./stats.js";
+import { paceGap, timingEvidence, type WinProbModel } from "./winprob.js";
 import type { MatchInfo, VersusStats } from "../shared/types.js";
 
 const H2H_PRIOR_GAMES = 80;
 export const H2H_SEASONS = 2;
 const MIN_SEED_GAMES = 3;
 const MIN_SPLIT_SAMPLES = 8;
+
+export type ScenarioKey = Exclude<MilestoneKey, "finish">;
+
+/** Fitted on validation games; the shared seed makes only part of a split's lead the runner's own. */
+export const SCENARIO_WEIGHTS: Record<ScenarioKey, number> = {
+  nether_enter: 0.8,
+  bastion: 0.75,
+  fortress: 0.8,
+  first_portal: 0.7,
+  stronghold: 0.45,
+  end_enter: 0.6,
+};
 
 export interface MatchupSide {
   uuid: string;
@@ -98,7 +110,25 @@ function seedRecords(rows: PrematchPanel["bastion"]): SeedRecord[] {
     .map((r) => ({ archetype: r.archetype, a: side(r.a, baseA), b: side(r.b, baseB) }));
 }
 
-function splitScenarios(a: MatchupSide, b: MatchupSide): SplitScenario[] {
+/** P(a wins) if a reaches `key` at `timeMs`, knowing nothing of b's progress beyond the clock. */
+export function splitScenarioProbability(
+  a: MatchupSide,
+  b: MatchupSide,
+  key: ScenarioKey,
+  timeMs: number,
+  prior: number,
+  weight = SCENARIO_WEIGHTS[key],
+): number {
+  const event = MILESTONES.find((m) => m.key === key)!.event;
+  const { z } = paceGap(
+    { model: a.model, state: { lastEventType: event, lastEventTime: timeMs }, elo: a.elo },
+    { model: b.model, state: { lastEventType: null, lastEventTime: null }, elo: b.elo },
+    timeMs,
+  );
+  return clampProbability(logistic(logit(prior) + timingEvidence(weight * z)));
+}
+
+function splitScenarios(a: MatchupSide, b: MatchupSide, prior: number): SplitScenario[] {
   const out: SplitScenario[] = [];
   for (const m of MILESTONES) {
     if (m.event === null) continue;
@@ -119,12 +149,7 @@ function splitScenarios(a: MatchupSide, b: MatchupSide): SplitScenario[] {
       points: sweep.map(([percentile, timeMs]) => ({
         percentile,
         timeMs,
-        // The opponent's progress is unknown, so only their clock is modelled.
-        p: headToHeadWinProb(
-          { model: a.model, state: { lastEventType: m.event, lastEventTime: timeMs }, elo: a.elo },
-          { model: b.model, state: { lastEventType: null, lastEventTime: null }, elo: b.elo },
-          timeMs,
-        ).pA,
+        p: splitScenarioProbability(a, b, m.key, timeMs, prior),
       })),
     });
   }
@@ -159,6 +184,6 @@ export function predictMatchup(
     h2h: { aWins: h2h.aWins, bWins: h2h.bWins, draws: h2h.draws, games },
     bastion: seedRecords(panel.bastion),
     overworld: seedRecords(panel.overworld),
-    splits: splitScenarios(a, b),
+    splits: splitScenarios(a, b, pBase),
   };
 }

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   eloPredictions,
   favouriteSide,
+  fitScenarioWeights,
   fitEloDivisor,
   inRunPredictions,
   inRunReliability,
@@ -11,11 +12,13 @@ import {
   ratedPair,
   reliability,
   replayState,
+  scenarioCases,
+  scenarioPredictions,
   score,
   temporalCutoff,
 } from "../src/analysis/calibration.js";
 import { H2H_SEASONS } from "../src/analysis/matchup.js";
-import { extractAllRuns, RESET_EVENT } from "../src/analysis/splits.js";
+import { extractAllRuns, extractRunSplits, RESET_EVENT } from "../src/analysis/splits.js";
 import { eloExpectedScore } from "../src/analysis/stats.js";
 import { buildBandedWinProbModels } from "../src/analysis/winprob.js";
 import { asMillis } from "../src/shared/brand.js";
@@ -315,5 +318,37 @@ describe("in-run backtest", () => {
       expect(o.model.p).toBeGreaterThanOrEqual(0.01);
       expect(o.model.p).toBeLessThanOrEqual(0.99);
     }
+  });
+});
+
+describe("split scenario backtest", () => {
+  const details = matchDetails();
+  const byId = new Map(details.map((d) => [d.id, d]));
+  const cases = scenarioCases(buildBandedWinProbModels(extractAllRuns(details)), details);
+
+  it("poses each runner at each milestone they actually reached", () => {
+    expect(cases.length).toBeGreaterThan(0);
+    for (const c of cases) {
+      const run = extractRunSplits(byId.get(c.matchId)!, c.a.uuid)!;
+      expect(c.timeMs).toBe(Number(run.splits[c.key]));
+      expect(c.prior).toBeCloseTo(eloExpectedScore(c.a.elo!, c.b.elo!), 12);
+    }
+  });
+
+  it("scores the two runners in a match from opposite sides", () => {
+    for (const c of cases) {
+      const d = byId.get(c.matchId)!;
+      expect(c.outcome).toBe(d.result.uuid === null ? 0.5 : d.result.uuid === c.a.uuid ? 1 : 0);
+    }
+    expect(new Set(cases.map((c) => c.a.uuid)).size).toBeGreaterThan(1);
+  });
+
+  it("recovers the weights that generated the outcomes", () => {
+    // Labels set to the scenario itself at 0.5 make 0.5 the unique minimum for every milestone.
+    const truth = { nether_enter: 0.5, bastion: 0.5, fortress: 0.5, first_portal: 0.5, stronghold: 0.5, end_enter: 0.5 };
+    const soft = cases.map((c) => ({ ...c, outcome: scenarioPredictions([c], truth)[0]!.p }));
+    const fitted = fitScenarioWeights(soft, Array.from({ length: 31 }, (_, i) => i / 20));
+    expect(Object.keys(fitted).length).toBeGreaterThan(0);
+    for (const w of Object.values(fitted)) expect(w).toBe(0.5);
   });
 });

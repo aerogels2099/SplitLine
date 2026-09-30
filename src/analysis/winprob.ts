@@ -211,13 +211,30 @@ export interface RunSide {
   elo: number | null;
 }
 
+/** Positive when a is projected to finish first, in spreads. */
+export function paceGap(
+  a: RunSide,
+  b: RunSide,
+  elapsedMs: number,
+): { z: number; projA: FinishProjection; projB: FinishProjection } {
+  const projA = projectFinish(a.model, a.state, elapsedMs);
+  const projB = projectFinish(b.model, b.state, elapsedMs);
+  // Pace is judged against each runner's own band, so the rating is not counted twice.
+  const paceA = projA.meanMs - a.model.overall.meanFinal;
+  const paceB = projB.meanMs - b.model.overall.meanFinal;
+  return { z: (paceB - paceA) / Math.sqrt(projA.sdMs ** 2 + projB.sdMs ** 2), projA, projB };
+}
+
+export function timingEvidence(z: number): number {
+  return Math.min(EVIDENCE_CAP, Math.max(-EVIDENCE_CAP, logit(normalCdf(z))));
+}
+
 export function headToHeadWinProb(
   a: RunSide,
   b: RunSide,
   elapsedMs: number,
 ): { pA: number; projA: FinishProjection; projB: FinishProjection } {
-  const projA = projectFinish(a.model, a.state, elapsedMs);
-  const projB = projectFinish(b.model, b.state, elapsedMs);
+  const { z, projA, projB } = paceGap(a, b, elapsedMs);
 
   // Only one dragon down: its killer completes first in 96-100% of held-out checkpoints.
   if (projA.milestone === "finish" && projB.milestone !== "finish") {
@@ -228,14 +245,7 @@ export function headToHeadWinProb(
   }
 
   const pElo = a.elo !== null && b.elo !== null ? eloExpectedScore(a.elo, b.elo) : 0.5;
-
-  // Pace is judged against each runner's own band, so the rating is not counted twice.
-  const paceA = projA.meanMs - a.model.overall.meanFinal;
-  const paceB = projB.meanMs - b.model.overall.meanFinal;
-  const z = (paceB - paceA) / Math.sqrt(projA.sdMs ** 2 + projB.sdMs ** 2);
-
-  const evidence = Math.min(EVIDENCE_CAP, Math.max(-EVIDENCE_CAP, logit(normalCdf(z))));
-  const pA = logistic(logit(pElo) + evidence);
+  const pA = logistic(logit(pElo) + timingEvidence(z));
   return { pA: Math.min(0.99, Math.max(0.01, pA)), projA, projB };
 }
 

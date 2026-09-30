@@ -1,6 +1,13 @@
 import type { MatchInfo } from "../shared/types.js";
-import { H2H_SEASONS, predictMatchup, type HeadToHead, type MatchupSide } from "./matchup.js";
-import { milestoneForEvent, RESET_EVENT } from "./splits.js";
+import {
+  H2H_SEASONS,
+  predictMatchup,
+  splitScenarioProbability,
+  type HeadToHead,
+  type MatchupSide,
+  type ScenarioKey,
+} from "./matchup.js";
+import { extractRunSplits, milestoneForEvent, MILESTONES, RESET_EVENT } from "./splits.js";
 import { eloExpectedScore } from "./stats.js";
 import {
   buildWinProbModel,
@@ -239,7 +246,10 @@ export interface MatchBin extends ReliabilityBin {
 }
 
 /** Checkpoints within a match aren't independent, so bins also count matches. */
-export function inRunReliability(obs: InRunObservation[], bins = 10): MatchBin[] {
+export function inRunReliability(
+  obs: Pick<InRunObservation, "matchId" | "model">[],
+  bins = 10,
+): MatchBin[] {
   const ids = new Map<number, Set<number>>();
   const folded = obs.map((o) => {
     const f = favouriteSide(o.model);
@@ -253,4 +263,86 @@ export function inRunReliability(obs: InRunObservation[], bins = 10): MatchBin[]
     ...r,
     matches: ids.get(Math.round(r.lo * bins))!.size,
   }));
+}
+
+export interface ScenarioCase {
+  key: ScenarioKey;
+  a: MatchupSide;
+  b: MatchupSide;
+  timeMs: number;
+  /** Elo alone: the weight on the split is what is being measured, not the head-to-head. */
+  prior: number;
+  outcome: number;
+  matchId: number;
+}
+
+/** The opponent is unseen, as a split scenario poses it. */
+export function scenarioCases(banded: BandedWinProbModel, details: MatchInfo[]): ScenarioCase[] {
+  const out: ScenarioCase[] = [];
+  for (const d of details) {
+    const r = ratedPair(d);
+    if (!r || !d.timelines?.length) continue;
+    const side = (s: { uuid: string; elo: number }): MatchupSide => ({
+      uuid: s.uuid,
+      nickname: s.uuid,
+      elo: s.elo,
+      matches: [],
+      model: modelForElo(banded, s.elo).model,
+      splits: [],
+      band: "",
+    });
+    for (const [x, y, outcome] of [
+      [r.a, r.b, r.outcome],
+      [r.b, r.a, 1 - r.outcome],
+    ] as const) {
+      const run = extractRunSplits(d, x.uuid);
+      if (!run) continue;
+      for (const m of MILESTONES) {
+        if (m.event === null) continue;
+        const t = run.splits[m.key];
+        if (t === null) continue;
+        out.push({
+          key: m.key,
+          a: side(x),
+          b: side(y),
+          timeMs: Number(t),
+          prior: eloExpectedScore(x.elo, y.elo),
+          outcome,
+          matchId: d.id,
+        });
+      }
+    }
+  }
+  return out;
+}
+
+export function scenarioPredictions(
+  cases: ScenarioCase[],
+  weights: Partial<Record<ScenarioKey, number>> = {},
+): Prediction[] {
+  return cases.map((c) => ({
+    p: splitScenarioProbability(c.a, c.b, c.key, c.timeMs, c.prior, weights[c.key]),
+    outcome: c.outcome,
+  }));
+}
+
+export function fitScenarioWeights(
+  cases: ScenarioCase[],
+  candidates: number[],
+): Partial<Record<ScenarioKey, number>> {
+  const out: Partial<Record<ScenarioKey, number>> = {};
+  for (const key of new Set(cases.map((c) => c.key))) {
+    const mine = cases.filter((c) => c.key === key);
+    let best = candidates[0]!;
+    let bestLoss = Infinity;
+    for (const w of candidates) {
+      const loss = logLoss(scenarioPredictions(mine, { [key]: w }));
+      if (loss < bestLoss) {
+        bestLoss = loss;
+        best = w;
+      }
+    }
+    out[key] = best;
+  }
+  return out;
 }

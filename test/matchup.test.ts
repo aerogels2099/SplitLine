@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { headToHeadFromVersus, predictMatchup, type MatchupSide } from "../src/analysis/matchup.js";
+import {
+  headToHeadFromVersus,
+  predictMatchup,
+  splitScenarioProbability,
+  type MatchupSide,
+} from "../src/analysis/matchup.js";
 import { buildSplitDistributions } from "../src/analysis/pacing.js";
 import { extractAllRuns } from "../src/analysis/splits.js";
 import { buildWinProbModel, type WinProbModel } from "../src/analysis/winprob.js";
@@ -312,5 +317,31 @@ describe("head-to-head from the versus endpoint", () => {
     expect(headToHeadFromVersus([season(0, 0, 0)], edcr, infume)).toEqual({ aWins: 0, bWins: 0, draws: 0 });
     const noKeys = { ...v, results: { ...v.results, ranked: { total: 0 } } };
     expect(headToHeadFromVersus([noKeys], edcr, infume)).toEqual({ aWins: 0, bWins: 0, draws: 0 });
+  });
+});
+
+describe("weighting a split for the shared seed", () => {
+  const a = side("a", 1850);
+  const b = side("b", 1850);
+  const fast = splits.find((d) => d.key === "bastion")!.p10;
+  const from = (w: number) => Math.abs(splitScenarioProbability(a, b, "bastion", fast, 0.63, w) - 0.63);
+
+  it("returns the prior at zero weight, however fast the split", () => {
+    expect(splitScenarioProbability(a, b, "bastion", fast, 0.63, 0)).toBeCloseTo(0.63, 8);
+  });
+
+  it("moves less from the prior the less a split is the runner's own", () => {
+    expect(from(0.4)).toBeLessThan(from(0.8));
+    expect(from(0.8)).toBeLessThan(from(1));
+  });
+
+  it("starts from the headline, head-to-head included", () => {
+    const rivals = predictMatchup(side("a", 1850), side("b", 1850), { aWins: 60, bWins: 20, draws: 0 });
+    const strangers = predictMatchup(side("a", 1850), side("b", 1850));
+    expect(rivals.pBase).toBeGreaterThan(strangers.pBase);
+    for (const s of rivals.splits) {
+      const same = strangers.splits.find((o) => o.key === s.key)!;
+      s.points.forEach((pt, i) => expect(pt.p).toBeGreaterThan(same.points[i]!.p));
+    }
   });
 });
