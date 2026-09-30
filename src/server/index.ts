@@ -12,9 +12,8 @@ const ROOT = join(HERE, "..", "..");
 
 const PORT = Number(process.env.PORT ?? 8787);
 const DB_PATH = process.env.SPLITLINE_DB ?? join(ROOT, "data", "splitline.db");
-const PRIVATE_KEY = process.env.MCSR_PRIVATE_KEY || null;
 
-const ctx = new AppContext(DB_PATH, PRIVATE_KEY);
+const ctx = new AppContext(DB_PATH);
 const app = Fastify({ logger: { level: "info" } });
 
 // Before the routes: each route keeps only the hooks registered ahead of it.
@@ -144,12 +143,14 @@ if (existsSync(dist)) {
   });
 }
 
+let stopCrawl = () => {};
 let closing = false;
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.on(signal, () => {
     if (closing) return;
     closing = true;
     app.log.info(`${signal} received, shutting down`);
+    stopCrawl();
     app
       .close()
       .finally(() => {
@@ -163,6 +164,7 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
 try {
   await app.listen({ port: PORT, host: "127.0.0.1" });
   app.log.info(`SplitLine on http://127.0.0.1:${PORT} (db: ${DB_PATH})`);
+  stopCrawl = ctx.startCorpusCrawl((err) => app.log.warn({ err }, "corpus crawl failed"));
 } catch (err) {
   app.log.error(err, "failed to start");
   process.exit(1);

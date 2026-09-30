@@ -135,26 +135,4 @@ describe("RankedClient", () => {
     resolvers[1]!(ok("again"));
     await expect(third).resolves.toBe("again");
   });
-
-  it("requires a private key for keyed endpoints", async () => {
-    const fetchImpl = vi.fn(async () => ok({}));
-    const c = new RankedClient({ fetchImpl: fetchImpl as unknown as typeof fetch, sleepImpl: noSleep });
-    await expect(c.get("/users/x/live", { withKey: true })).rejects.toThrowError(/MCSR_PRIVATE_KEY/);
-    expect(fetchImpl).not.toHaveBeenCalled();
-  });
-
-  it("sends the Private-Key header when configured", async () => {
-    const fetchImpl = vi.fn(async (_url: string, init?: RequestInit) => {
-      const headers = init?.headers as Record<string, string>;
-      expect(headers["Private-Key"]).toBe("secret");
-      return ok({ status: "idle" });
-    });
-    const c = new RankedClient({
-      fetchImpl: fetchImpl as unknown as typeof fetch,
-      privateKey: "secret",
-      sleepImpl: noSleep,
-    });
-    await c.get("/users/x/live", { withKey: true });
-    expect(fetchImpl).toHaveBeenCalledTimes(1);
-  });
 });

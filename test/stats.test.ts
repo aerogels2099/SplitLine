@@ -4,22 +4,10 @@ import {
   ELO_DIVISOR,
   eloExpectedScore,
   kaplanMeier,
-  mean,
   normalCdf,
-  stddev,
 } from "../src/analysis/stats.js";
 
 describe("stats primitives", () => {
-  it("computes sample standard deviation", () => {
-    expect(stddev([2, 3, 4, 5, 6])).toBeCloseTo(Math.sqrt(2.5), 10);
-    expect(stddev([7, 7, 7])).toBe(0);
-  });
-
-  it("returns zero standard deviation below two samples", () => {
-    expect(stddev([])).toBe(0);
-    expect(stddev([42])).toBe(0);
-  });
-
   it("evaluates the normal CDF against known quantiles", () => {
     expect(normalCdf(0)).toBeCloseTo(0.5, 7);
     expect(normalCdf(1)).toBeCloseTo(0.841344746, 6);
@@ -68,7 +56,7 @@ describe("survival estimates", () => {
     const xs = [3, 5, 5, 8, 9];
     const curve = kaplanMeier(xs.map((time) => ({ time, observed: true })));
     expect(curve.survival.at(-1)).toBeCloseTo(0, 10);
-    expect(conditionalRemaining(curve, 0)!.mean).toBeCloseTo(mean(xs), 10);
+    expect(conditionalRemaining(curve, 0)!.mean).toBeCloseTo(6, 10);
   });
 
   it("keeps censored observations in the risk set without counting them as events", () => {

@@ -22,7 +22,6 @@ export interface PlayerIngestResult {
 }
 
 interface IngestOpts {
-  maxMatches?: number;
   season?: number;
   type?: MatchType;
 }
@@ -168,10 +167,10 @@ export interface CrawlResult {
 export async function crawlMatches(
   store: Store,
   api: RankedApi,
-  opts: { pages?: number; fromOldest?: boolean } = {},
+  opts: { pages?: number } = {},
 ): Promise<CrawlResult> {
   const pages = opts.pages ?? 5;
-  let before = opts.fromOldest ? (store.oldestMatchId(2) ?? undefined) : undefined;
+  let before: number | undefined;
   let stored = 0;
   let fetched = 0;
   for (let i = 0; i < pages; i++) {

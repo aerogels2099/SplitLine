@@ -37,20 +37,9 @@ export interface LabelledRun {
   segments: LabelledSplit[];
 }
 
-export function seasonsPlayed(matches: MatchInfo[]): number[] {
-  const seen = new Set<number>();
-  for (const m of matches) seen.add(m.season);
-  return [...seen].sort((a, b) => b - a);
-}
-
 /** Decay entries are kept and flagged, not dropped. */
-export function buildGameHistory(
-  matches: MatchInfo[],
-  uuid: string,
-  season?: number,
-): GameRecord[] {
-  return matches
-    .filter((m) => season === undefined || m.season === season)
+export function buildGameHistory(matches: MatchInfo[], uuid: string): GameRecord[] {
+  return [...matches]
     .sort((a, b) => b.date - a.date || b.id - a.id)
     .map((m) => {
       const mine = m.changes.find((c) => c.uuid === uuid) ?? null;

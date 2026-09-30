@@ -1,5 +1,5 @@
 import { MILESTONES, SEGMENTS, type MilestoneKey, type RunSplits, type SegmentKey } from "./splits.js";
-import { mean, median, percentile, percentileRank, percentiles } from "./stats.js";
+import { median, percentileRank, percentiles } from "./stats.js";
 
 export const ELO_BAND_SIZE = 300;
 
@@ -131,35 +131,4 @@ export function comparePacing(
   });
 
   return { band, segments, worstSegment: worst?.key ?? null, milestoneMedians };
-}
-
-export interface WinProbBin {
-  tMax: number;
-  winRate: number;
-  n: number;
-}
-
-export function conditionalWinProbability(
-  runs: RunSplits[],
-  key: MilestoneKey,
-  bins = 5,
-): WinProbBin[] {
-  const reached = runs
-    .filter((r) => r.splits[key] !== null)
-    .map((r) => ({ t: Number(r.splits[key]), score: r.won ? 1 : r.draw ? 0.5 : 0 }));
-  if (reached.length < bins * 4) return [];
-  const ts = reached.map((r) => r.t);
-  // Quantile edges, so each bin holds about the same number of runs.
-  const edges: number[] = [];
-  for (let i = 1; i <= bins; i++) edges.push(percentile(ts, (100 * i) / bins));
-
-  return edges.map((tMax, i) => {
-    const lo = i === 0 ? -Infinity : edges[i - 1]!;
-    const inBin = reached.filter((r) => r.t > lo && r.t <= tMax);
-    return {
-      tMax,
-      winRate: inBin.length > 0 ? mean(inBin.map((r) => r.score)) : NaN,
-      n: inBin.length,
-    };
-  });
 }

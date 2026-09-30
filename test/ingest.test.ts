@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { RankedApi, MatchListParams } from "../src/api/endpoints.js";
 import { Store } from "../src/db/db.js";
-import { ingestPlayer, ingestSeason } from "../src/ingest/backfill.js";
+import { crawlMatches, fetchCorpusDetails, ingestPlayer, ingestSeason } from "../src/ingest/backfill.js";
 import type { MatchInfo, UserDetails } from "../src/shared/types.js";
-import { userA, userAMatches } from "./helpers.js";
+import { recentMatches, userA, userAMatches } from "./helpers.js";
 
 function fakeApi(opts: { user: UserDetails; pages?: MatchInfo[][]; seasons?: number[] }) {
   const calls: { method: string; params?: MatchListParams }[] = [];
@@ -215,6 +215,71 @@ describe("ingestSeason", () => {
     store.markSeasonIngested("uuid-y", 9);
     expect(store.isSeasonIngested("uuid-y", 9)).toBe(true);
     expect(store.isSeasonIngested("uuid-y", 8)).toBe(false);
+    store.close();
+  });
+});
+
+function crawlApi(pages: MatchInfo[][]) {
+  const calls: { method: string; params?: MatchListParams; id?: number }[] = [];
+  const queue = [...pages];
+  const all = pages.flat();
+  const api = {
+    async getMatches(params: MatchListParams = {}) {
+      calls.push({ method: "getMatches", params });
+      return queue.shift() ?? [];
+    },
+    async getMatch(id: number) {
+      calls.push({ method: "getMatch", id });
+      return { ...all.find((m) => m.id === id)!, timelines: [] };
+    },
+  };
+  return { api: api as unknown as RankedApi, calls };
+}
+
+describe("corpus crawl", () => {
+  const page = recentMatches();
+
+  it("stores the newest ranked pages, following the cursor until a short page", async () => {
+    const store = new Store(":memory:");
+    const older = page.slice(0, 10).map((m, i) => ({ ...m, id: page.at(-1)!.id - 1 - i }));
+    const { api, calls } = crawlApi([page, older]);
+    const r = await crawlMatches(store, api, { pages: 5 });
+    expect(calls.map((c) => c.params?.before)).toEqual([undefined, page.at(-1)!.id]);
+    expect(calls.every((c) => c.params?.type === 2 && c.params?.count === 100)).toBe(true);
+    expect(r.pagesFetched).toBe(2);
+    expect(store.matchCount()).toBe(page.length + older.length);
+    store.close();
+  });
+
+  it("stops at the page limit even when more pages exist", async () => {
+    const store = new Store(":memory:");
+    const { api, calls } = crawlApi([page, page]);
+    await crawlMatches(store, api, { pages: 1 });
+    expect(calls).toHaveLength(1);
+    store.close();
+  });
+
+  it("fetches timelines for the newest completed games it does not hold yet", async () => {
+    const store = new Store(":memory:");
+    store.upsertMatches(page);
+    const completed = page.filter((m) => !m.forfeited && m.result.uuid !== null);
+    const held = completed[0]!;
+    store.upsertDetails([{ ...held, timelines: [] }]);
+
+    const { api, calls } = crawlApi([page]);
+    expect(await fetchCorpusDetails(store, api, { budget: 5 })).toBe(5);
+
+    const ids = calls.map((c) => c.id!);
+    const byId = new Map(page.map((m) => [m.id, m]));
+    for (const id of ids) {
+      expect(byId.get(id)!.forfeited).toBe(false);
+      expect(byId.get(id)!.result.uuid).not.toBeNull();
+    }
+    expect(ids).not.toContain(held.id);
+    const oldestFetched = Math.min(...ids.map((id) => byId.get(id)!.date));
+    const skipped = completed.filter((m) => m !== held && !ids.includes(m.id));
+    expect(skipped.every((m) => m.date <= oldestFetched)).toBe(true);
+    expect(store.detailCount()).toBe(6);
     store.close();
   });
 });

@@ -1,7 +1,13 @@
 import { RankedClient } from "../api/client.js";
 import { RankedApi } from "../api/endpoints.js";
 import { Store } from "../db/db.js";
-import { fetchPlayerDetails, ingestPlayer, ingestSeason } from "../ingest/backfill.js";
+import {
+  crawlMatches,
+  fetchCorpusDetails,
+  fetchPlayerDetails,
+  ingestPlayer,
+  ingestSeason,
+} from "../ingest/backfill.js";
 import { buildGameHistory, labelRun } from "../analysis/history.js";
 import { H2H_SEASONS, headToHeadFromVersus, predictMatchup, type MatchupSide } from "../analysis/matchup.js";
 import {
@@ -20,6 +26,14 @@ const INGEST_STALE_SECONDS = 10 * 60;
 const SEASON_MAX_TRIES = 3;
 const SEASON_RETRY_BASE_MS = 30_000;
 const CORPUS_REFRESH_MS = 60_000;
+/** A few days of crawling, so the corpus spans every time of day. */
+const CORPUS_MATCHES = 5000;
+/** Delayed so a watch-mode restart doesn't crawl on every save. */
+const CRAWL_FIRST_MS = 2 * 60_000;
+const CRAWL_EVERY_MS = 30 * 60_000;
+const CRAWL_DETAILS = 25;
+/** Leaves most of the rate budget to player lookups. */
+const CRAWL_MIN_BUDGET = 300;
 
 export class AppContext {
   readonly store: Store;
@@ -38,9 +52,9 @@ export class AppContext {
     winProb: BandedWinProbModel | null;
   } | null = null;
 
-  constructor(dbPath: string, privateKey: string | null) {
+  constructor(dbPath: string) {
     this.store = new Store(dbPath);
-    this.api = new RankedApi(new RankedClient({ privateKey }));
+    this.api = new RankedApi(new RankedClient());
   }
 
   private startJob(map: Map<string, Promise<number>>, uuid: string, job: () => Promise<number>) {
@@ -73,6 +87,32 @@ export class AppContext {
     }
     // A known player is served from the store while the refresh runs behind it.
     return cached ? cached.user : pending;
+  }
+
+  /** Samples ranked play at large, so peers and models are not just the looked-up players' games. */
+  startCorpusCrawl(onError: (err: unknown) => void): () => void {
+    let running = false;
+    const tick = async () => {
+      if (running || this.api.client.budgetRemaining() < CRAWL_MIN_BUDGET) return;
+      running = true;
+      try {
+        await crawlMatches(this.store, this.api, { pages: 1 });
+        await fetchCorpusDetails(this.store, this.api, { budget: CRAWL_DETAILS });
+      } catch (err) {
+        onError(err);
+      } finally {
+        running = false;
+      }
+    };
+    let every: ReturnType<typeof setInterval> | undefined;
+    const first = setTimeout(() => {
+      void tick();
+      every = setInterval(() => void tick(), CRAWL_EVERY_MS);
+    }, CRAWL_FIRST_MS);
+    return () => {
+      clearTimeout(first);
+      clearInterval(every);
+    };
   }
 
   private refreshing(uuid: string): boolean {
@@ -147,7 +187,7 @@ export class AppContext {
     // Rebuilt at most once a minute while details are still arriving.
     const held = this.corpus;
     if (!held || (held.version !== version && Date.now() - held.builtAt >= CORPUS_REFRESH_MS)) {
-      const runs = this.store.getRuns({ limit: 2000 });
+      const runs = this.store.getRuns({ limit: CORPUS_MATCHES });
       this.corpus = {
         version,
         builtAt: Date.now(),

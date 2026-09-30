@@ -1,4 +1,3 @@
-import type { LiveMatch } from "../shared/types.js";
 import { eloBand } from "./pacing.js";
 import { MILESTONES, milestoneForEvent, type MilestoneKey, type RunSplits } from "./splits.js";
 import {
@@ -247,67 +246,4 @@ export function headToHeadWinProb(
   const pElo = a.elo !== null && b.elo !== null ? eloExpectedScore(a.elo, b.elo) : 0.5;
   const pA = logistic(logit(pElo) + timingEvidence(z));
   return { pA: Math.min(0.99, Math.max(0.01, pA)), projA, projB };
-}
-
-export interface LiveWinProbEntry {
-  currentTimeMs: number;
-  players: {
-    uuid: string;
-    nickname: string;
-    elo: number | null;
-    liveUrl: string | null;
-    lastEventType: string | null;
-    lastEventTimeMs: number | null;
-    milestone: MilestoneKey | null;
-    projectedFinishMs: number;
-    winProb: number;
-  }[];
-}
-
-export function scoreLiveMatch(banded: BandedWinProbModel, match: LiveMatch): LiveWinProbEntry {
-  const states = match.players.map((p) => ({
-    profile: p,
-    liveUrl: match.data[p.uuid]?.liveUrl ?? null,
-    elo: p.eloRate,
-    model: modelForElo(banded, p.eloRate).model,
-    state: {
-      lastEventType: match.data[p.uuid]?.timeline?.type ?? null,
-      lastEventTime:
-        match.data[p.uuid]?.timeline?.time !== undefined
-          ? Number(match.data[p.uuid]!.timeline!.time)
-          : null,
-    } satisfies LiveRunState,
-  }));
-
-  const mk = (s: (typeof states)[0], proj: FinishProjection, p: number) => ({
-    uuid: s.profile.uuid,
-    nickname: s.profile.nickname,
-    elo: s.profile.eloRate,
-    liveUrl: s.liveUrl,
-    lastEventType: s.state.lastEventType,
-    lastEventTimeMs: s.state.lastEventTime,
-    milestone: proj.milestone,
-    projectedFinishMs: Math.round(proj.meanMs),
-    winProb: p,
-  });
-
-  if (states.length === 2) {
-    const [sa, sb] = states as [(typeof states)[0], (typeof states)[0]];
-    const { pA, projA, projB } = headToHeadWinProb(sa, sb, Number(match.currentTime));
-    return {
-      currentTimeMs: Number(match.currentTime),
-      players: [mk(sa, projA, pA), mk(sb, projB, 1 - pA)],
-    };
-  }
-
-  return {
-    currentTimeMs: Number(match.currentTime),
-    players: states.map((s) =>
-      mk(
-        s,
-        projectFinish(s.model, s.state, Number(match.currentTime)),
-        1 / Math.max(states.length, 1),
-      ),
-    ),
-  };
 }

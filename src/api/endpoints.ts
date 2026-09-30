@@ -3,12 +3,10 @@ import type {
   Leaderboard,
   MatchInfo,
   MatchType,
-  PhaseLeaderboard,
   PublicLiveData,
   RecordLeaderboardEntry,
   StatusHeartbeatResponse,
   UserDetails,
-  UserLiveData,
   UserSeasonSummary,
   VersusStats,
   WeeklyRace,
@@ -55,18 +53,8 @@ export class RankedApi {
     return this.client.get(`/users/${enc(identifier)}/seasons`, { ttlMs: 10 * MINUTE });
   }
 
-  getUserLive(identifier: string): Promise<UserLiveData> {
-    return this.client.get(`/users/${enc(identifier)}/live`, { ttlMs: 0, withKey: true });
-  }
-
   getVersus(id1: string, id2: string, season?: number): Promise<VersusStats> {
     return this.client.get(`/users/${enc(id1)}/versus/${enc(id2)}${qs({ season })}`, {
-      ttlMs: MINUTE,
-    });
-  }
-
-  getVersusMatches(id1: string, id2: string, params: MatchListParams = {}): Promise<MatchInfo[]> {
-    return this.client.get(`/users/${enc(id1)}/versus/${enc(id2)}/matches${qs({ ...params })}`, {
       ttlMs: MINUTE,
     });
   }
@@ -86,12 +74,6 @@ export class RankedApi {
 
   getLeaderboard(season?: number, country?: string): Promise<Leaderboard> {
     return this.client.get(`/leaderboard${qs({ season, country })}`, { ttlMs: MINUTE });
-  }
-
-  getPhaseLeaderboard(season?: number, country?: string, predicted?: boolean): Promise<PhaseLeaderboard> {
-    return this.client.get(`/phase-leaderboard${qs({ season, country, predicted })}`, {
-      ttlMs: MINUTE,
-    });
   }
 
   /** Season zero means the current season; omitting it covers all time. */

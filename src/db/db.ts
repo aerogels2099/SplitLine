@@ -210,10 +210,6 @@ export class Store {
     this.upsertDetails([detail]);
   }
 
-  hasDetail(matchId: number): boolean {
-    return this.stmt(`SELECT 1 FROM match_details WHERE id = ?`).get(matchId) !== undefined;
-  }
-
   /** Detail fields go on last, so rows written before the split still load. */
   private mergeDetail(row: { list: string | null; adv: string }): MatchInfo {
     const list = row.list ? (JSON.parse(row.list) as MatchInfo) : ({} as MatchInfo);
@@ -338,17 +334,6 @@ export class Store {
     }
     const rows = this.stmt(sql).all(...args) as { data: string }[];
     return rows.map((r) => JSON.parse(r.data) as MatchInfo);
-  }
-
-  /** Scoped by type: a cursor from another type would skip unfetched matches. */
-  oldestMatchId(type?: number): number | null {
-    const row =
-      type === undefined
-        ? (this.stmt(`SELECT MIN(id) AS id FROM matches`).get() as { id: number | null })
-        : (this.stmt(`SELECT MIN(id) AS id FROM matches WHERE type = ?`).get(type) as {
-            id: number | null;
-          });
-    return row.id;
   }
 
   upsertPlayer(user: UserDetails) {

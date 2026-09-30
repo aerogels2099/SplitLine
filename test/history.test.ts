@@ -1,22 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildGameHistory, labelRun, seasonsPlayed } from "../src/analysis/history.js";
+import { buildGameHistory, labelRun } from "../src/analysis/history.js";
 import { extractRunSplits, MILESTONES, SEGMENTS } from "../src/analysis/splits.js";
 import { matchDetails, userA, userAMatches } from "./helpers.js";
 
 const uuid = userA().uuid;
 const ranked = userAMatches().filter((m) => m.type === 2);
-
-describe("seasonsPlayed", () => {
-  it("lists each season once, newest first", () => {
-    const seasons = seasonsPlayed(ranked);
-    expect(seasons).toEqual([...new Set(ranked.map((m) => m.season))].sort((a, b) => b - a));
-    expect(new Set(seasons).size).toBe(seasons.length);
-  });
-
-  it("is empty for a player with no matches", () => {
-    expect(seasonsPlayed([])).toEqual([]);
-  });
-});
 
 describe("buildGameHistory", () => {
   const games = buildGameHistory(ranked, uuid);
@@ -66,13 +54,6 @@ describe("buildGameHistory", () => {
       expect(m.players.some((p) => p.uuid === g.opponent!.uuid)).toBe(true);
       expect(g.opponent!.uuid).not.toBe(uuid);
     }
-  });
-
-  it("restricts to one season when asked", () => {
-    const season = seasonsPlayed(ranked)[0]!;
-    const only = buildGameHistory(ranked, uuid, season);
-    expect(only.every((g) => g.season === season)).toBe(true);
-    expect(only.length).toBe(ranked.filter((m) => m.season === season).length);
   });
 });
 

@@ -35,8 +35,7 @@ describe("sqlite store", () => {
     const details = matchDetails();
     for (const d of details) store.upsertDetail(d);
     expect(store.detailCount()).toBe(details.length);
-    expect(store.hasDetail(details[0]!.id)).toBe(true);
-    expect(store.hasDetail(-1)).toBe(false);
+    expect(store.getDetail(-1)).toBeNull();
     const roundTrip = store.getDetail(details[0]!.id)!;
     expect(roundTrip.timelines?.length).toBe(details[0]!.timelines?.length);
     const uuid = userA().uuid;

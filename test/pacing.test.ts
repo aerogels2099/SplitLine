@@ -3,7 +3,6 @@ import {
   buildBandedDistributions,
   buildSplitDistributions,
   comparePacing,
-  conditionalWinProbability,
   eloBand,
 } from "../src/analysis/pacing.js";
 import { extractAllRuns } from "../src/analysis/splits.js";
@@ -52,16 +51,6 @@ describe("pacing analysis", () => {
       if (s.playerMedian !== null && s.peerMedian !== null) {
         expect(s.deltaMs).toBeCloseTo(s.playerMedian - s.peerMedian, 6);
       }
-    }
-  });
-
-  it("computes conditional win probability bins when data suffices", () => {
-    const bins = conditionalWinProbability(runs, "nether_enter", 2);
-    // Small fixture corpus: either empty (not enough) or valid bins.
-    for (const b of bins) {
-      expect(b.n).toBeGreaterThan(0);
-      expect(b.winRate).toBeGreaterThanOrEqual(0);
-      expect(b.winRate).toBeLessThanOrEqual(1);
     }
   });
 });

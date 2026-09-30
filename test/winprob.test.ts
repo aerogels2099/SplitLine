@@ -10,15 +10,15 @@ import {
   type LiveRunState,
   type WinProbModel,
   projectFinish,
-  scoreLiveMatch,
 } from "../src/analysis/winprob.js";
-import { eloExpectedScore, logistic, mean } from "../src/analysis/stats.js";
-import { liveData, matchDetails } from "./helpers.js";
+import { eloExpectedScore, logistic } from "../src/analysis/stats.js";
+import { matchDetails } from "./helpers.js";
+
+const average = (xs: number[]) => xs.reduce((s, x) => s + x, 0) / xs.length;
 
 describe("win probability model", () => {
   const runs = extractAllRuns(matchDetails());
   const model = buildWinProbModel(runs);
-  const banded = buildBandedWinProbModels(runs);
 
   it("learns remaining-time stats from historical timelines", () => {
     expect(model.overall.n).toBeGreaterThan(0);
@@ -68,19 +68,6 @@ describe("win probability model", () => {
       30_000,
     );
     expect(even.pA).toBeCloseTo(0.5, 6);
-  });
-
-  it("scores real live matches with probabilities summing to 1", () => {
-    for (const lm of liveData().liveMatches) {
-      const scored = scoreLiveMatch(banded, lm);
-      const sum = scored.players.reduce((s, p) => s + p.winProb, 0);
-      expect(sum).toBeCloseTo(1, 5);
-      for (const p of scored.players) {
-        expect(p.winProb).toBeGreaterThan(0);
-        expect(p.winProb).toBeLessThan(1);
-        expect(p.projectedFinishMs).toBeGreaterThan(0);
-      }
-    }
   });
 });
 
@@ -314,7 +301,7 @@ describe("a pace-neutral run reads as the elo prior", () => {
 
   it("returns the prior exactly when nothing is censored", () => {
     const model = buildWinProbModel(evenCorpus);
-    const typical = mean(evenCorpus.map((r) => Number(r.splits.nether_enter)));
+    const typical = average(evenCorpus.map((r) => Number(r.splits.nether_enter)));
 
     expect(neutral(model, typical, 1850, 1850)).toBeCloseTo(0.5, 8);
     expect(neutral(model, typical, 2000, 1500)).toBeCloseTo(eloExpectedScore(2000, 1500), 8);
@@ -322,7 +309,7 @@ describe("a pace-neutral run reads as the elo prior", () => {
 
   it("still credits a split faster or slower than that reference", () => {
     const model = buildWinProbModel(evenCorpus);
-    const typical = mean(evenCorpus.map((r) => Number(r.splits.nether_enter)));
+    const typical = average(evenCorpus.map((r) => Number(r.splits.nether_enter)));
     expect(neutral(model, typical - 30_000, 1850, 1850)).toBeGreaterThan(0.5);
     expect(neutral(model, typical + 30_000, 1850, 1850)).toBeLessThan(0.5);
   });
@@ -342,7 +329,7 @@ describe("a pace-neutral run reads as the elo prior", () => {
       );
       if (reached.length < 2) continue;
 
-      const typical = mean(reached.map((r) => Number(r.splits.nether_enter)));
+      const typical = average(reached.map((r) => Number(r.splits.nether_enter)));
       const elo = Number(band.split("–")[0]) + 100;
       expect(neutral(model, typical, elo, elo)).toBeCloseTo(0.5, 1);
       checked++;

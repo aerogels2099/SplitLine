@@ -1,10 +1,3 @@
-export function mean(xs: number[]): number {
-  if (xs.length === 0) return NaN;
-  let s = 0;
-  for (const x of xs) s += x;
-  return s / xs.length;
-}
-
 function pick(sorted: number[], p: number): number {
   const idx = (p / 100) * (sorted.length - 1);
   const lo = Math.floor(idx);
@@ -32,14 +25,6 @@ export function percentileRank(xs: number[], x: number): number {
   let below = 0;
   for (const v of xs) if (v <= x) below++;
   return below / xs.length;
-}
-
-export function stddev(xs: number[]): number {
-  if (xs.length < 2) return 0;
-  const m = mean(xs);
-  let s = 0;
-  for (const x of xs) s += (x - m) ** 2;
-  return Math.sqrt(s / (xs.length - 1));
 }
 
 /** Abramowitz & Stegun 7.1.26 */

@@ -1,4 +1,4 @@
-// Fetches real API responses into the test fixtures directory, about 25 requests.
+// Fetches real API responses into the test fixtures directory, about 20 requests.
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -32,12 +32,8 @@ console.log(`players: ${a} vs ${b}`);
 
 const userA = await get(`/users/${encodeURIComponent(a)}`);
 await save("user-a.json", userA);
-await save("user-a-seasons.json", await get(`/users/${encodeURIComponent(a)}/seasons`));
 const matchesA = await get(`/users/${encodeURIComponent(a)}/matches?count=100&excludedecay=false`);
 await save("user-a-matches.json", matchesA);
-const lastId = matchesA.data[matchesA.data.length - 1].id;
-const matchesA2 = await get(`/users/${encodeURIComponent(a)}/matches?count=100&before=${lastId}`);
-await save("user-a-matches-p2.json", matchesA2);
 
 await save("user-b.json", await get(`/users/${encodeURIComponent(b)}`));
 await save("user-b-matches.json", await get(`/users/${encodeURIComponent(b)}/matches?count=100`));
@@ -57,8 +53,5 @@ for (const id of detailIds) {
 await save("match-details.json", { status: "success", data: details });
 
 await save("recent-matches.json", await get("/matches?count=100&type=2"));
-await save("weekly-race.json", await get("/weekly-race"));
-await save("live.json", await get("/live"));
-await save("record-leaderboard.json", await get("/record-leaderboard?season=0&distinct=true"));
 
 console.log("done");

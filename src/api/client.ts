@@ -37,7 +37,6 @@ interface CacheEntry {
 
 export interface ClientOptions {
   baseUrl?: string;
-  privateKey?: string | null;
   fetchImpl?: typeof fetch;
   sleepImpl?: (ms: number) => Promise<void>;
 }
@@ -53,7 +52,6 @@ async function discard(res: Response): Promise<void> {
 
 export class RankedClient {
   private readonly baseUrl: string;
-  private readonly privateKey: string | null;
   private readonly fetchImpl: typeof fetch;
   private readonly sleep: (ms: number) => Promise<void>;
 
@@ -65,7 +63,6 @@ export class RankedClient {
 
   constructor(opts: ClientOptions = {}) {
     this.baseUrl = opts.baseUrl ?? PRIMARY_BASE;
-    this.privateKey = opts.privateKey ?? null;
     this.fetchImpl = opts.fetchImpl ?? fetch;
     this.sleep = opts.sleepImpl ?? realSleep;
   }
@@ -116,7 +113,7 @@ export class RankedClient {
 
   async get<T>(
     path: string,
-    opts: { ttlMs?: number; baseUrl?: string; withKey?: boolean } = {},
+    opts: { ttlMs?: number; baseUrl?: string } = {},
   ): Promise<T> {
     const base = opts.baseUrl ?? this.baseUrl;
     const url = base + path;
@@ -130,7 +127,7 @@ export class RankedClient {
     return this.coalesce(url, ttl, async () => {
       await this.acquireSlot();
       try {
-        return await this.request<T>(url, path, opts.withKey === true);
+        return await this.request<T>(url, path);
       } finally {
         this.releaseSlot();
       }
@@ -234,16 +231,10 @@ export class RankedClient {
       : new ApiError("request failed after retries", 0, path);
   }
 
-  private async request<T>(url: string, path: string, withKey: boolean): Promise<T> {
+  private async request<T>(url: string, path: string): Promise<T> {
     const headers: Record<string, string> = {
       "User-Agent": "SplitLine/0.1 (analytics; contact via MCSR Ranked Discord)",
     };
-    if (withKey) {
-      if (!this.privateKey) {
-        throw new ApiError("endpoint requires MCSR_PRIVATE_KEY", 401, path);
-      }
-      headers["Private-Key"] = this.privateKey;
-    }
 
     let lastError: unknown = null;
     let backoffMs = 0;
