@@ -41,8 +41,7 @@ export async function ingestPlayer(
     const user = await api.getUser(identifier);
     store.upsertPlayer(user);
 
-    // The profile's last-ranked timestamp is exactly the newest ranked match's
-    // date, verified against live responses, so nothing newer means nothing to fetch.
+    // lastRanked equals the newest ranked game's date, so nothing newer means nothing to fetch.
     if (user.timestamp.lastRanked <= newest.date) {
       return {
         user,
@@ -103,10 +102,7 @@ export async function ingestPlayer(
   };
 }
 
-/**
- * Uncapped, or a heavy season would be cut short. `before` must follow a page stored
- * in full: resuming below a slice the corpus crawl left would skip everything above it.
- */
+/** `before` must follow a fully stored page; resuming below a crawled slice skips the games above it. */
 export async function ingestSeason(
   store: Store,
   api: RankedApi,

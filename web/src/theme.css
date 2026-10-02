@@ -1,5 +1,4 @@
-/* Latin subsets only; the font package ships no per-subset entry point.
-   The weight range is load-bearing: a single value clamps the variable axis. */
+/* Latin only, as the package has no per-subset entry; a weight range, since one value clamps the axis. */
 @font-face {
   font-family: "Inter Variable";
   font-style: normal;
@@ -97,9 +96,9 @@
   --topbar-h: 72px;
   --content-gap: 14px;
 
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* entering / exiting */
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* moving on screen */
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); /* iOS-like drawer curve */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 * {
@@ -352,8 +351,7 @@ button:hover,
   border-color: var(--gold-dim);
   color: var(--gold-hot);
 }
-/* the offset and its shadow share a duration, so the shadow cannot snap
-   while the button is still travelling */
+/* the offset and its shadow share a duration, so the shadow can't snap mid-travel */
 button:active {
   transform: translate(2px, 2px);
   box-shadow: var(--bevel), 1px 1px 0 rgba(0, 0, 0, 0.45);

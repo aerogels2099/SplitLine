@@ -224,14 +224,15 @@ export function paceGap(
   return { z: (paceB - paceA) / Math.sqrt(projA.sdMs ** 2 + projB.sdMs ** 2), projA, projB };
 }
 
-export function timingEvidence(z: number): number {
-  return Math.min(EVIDENCE_CAP, Math.max(-EVIDENCE_CAP, logit(normalCdf(z))));
+export function timingEvidence(z: number, cap = EVIDENCE_CAP): number {
+  return Math.min(cap, Math.max(-cap, logit(normalCdf(z))));
 }
 
 export function headToHeadWinProb(
   a: RunSide,
   b: RunSide,
   elapsedMs: number,
+  cap = EVIDENCE_CAP,
 ): { pA: number; projA: FinishProjection; projB: FinishProjection } {
   const { z, projA, projB } = paceGap(a, b, elapsedMs);
 
@@ -244,6 +245,6 @@ export function headToHeadWinProb(
   }
 
   const pElo = a.elo !== null && b.elo !== null ? eloExpectedScore(a.elo, b.elo) : 0.5;
-  const pA = logistic(logit(pElo) + timingEvidence(z));
+  const pA = logistic(logit(pElo) + timingEvidence(z, cap));
   return { pA: Math.min(0.99, Math.max(0.01, pA)), projA, projB };
 }

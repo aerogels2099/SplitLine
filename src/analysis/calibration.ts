@@ -7,6 +7,7 @@ import {
   type MatchupSide,
   type ScenarioKey,
 } from "./matchup.js";
+import { eloBand } from "./pacing.js";
 import { extractRunSplits, milestoneForEvent, MILESTONES, RESET_EVENT } from "./splits.js";
 import { eloExpectedScore } from "./stats.js";
 import {
@@ -212,6 +213,7 @@ export function replayState(detail: MatchInfo, uuid: string, at: number): LiveRu
 
 export interface InRunObservation {
   matchId: number;
+  band: string;
   elapsedMs: number;
   model: Prediction;
   elo: Prediction;
@@ -221,6 +223,7 @@ export function inRunPredictions(
   banded: BandedWinProbModel,
   details: MatchInfo[],
   stepMs = 60_000,
+  capFor?: (band: string) => number,
 ): InRunObservation[] {
   const out: InRunObservation[] = [];
   for (const d of details) {
@@ -229,13 +232,15 @@ export function inRunPredictions(
     const modelA = modelForElo(banded, r.a.elo).model;
     const modelB = modelForElo(banded, r.b.elo).model;
     const elo = { p: eloExpectedScore(r.a.elo, r.b.elo), outcome: r.outcome };
+    const band = pairBand(r.a.elo, r.b.elo);
     for (let t = stepMs; t < Number(d.result.time); t += stepMs) {
       const { pA } = headToHeadWinProb(
         { model: modelA, state: replayState(d, r.a.uuid, t), elo: r.a.elo },
         { model: modelB, state: replayState(d, r.b.uuid, t), elo: r.b.elo },
         t,
+        capFor?.(band),
       );
-      out.push({ matchId: d.id, elapsedMs: t, model: { p: pA, outcome: r.outcome }, elo });
+      out.push({ matchId: d.id, band, elapsedMs: t, model: { p: pA, outcome: r.outcome }, elo });
     }
   }
   return out;
@@ -270,10 +275,11 @@ export interface ScenarioCase {
   a: MatchupSide;
   b: MatchupSide;
   timeMs: number;
-  /** Elo alone: the weight on the split is what is being measured, not the head-to-head. */
+  /** Elo alone, so the fit measures the split's weight, not the head-to-head. */
   prior: number;
   outcome: number;
   matchId: number;
+  band: string;
 }
 
 /** The opponent is unseen, as a split scenario poses it. */
@@ -309,6 +315,7 @@ export function scenarioCases(banded: BandedWinProbModel, details: MatchInfo[]):
           prior: eloExpectedScore(x.elo, y.elo),
           outcome,
           matchId: d.id,
+          band: pairBand(x.elo, y.elo),
         });
       }
     }
@@ -345,4 +352,133 @@ export function fitScenarioWeights(
     out[key] = best;
   }
   return out;
+}
+
+/** Matchmaking pairs similar ratings, so their mean places a game in one band. */
+export function pairBand(eloA: number, eloB: number): string {
+  return eloBand(Math.round((eloA + eloB) / 2));
+}
+
+export interface BandedCall extends Prediction {
+  band: string;
+  matchId: number;
+}
+
+export type TailVerdict = "insufficient" | "ok" | "uncertain" | "overconfident" | "underconfident";
+
+export interface BandTail {
+  band: string;
+  matches: number;
+  predicted: number;
+  observed: number;
+  /** 95% interval on observed less predicted, resampling whole matches. */
+  low: number;
+  high: number;
+  verdict: TailVerdict;
+}
+
+/** Deterministic, so the same data always gets the same verdict. */
+function seededRandom(seed: number): () => number {
+  let t = seed >>> 0;
+  return () => {
+    t = (t + 0x6d2b79f5) >>> 0;
+    let x = Math.imul(t ^ (t >>> 15), 1 | t);
+    x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x;
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** A band fails only when it is over 5 points off and its 95% interval excludes zero. */
+export function tailsByBand(
+  calls: BandedCall[],
+  from = 0.8,
+  minMatches = 30,
+  resamples = 1000,
+): BandTail[] {
+  const bands = new Map<string, Map<number, { p: number; o: number; n: number }>>();
+  for (const c of calls) {
+    const f = favouriteSide(c);
+    if (f.p < from) continue;
+    const matches = bands.get(c.band) ?? new Map<number, { p: number; o: number; n: number }>();
+    const m = matches.get(c.matchId) ?? { p: 0, o: 0, n: 0 };
+    m.p += f.p;
+    m.o += f.outcome;
+    m.n++;
+    matches.set(c.matchId, m);
+    bands.set(c.band, matches);
+  }
+  const random = seededRandom(1);
+  return [...bands]
+    .map(([band, byMatch]): BandTail => {
+      const ms = [...byMatch.values()];
+      const sum = (xs: typeof ms) => xs.reduce((a, m) => ({ p: a.p + m.p, o: a.o + m.o, n: a.n + m.n }), { p: 0, o: 0, n: 0 });
+      const all = sum(ms);
+      const gaps: number[] = [];
+      for (let r = 0; r < resamples; r++) {
+        const pick = Array.from({ length: ms.length }, () => ms[Math.floor(random() * ms.length)]!);
+        const s = sum(pick);
+        gaps.push((s.o - s.p) / s.n);
+      }
+      gaps.sort((x, y) => x - y);
+      const gap = (all.o - all.p) / all.n;
+      const low = gaps[Math.floor(0.025 * (resamples - 1))]!;
+      const high = gaps[Math.ceil(0.975 * (resamples - 1))]!;
+      const verdict: TailVerdict =
+        ms.length < minMatches
+          ? "insufficient"
+          : Math.abs(gap) <= 0.05
+            ? "ok"
+            : low <= 0 && high >= 0
+              ? "uncertain"
+              : gap < 0
+                ? "overconfident"
+                : "underconfident";
+      return { band, matches: ms.length, predicted: all.p / all.n, observed: all.o / all.n, low, high, verdict };
+    })
+    .sort((x, y) => parseInt(x.band) - parseInt(y.band));
+}
+
+export function pullTowardGlobal(fitted: number, matches: number, global: number, pull: number): number {
+  return (matches * fitted + pull * global) / (matches + pull);
+}
+
+export interface BandCap {
+  band: string;
+  /** Matches with a call at 80%+, the same count the tail gates use. */
+  matches: number;
+  fitted: number;
+  cap: number;
+}
+
+export function fitBandCaps(
+  banded: BandedWinProbModel,
+  details: MatchInfo[],
+  candidates: number[],
+  global = 2.5,
+  pull = 30,
+): BandCap[] {
+  const base = inRunPredictions(banded, details);
+  const confident = new Map<string, Set<number>>();
+  for (const o of base) {
+    if (favouriteSide(o.model).p < 0.8) continue;
+    const ids = confident.get(o.band) ?? new Set<number>();
+    ids.add(o.matchId);
+    confident.set(o.band, ids);
+  }
+  const scored = candidates.map((c) => ({ cap: c, obs: inRunPredictions(banded, details, 60_000, () => c) }));
+  return [...new Set(base.map((o) => o.band))]
+    .map((band) => {
+      let fitted = global;
+      let best = Infinity;
+      for (const { cap, obs } of scored) {
+        const loss = logLoss(obs.filter((o) => o.band === band).map((o) => o.model));
+        if (loss < best) {
+          best = loss;
+          fitted = cap;
+        }
+      }
+      const matches = confident.get(band)?.size ?? 0;
+      return { band, matches, fitted, cap: pullTowardGlobal(fitted, matches, global, pull) };
+    })
+    .sort((x, y) => parseInt(x.band) - parseInt(y.band));
 }

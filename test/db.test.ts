@@ -164,8 +164,7 @@ describe("sqlite store", () => {
     const mine = details.filter((d) => d.players.some((p) => p.uuid === uuid));
     expect(store.getDetails({ uuid })).toHaveLength(mine.length);
 
-    // A global window ordered by date can leave out a player's own matches,
-    // which is why the analysis must not sift them out of the corpus.
+    // A date-ordered global window can miss a player's own games, so analysis must not sift them from it.
     const oldest = [...details].sort((a, b) => a.date - b.date)[0]!;
     const newestFirst = store.getDetails({ limit: 1 });
     expect(newestFirst).toHaveLength(1);
@@ -200,8 +199,7 @@ describe("sqlite store", () => {
       expect(expected.length).toBeGreaterThan(0);
       store.close();
 
-      // Runs are a cache of extractRunSplits output, so rows written by an
-      // older extractor have to be thrown away when the version moves.
+      // Runs cache extractRunSplits output, so a version bump must discard the old extractor's rows.
       const raw = new DatabaseSync(file);
       raw.exec(`UPDATE runs SET data = '{"stale":true}'`);
       raw.exec("PRAGMA user_version = 3");

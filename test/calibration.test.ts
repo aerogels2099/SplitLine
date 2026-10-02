@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   eloPredictions,
   favouriteSide,
+  fitBandCaps,
   fitScenarioWeights,
   fitEloDivisor,
   inRunPredictions,
+  pairBand,
+  pullTowardGlobal,
   inRunReliability,
   logLoss,
   pregamePredictions,
@@ -14,6 +17,7 @@ import {
   replayState,
   scenarioCases,
   scenarioPredictions,
+  tailsByBand,
   score,
   temporalCutoff,
 } from "../src/analysis/calibration.js";
@@ -276,6 +280,13 @@ describe("in-run backtest", () => {
   const byId = new Map(details.map((d) => [d.id, d]));
   const obs = inRunPredictions(buildBandedWinProbModels(extractAllRuns(details)), details);
 
+  it("files each checkpoint under its pair's band", () => {
+    for (const o of obs) {
+      const r = ratedPair(byId.get(o.matchId)!)!;
+      expect(o.band).toBe(pairBand(r.a.elo, r.b.elo));
+    }
+  });
+
   it("samples every minute while the match is still undecided", () => {
     expect(obs.length).toBeGreaterThan(0);
     for (const o of obs) {
@@ -344,11 +355,115 @@ describe("split scenario backtest", () => {
   });
 
   it("recovers the weights that generated the outcomes", () => {
-    // Labels set to the scenario itself at 0.5 make 0.5 the unique minimum for every milestone.
+    // Labels from the scenario itself at 0.5 make 0.5 the unique minimum.
     const truth = { nether_enter: 0.5, bastion: 0.5, fortress: 0.5, first_portal: 0.5, stronghold: 0.5, end_enter: 0.5 };
     const soft = cases.map((c) => ({ ...c, outcome: scenarioPredictions([c], truth)[0]!.p }));
     const fitted = fitScenarioWeights(soft, Array.from({ length: 31 }, (_, i) => i / 20));
     expect(Object.keys(fitted).length).toBeGreaterThan(0);
     for (const w of Object.values(fitted)) expect(w).toBe(0.5);
+  });
+});
+
+describe("tails by band", () => {
+  const call = (band: string, matchId: number, p: number, outcome: number) => ({ band, matchId, p, outcome });
+
+  it("places a game by the pair's average rating", () => {
+    expect(pairBand(850, 950)).toBe("900–1199");
+    expect(pairBand(1180, 1220)).toBe("1200–1499");
+  });
+
+  it("keeps opposite errors in different bands from cancelling", () => {
+    const low = Array.from({ length: 10 }, (_, i) => call("600–899", i, 0.9, i < 7 ? 1 : 0));
+    const high = Array.from({ length: 10 }, (_, i) => call("1800–2099", 100 + i, 0.8, 1));
+    const calls = [...low, ...high];
+    // Pooled, 85% predicted against 85% won looks perfect; each band is 20 points off.
+    expect(calls.reduce((s, c) => s + c.p, 0) / calls.length).toBeCloseTo(0.85, 10);
+    expect(calls.reduce((s, c) => s + c.outcome, 0) / calls.length).toBeCloseTo(0.85, 10);
+    const [l, h] = tailsByBand(calls, 0.8, 5);
+    expect(l).toMatchObject({ band: "600–899", matches: 10 });
+    expect(l!.verdict).not.toBe("insufficient");
+    expect(l!.predicted).toBeCloseTo(0.9, 10);
+    expect(l!.observed).toBeCloseTo(0.7, 10);
+    expect(h).toMatchObject({ band: "1800–2099", matches: 10 });
+    expect(h!.predicted).toBeCloseTo(0.8, 10);
+    expect(h!.observed).toBe(1);
+  });
+
+  it("reads each call from the favourite's side and skips the unconfident", () => {
+    const [b] = tailsByBand([call("900–1199", 1, 0.15, 0), call("900–1199", 2, 0.6, 1)], 0.8, 1);
+    expect(b).toMatchObject({ matches: 1, observed: 1 });
+    expect(b!.predicted).toBeCloseTo(0.85, 10);
+  });
+
+  it("needs enough matches, not checkpoints, to pass or fail", () => {
+    const repeated = Array.from({ length: 40 }, (_, i) => call("600–899", i % 3, 0.9, 1));
+    expect(tailsByBand(repeated, 0.8, 30)[0]).toMatchObject({ matches: 3, verdict: "insufficient" });
+    const distinct = Array.from({ length: 30 }, (_, i) => call("600–899", i, 0.9, 1));
+    expect(tailsByBand(distinct, 0.8, 30)[0]!.verdict).not.toBe("insufficient");
+  });
+
+  it("lists bands from lowest to highest", () => {
+    const calls = [call("2100–2399", 1, 0.9, 1), call("300–599", 2, 0.9, 1), call("900–1199", 3, 0.9, 1)];
+    expect(tailsByBand(calls, 0.8, 1).map((t) => t.band)).toEqual(["300–599", "900–1199", "2100–2399"]);
+  });
+});
+
+describe("tail verdicts", () => {
+  const band = (n: number, p: number, won: number) =>
+    Array.from({ length: n }, (_, i) => ({ band: "900–1199", matchId: i, p, outcome: i < won ? 1 : 0 }));
+
+  it("fails a band only when its miss is clear of the noise", () => {
+    // 30 points off over 100 matches is beyond doubt; 7 points off over 30 is not.
+    expect(tailsByBand(band(100, 0.9, 60))[0]!.verdict).toBe("overconfident");
+    expect(tailsByBand(band(30, 0.9, 25))[0]!.verdict).toBe("uncertain");
+    expect(tailsByBand(band(100, 0.8, 100))[0]!.verdict).toBe("underconfident");
+  });
+
+  it("passes a band within five points whatever its interval", () => {
+    expect(tailsByBand(band(40, 0.9, 35))[0]!.verdict).toBe("ok");
+  });
+
+  it("brackets the observed miss and repeats exactly on the same data", () => {
+    const calls = band(60, 0.9, 45);
+    const [t] = tailsByBand(calls);
+    const gap = t!.observed - t!.predicted;
+    expect(t!.low).toBeLessThanOrEqual(gap);
+    expect(t!.high).toBeGreaterThanOrEqual(gap);
+    expect(tailsByBand(calls)).toEqual(tailsByBand(calls));
+  });
+});
+
+describe("per-band cap fit", () => {
+  it("pulls a band's fit toward the global cap by how little data it has", () => {
+    expect(pullTowardGlobal(1, 0, 2.5, 30)).toBe(2.5);
+    // At the pull's own size, the band's fit and the global cap count equally.
+    expect(pullTowardGlobal(1, 30, 2.5, 30)).toBe(1.75);
+    expect(pullTowardGlobal(1, 3000, 2.5, 30)).toBeCloseTo(1, 1);
+  });
+
+  it("fits each band from the candidates and lands between its fit and the global", () => {
+    const details = matchDetails();
+    const candidates = [0.5, 1, 2.5, 4];
+    const caps = fitBandCaps(buildBandedWinProbModels(extractAllRuns(details)), details, candidates);
+    expect(caps.length).toBeGreaterThan(0);
+    for (const c of caps) {
+      expect(candidates).toContain(c.fitted);
+      expect(c.cap).toBeGreaterThanOrEqual(Math.min(c.fitted, 2.5) - 1e-12);
+      expect(c.cap).toBeLessThanOrEqual(Math.max(c.fitted, 2.5) + 1e-12);
+    }
+    const stubborn = fitBandCaps(buildBandedWinProbModels(extractAllRuns(details)), details, candidates, 2.5, 1e9);
+    for (const c of stubborn) expect(c.cap).toBeCloseTo(2.5, 6);
+  });
+
+  it("picks the candidate that scores best within each band", () => {
+    const details = matchDetails();
+    const banded = buildBandedWinProbModels(extractAllRuns(details));
+    const candidates = [0.5, 1, 2.5, 4];
+    const lossAt = (cap: number, band: string) =>
+      logLoss(inRunPredictions(banded, details, 60_000, () => cap).filter((o) => o.band === band).map((o) => o.model));
+    for (const c of fitBandCaps(banded, details, candidates)) {
+      const best = Math.min(...candidates.map((cap) => lossAt(cap, c.band)));
+      expect(lossAt(c.fitted, c.band)).toBe(best);
+    }
   });
 });

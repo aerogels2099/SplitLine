@@ -89,7 +89,7 @@ export class AppContext {
     return cached ? cached.user : pending;
   }
 
-  /** Samples ranked play at large, so peers and models are not just the looked-up players' games. */
+  /** So peers and models reflect ranked play at large, not just looked-up players. */
   startCorpusCrawl(onError: (err: unknown) => void): () => void {
     let running = false;
     const tick = async () => {

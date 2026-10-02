@@ -55,8 +55,7 @@ export default function Analysis() {
   const withBoth = cmp.segments.filter((s) => s.deltaMs !== null);
   const worst = cmp.segments.find((s) => s.key === cmp.worstSegment);
   const highlight = run?.bastion ?? null;
-  // The server drops runs with no timeline, so the player's is not always
-  // first; picking it out by identity avoids captioning an opponent's run.
+  // Runs without a timeline are dropped, so the player's isn't always first; find it by uuid.
   const myRun = run?.runs.find((r) => r.uuid === data.user.uuid) ?? null;
 
   return (

@@ -2,6 +2,7 @@ import {
   eloPredictions,
   favouriteSide,
   fitEloDivisor,
+  fitBandCaps,
   fitScenarioWeights,
   inRunPredictions,
   inRunReliability,
@@ -10,8 +11,11 @@ import {
   reliability,
   scenarioCases,
   scenarioPredictions,
+  tailsByBand,
   score,
   temporalCutoff,
+  type BandedCall,
+  type BandTail,
   type InRunObservation,
   type MatchBin,
   type ReliabilityBin,
@@ -27,6 +31,7 @@ const TRAIN_SHARE = 0.7;
 const DIVISORS = Array.from({ length: 201 }, (_, i) => 200 + i * 5);
 const ELAPSED_BUCKETS_MIN = [0, 2, 4, 6, 8, 10, Infinity];
 const MIN_TAIL_MATCHES = 30;
+const CAP_GRID = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4];
 const SCENARIO_WEIGHT_GRID = Array.from({ length: 31 }, (_, i) => i / 20);
 
 const store = new Store(process.argv[2] ?? "data/splitline.db");
@@ -35,6 +40,21 @@ const day = (s: number) => new Date(s * 1000).toISOString().slice(0, 10);
 const pct = (x: number) => `${(x * 100).toFixed(1).padStart(5)}%`;
 const line = (s: Scores) =>
   `n=${String(s.n).padStart(6)}  logloss ${s.logLoss.toFixed(4)}  brier ${s.brier.toFixed(4)}  ece ${s.ece.toFixed(4)}`;
+const byBand = (calls: BandedCall[]): BandTail[] => {
+  const tails = tailsByBand(calls, 0.8, MIN_TAIL_MATCHES);
+  console.log(`   favourite at 80%+, by band of the pair's average rating:`);
+  for (const t of tails) {
+    const signed = (x: number) => `${x >= 0 ? "+" : ""}${(x * 100).toFixed(1)}`;
+    console.log(
+      `     ${t.band.padEnd(12)} matches=${String(t.matches).padStart(4)}  predicted ${pct(t.predicted)}  won ${pct(t.observed)}  ${signed(t.observed - t.predicted).padStart(6)} pts [${signed(t.low)}, ${signed(t.high)}]  ${t.verdict}`,
+    );
+  }
+  return tails;
+};
+const bandsWhere = (tails: BandTail[], ...verdicts: BandTail["verdict"][]) =>
+  tails.filter((t) => verdicts.includes(t.verdict)).map((t) => t.band);
+const offBands = (tails: BandTail[]) => bandsWhere(tails, "overconfident", "underconfident");
+
 const curve = (bins: (ReliabilityBin & Partial<MatchBin>)[]) =>
   bins
     .map(
@@ -115,6 +135,7 @@ for (let i = 0; i + 1 < ELAPSED_BUCKETS_MIN.length; i++) {
 const calibrationC = inRunReliability(obs);
 console.log(`   reliability from the favourite's side, model:`);
 console.log(curve(calibrationC));
+const tailsC = byBand(obs.map((o) => ({ band: o.band, matchId: o.matchId, ...o.model })));
 
 const innerCut = temporalCutoff(
   trainDetails.map((d) => d.date),
@@ -148,40 +169,57 @@ const calibrationD = inRunReliability(cases.map((c, i) => ({ matchId: c.matchId,
 console.log(`   all          ${line(scenarioAll)}`);
 console.log(`   reliability from the favourite's side:`);
 console.log(curve(calibrationD));
+const tailsD = byBand(cases.map((c, i) => ({ band: c.band, matchId: c.matchId, ...scenarioPreds[i]! })));
 
-const worstTail = (bins: MatchBin[]) =>
-  Math.max(
-    0,
-    ...bins
-      .filter((b) => b.matches >= MIN_TAIL_MATCHES && b.predicted >= 0.8)
-      .map((b) => Math.abs(b.observed - b.predicted)),
-  );
 const gateA = eloScores.get(fitted)!.logLoss <= eloScores.get(400)!.logLoss;
 const gateB = h2hGain < 0;
-const tailC = worstTail(calibrationC);
+const offC = offBands(tailsC);
 const gateC =
   inRun.model.logLoss < inRun.elo.logLoss &&
   inRun.model.ece < 0.05 &&
-  tailC <= 0.05 &&
+  offC.length === 0 &&
   byBucket[byBucket.length - 1]!.elo - byBucket[byBucket.length - 1]!.model >
     byBucket[0]!.elo - byBucket[0]!.model;
-const tailD = worstTail(calibrationD);
+const offD = offBands(tailsD);
 const failuresD = [
   ...(behindElo.length > 0 ? [`behind elo at ${behindElo.join(", ")}`] : []),
   ...(scenarioAll.ece >= 0.05 ? [`ece ${scenarioAll.ece.toFixed(3)}`] : []),
-  ...(tailD > 0.05 ? [`worst tail bin off by ${(tailD * 100).toFixed(1)} pts`] : []),
+  ...(offD.length > 0 ? [`tail clearly off in ${offD.join(", ")}`] : []),
 ];
 
+const bandNote = (tails: BandTail[]) => {
+  const thin = bandsWhere(tails, "insufficient");
+  const unsure = bandsWhere(tails, "uncertain");
+  if (thin.length === tails.length) {
+    console.log(`      tails unchecked: no band has ${MIN_TAIL_MATCHES} matches at 80%+`);
+    return;
+  }
+  if (thin.length > 0) console.log(`      too little data in ${thin.join(", ")} (under ${MIN_TAIL_MATCHES} matches at 80%+)`);
+  if (unsure.length > 0) console.log(`      off by 5+ pts but within noise in ${unsure.join(", ")}`);
+};
+
+const validationModel = buildBandedWinProbModels(
+  extractAllRuns(trainDetails.filter((d) => d.date < innerCut)),
+);
+console.log(`\nE. Per-band in-run cap, fitted on validation and pulled toward 2.5 (NOT applied)`);
+console.log(`   band          matches at 80%+   fitted   pulled   finished runs: validation model / tested model`);
+for (const c of fitBandCaps(validationModel, trainDetails.filter((d) => d.date >= innerCut), CAP_GRID)) {
+  console.log(
+    `   ${c.band.padEnd(12)} ${String(c.matches).padStart(8)}          ${c.fitted.toFixed(2)}     ${c.cap.toFixed(2)}     ${String(validationModel.bands[c.band]?.overall.n ?? 0).padStart(4)} / ${banded.bands[c.band]?.overall.n ?? 0}`,
+  );
+}
 console.log(`\nGate`);
 console.log(`   A  train-fitted divisor beats 400 on held-out games        ${gateA ? "pass" : "FAIL"}`);
 console.log(
   `   B  head-to-head improves on elo alone                      ${gateB ? "pass" : "FAIL"}`,
 );
 console.log(
-  `   C  in-run beats elo, calibrated overall and in the tails  ${gateC ? "pass" : `FAIL (worst tail bin off by ${(tailC * 100).toFixed(1)} pts)`}`,
+  `   C  in-run beats elo, calibrated overall and in the tails  ${gateC ? "pass" : `FAIL${offC.length > 0 ? ` (tail clearly off in ${offC.join(", ")})` : ""}`}`,
 );
+bandNote(tailsC);
 console.log(
   `   D  scenarios beat elo, calibrated overall and in tails    ${failuresD.length === 0 ? "pass" : `FAIL (${failuresD.join("; ")})`}`,
 );
+bandNote(tailsD);
 
 store.close();

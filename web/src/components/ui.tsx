@@ -1,8 +1,7 @@
 import { useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-/** The pointer position goes on the empty glow layer; on the card it would
- *  invalidate style for every node inside. */
+/** The pointer goes on the empty glow layer; on the card it would restyle every node inside. */
 function useCardGlow() {
   const ref = useRef<HTMLSpanElement>(null);
   const onMouseMove = (e: React.MouseEvent) => {
@@ -28,14 +27,12 @@ export function useTooltip() {
   const hide = () => setTip(null);
   let el = null;
   if (tip) {
-    // Placed entirely by translation: offsetting it from the left instead
-    // would shrink the box near the right edge and wrap the text.
+    // Placed by translation alone; offsetting from the left would squeeze the box near the right edge.
     const flipX = tip.x > window.innerWidth * 0.62;
     const flipY = tip.y > window.innerHeight * 0.72;
     const tx = flipX ? `calc(${tip.x}px - 100% - 14px)` : `${tip.x + 14}px`;
     const ty = flipY ? `calc(${tip.y}px - 100% - 12px)` : `${tip.y + 16}px`;
-    // Rendered at the end of the document: a transformed ancestor would
-    // otherwise anchor this fixed box to itself.
+    // Portalled to the body, since a transformed ancestor would anchor this fixed box to itself.
     el = createPortal(
       <div className="viz-tooltip" style={{ left: 0, top: 0, transform: `translate(${tx}, ${ty})` }}>
         {tip.content}

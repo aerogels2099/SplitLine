@@ -12,6 +12,9 @@ const MIN_SPLIT_SAMPLES = 8;
 
 export type ScenarioKey = Exclude<MilestoneKey, "finish">;
 
+/** The scenarios' own cap, so fitting the in-run one cannot move the matchup chart. */
+const SCENARIO_EVIDENCE_CAP = 2.5;
+
 /** Fitted on validation games; the shared seed makes only part of a split's lead the runner's own. */
 export const SCENARIO_WEIGHTS: Record<ScenarioKey, number> = {
   nether_enter: 0.8,
@@ -125,7 +128,7 @@ export function splitScenarioProbability(
     { model: b.model, state: { lastEventType: null, lastEventTime: null }, elo: b.elo },
     timeMs,
   );
-  return clampProbability(logistic(logit(prior) + timingEvidence(weight * z)));
+  return clampProbability(logistic(logit(prior) + timingEvidence(weight * z, SCENARIO_EVIDENCE_CAP)));
 }
 
 function splitScenarios(a: MatchupSide, b: MatchupSide, prior: number): SplitScenario[] {
