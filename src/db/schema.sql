@@ -41,10 +41,11 @@ CREATE TABLE IF NOT EXISTS match_players (
 CREATE INDEX IF NOT EXISTS idx_match_players_uuid ON match_players(uuid, match_id);
 
 CREATE TABLE IF NOT EXISTS players (
-  uuid        TEXT PRIMARY KEY,
-  nickname    TEXT NOT NULL,
-  last_ingest INTEGER,
-  data        TEXT
+  uuid          TEXT PRIMARY KEY,
+  nickname      TEXT NOT NULL,
+  last_ingest   INTEGER,
+  data          TEXT,
+  ingest_cursor INTEGER                    -- newest match from the player's own list, never the crawl
 );
 
 CREATE INDEX IF NOT EXISTS idx_players_nickname ON players(nickname COLLATE NOCASE);

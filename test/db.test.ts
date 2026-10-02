@@ -76,7 +76,7 @@ describe("sqlite store", () => {
     store.close();
   });
 
-  it("lists a player's seasons and newest match without parsing their history", () => {
+  it("lists a player's seasons without parsing their history", () => {
     const store = new Store(":memory:");
     const matches = userAMatches();
     store.upsertMatches(matches);
@@ -87,9 +87,28 @@ describe("sqlite store", () => {
       (a, b) => b - a,
     );
     expect(store.seasonsForPlayer(uuid)).toEqual(expected);
+    store.close();
+  });
 
-    const newest = store.newestMatchForPlayer(uuid)!;
-    expect(newest.date).toBe(Math.max(...mine.map((m) => Number(m.date))));
+  it("moves the ingest cursor only forward, reporting the match it points at", () => {
+    const store = new Store(":memory:");
+    const user = userA();
+    const [older, newer] = [...userAMatches()].sort((a, b) => a.id - b.id).slice(-2);
+    store.upsertMatches([older!, newer!]);
+    store.upsertPlayer(user);
+    expect(store.ingestCursor(user.uuid)).toBeNull();
+
+    store.advanceIngestCursor(user.uuid, newer!.id);
+    store.advanceIngestCursor(user.uuid, older!.id);
+    expect(store.ingestCursor(user.uuid)).toEqual({ id: newer!.id, date: newer!.date });
+    store.close();
+  });
+
+  it("changes the detail version on every detail write", () => {
+    const store = new Store(":memory:");
+    const before = store.detailVersion();
+    store.upsertDetails(matchDetails().slice(0, 1));
+    expect(store.detailVersion()).not.toBe(before);
     store.close();
   });
 
@@ -231,5 +250,49 @@ describe("sqlite store", () => {
     expect(store.getPlayer(user.nickname.toUpperCase())?.user.uuid).toBe(user.uuid);
     expect(store.getPlayer("definitely-not-real")).toBeNull();
     store.close();
+  });
+
+  it("resolves a reused nickname to its most recently refreshed holder", () => {
+    const store = new Store(":memory:");
+    const user = userA();
+    const newcomer = { ...user, uuid: "f".repeat(32) };
+    store.upsertPlayer(user);
+    store.upsertPlayer(newcomer);
+    store.db.exec(`UPDATE players SET last_ingest = 1 WHERE uuid = '${user.uuid}'`);
+    expect(store.getPlayer(user.nickname)?.user.uuid).toBe(newcomer.uuid);
+    store.close();
+  });
+
+  // A cache can be at the current version without the column, so the column is checked on its own.
+  it.each([
+    { version: 4, rewalked: true },
+    { version: 5, rewalked: false },
+  ])("adds a missing ingest cursor column at version $version", ({ version, rewalked }) => {
+    const dir = mkdtempSync(join(tmpdir(), "splitline-cursor-"));
+    const file = join(dir, "store.db");
+    try {
+      const user = userA();
+      const store = new Store(file);
+      store.upsertPlayer(user);
+      store.setPlayedSeasons(user.uuid, [8]);
+      store.markSeasonIngested(user.uuid, 8);
+      store.close();
+
+      const raw = new DatabaseSync(file);
+      raw.exec("ALTER TABLE players DROP COLUMN ingest_cursor");
+      raw.exec(`PRAGMA user_version = ${version}`);
+      raw.close();
+
+      const reopened = new Store(file);
+      // Only the upgrade re-walks stored seasons, for the holes the old incremental ingest left.
+      expect(reopened.isSeasonIngested(user.uuid, 8)).toBe(!rewalked);
+      const match = userAMatches()[0]!;
+      reopened.upsertMatches([match]);
+      reopened.advanceIngestCursor(user.uuid, match.id);
+      expect(reopened.ingestCursor(user.uuid)?.id).toBe(match.id);
+      reopened.close();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

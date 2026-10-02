@@ -141,13 +141,11 @@ const innerCut = temporalCutoff(
   trainDetails.map((d) => d.date),
   TRAIN_SHARE,
 );
-const refit = fitScenarioWeights(
-  scenarioCases(
-    buildBandedWinProbModels(extractAllRuns(trainDetails.filter((d) => d.date < innerCut))),
-    trainDetails.filter((d) => d.date >= innerCut),
-  ),
-  SCENARIO_WEIGHT_GRID,
+const validationModel = buildBandedWinProbModels(
+  extractAllRuns(trainDetails.filter((d) => d.date < innerCut)),
 );
+const validationDetails = trainDetails.filter((d) => d.date >= innerCut);
+const refit = fitScenarioWeights(scenarioCases(validationModel, validationDetails), SCENARIO_WEIGHT_GRID);
 const cases = scenarioCases(banded, testDetails);
 console.log(`\nD. Split scenarios, opponent unseen, on the same test matches as C`);
 console.log(`   milestone      n    weight (refit on validation)   scenario logloss   elo logloss`);
@@ -198,12 +196,9 @@ const bandNote = (tails: BandTail[]) => {
   if (unsure.length > 0) console.log(`      off by 5+ pts but within noise in ${unsure.join(", ")}`);
 };
 
-const validationModel = buildBandedWinProbModels(
-  extractAllRuns(trainDetails.filter((d) => d.date < innerCut)),
-);
 console.log(`\nE. Per-band in-run cap, fitted on validation and pulled toward 2.5 (NOT applied)`);
 console.log(`   band          matches at 80%+   fitted   pulled   finished runs: validation model / tested model`);
-for (const c of fitBandCaps(validationModel, trainDetails.filter((d) => d.date >= innerCut), CAP_GRID)) {
+for (const c of fitBandCaps(validationModel, validationDetails, CAP_GRID)) {
   console.log(
     `   ${c.band.padEnd(12)} ${String(c.matches).padStart(8)}          ${c.fitted.toFixed(2)}     ${c.cap.toFixed(2)}     ${String(validationModel.bands[c.band]?.overall.n ?? 0).padStart(4)} / ${banded.bands[c.band]?.overall.n ?? 0}`,
   );

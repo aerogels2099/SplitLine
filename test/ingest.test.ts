@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { ApiError } from "../src/api/client.js";
 import type { RankedApi, MatchListParams } from "../src/api/endpoints.js";
 import { Store } from "../src/db/db.js";
 import { crawlMatches, fetchCorpusDetails, ingestPlayer, ingestSeason } from "../src/ingest/backfill.js";
@@ -32,15 +33,44 @@ const withLastRanked = (u: UserDetails, lastRanked: number): UserDetails => ({
   timestamp: { ...u.timestamp, lastRanked: lastRanked as UserDetails["timestamp"]["lastRanked"] },
 });
 
+/** Answers like the API: newest first, `after` and `before` bounding an exclusive range. */
+function rangeApi(user: UserDetails, server: MatchInfo[], failOnCall?: number) {
+  const calls: MatchListParams[] = [];
+  const api = {
+    async getUser() {
+      return user;
+    },
+    async getUserMatches(_id: string, params: MatchListParams = {}) {
+      calls.push(params);
+      if (calls.length === failOnCall) throw new Error("upstream down");
+      return server
+        .filter((m) => m.id > (params.after ?? -Infinity) && m.id < (params.before ?? Infinity))
+        .sort((a, b) => b.id - a.id)
+        .slice(0, params.count ?? 20);
+    },
+    async getUserSeasons() {
+      return { ...user, seasonResults: {} };
+    },
+  };
+  return { api: api as unknown as RankedApi, calls };
+}
+
 describe("ingestPlayer", () => {
   const ranked = userAMatches().filter((m) => m.type === 2);
+  const newestOf = (ms: MatchInfo[]) => ms.reduce((a, b) => (b.id > a.id ? b : a));
+  const make = (id: number): MatchInfo => ({
+    ...ranked[0]!,
+    id,
+    date: (1700000000 + id) as MatchInfo["date"],
+  });
 
   it("spends one request when the profile shows nothing new", async () => {
     const store = new Store(":memory:");
     const user = userA();
     store.upsertPlayer(user);
     store.upsertMatches(ranked);
-    const newest = store.newestMatchForPlayer(user.uuid)!;
+    const newest = newestOf(ranked);
+    store.advanceIngestCursor(user.uuid, newest.id);
 
     // The last-ranked timestamp equals the newest stored match's date: nothing to fetch.
     const { api, calls } = fakeApi({ user: withLastRanked(user, newest.date) });
@@ -61,7 +91,8 @@ describe("ingestPlayer", () => {
     const sorted = [...ranked].sort((a, b) => b.date - a.date);
     const missing = sorted[0]!;
     store.upsertMatches(sorted.slice(1));
-    const newest = store.newestMatchForPlayer(user.uuid)!;
+    const newest = newestOf(sorted.slice(1));
+    store.advanceIngestCursor(user.uuid, newest.id);
 
     const { api, calls } = fakeApi({
       user: withLastRanked(user, missing.date),
@@ -75,6 +106,82 @@ describe("ingestPlayer", () => {
     expect(calls).toHaveLength(2);
     expect(calls[1]!.params?.after).toBe(newest.id);
     expect(calls[1]!.params?.before).toBeUndefined();
+    expect(store.ingestCursor(user.uuid)?.id).toBe(missing.id);
+    store.close();
+  });
+
+  it("resumes from its own cursor, not a newer game the corpus crawl stored", async () => {
+    const store = new Store(":memory:");
+    const user = userA();
+    const server = Array.from({ length: 10 }, (_, i) => make(1000 + i));
+    store.upsertPlayer(user);
+    store.upsertMatches(server.slice(0, 7));
+    store.advanceIngestCursor(user.uuid, 1006);
+    // The crawl caught only the newest of the three games played since.
+    store.upsertMatches([server[9]!]);
+
+    const { api, calls } = rangeApi(withLastRanked(user, server[9]!.date), server);
+    const r = await ingestPlayer(store, api, user.nickname);
+
+    expect(r.mode).toBe("incremental");
+    expect(calls[0]!.after).toBe(1006);
+    const held = new Set(store.getMatchesForPlayer(user.uuid).map((m) => m.id));
+    expect(server.filter((m) => !held.has(m.id))).toEqual([]);
+    expect(store.ingestCursor(user.uuid)?.id).toBe(1009);
+    store.close();
+  });
+
+  it("walks a gap of more than one page down to the cursor", async () => {
+    const store = new Store(":memory:");
+    const user = userA();
+    const server = Array.from({ length: 251 }, (_, i) => make(1000 + i));
+    store.upsertPlayer(user);
+    store.upsertMatches([server[0]!]);
+    store.advanceIngestCursor(user.uuid, 1000);
+
+    const { api, calls } = rangeApi(withLastRanked(user, server[250]!.date), server);
+    const r = await ingestPlayer(store, api, user.nickname);
+
+    expect(r.mode).toBe("incremental");
+    expect(r.matchesStored).toBe(250);
+    expect(calls.map((c) => [c.after, c.before])).toEqual([
+      [1000, undefined],
+      [1000, 1151],
+      [1000, 1051],
+    ]);
+    expect(store.getMatchesForPlayer(user.uuid)).toHaveLength(251);
+    expect(store.ingestCursor(user.uuid)?.id).toBe(1250);
+    store.close();
+  });
+
+  it("keeps the old cursor when the walk fails partway, so the gap is retried", async () => {
+    const store = new Store(":memory:");
+    const user = userA();
+    const server = Array.from({ length: 251 }, (_, i) => make(1000 + i));
+    store.upsertPlayer(user);
+    store.upsertMatches([server[0]!]);
+    store.advanceIngestCursor(user.uuid, 1000);
+
+    const { api } = rangeApi(withLastRanked(user, server[250]!.date), server, 2);
+    await expect(ingestPlayer(store, api, user.nickname)).rejects.toThrow("upstream down");
+    expect(store.ingestCursor(user.uuid)?.id).toBe(1000);
+    store.close();
+  });
+
+  it("starts over when a known nickname now belongs to someone else", async () => {
+    const store = new Store(":memory:");
+    const user = userA();
+    store.upsertPlayer(user);
+    store.upsertMatches(ranked);
+    store.advanceIngestCursor(user.uuid, newestOf(ranked).id);
+
+    const newcomer = { ...user, uuid: "f".repeat(32) };
+    const { api } = fakeApi({ user: newcomer, pages: [[]] });
+    const r = await ingestPlayer(store, api, user.nickname);
+
+    expect(r.mode).toBe("first-page");
+    expect(r.user.uuid).toBe(newcomer.uuid);
+    expect(store.ingestCursor(user.uuid)?.id).toBe(newestOf(ranked).id);
     store.close();
   });
 
@@ -123,6 +230,7 @@ describe("ingestPlayer", () => {
     const r = await ingestPlayer(store, api, user.nickname);
     expect(r.complete).toBe(true);
     expect(r.cursor).toBeNull();
+    expect(store.ingestCursor(user.uuid)?.id).toBe(newestOf(ranked.slice(0, 20)).id);
     store.close();
   });
 });
@@ -280,6 +388,66 @@ describe("corpus crawl", () => {
     const skipped = completed.filter((m) => m !== held && !ids.includes(m.id));
     expect(skipped.every((m) => m.date <= oldestFetched)).toBe(true);
     expect(store.detailCount()).toBe(6);
+    store.close();
+  });
+
+  it("starts the next detail fetch as soon as any of the four in flight lands", async () => {
+    const store = new Store(":memory:");
+    store.upsertMatches(page);
+    const started: number[] = [];
+    const pending = new Map<number, () => void>();
+    const api = {
+      getMatch(id: number) {
+        started.push(id);
+        return new Promise<MatchInfo>((resolve) =>
+          pending.set(id, () => resolve({ ...page.find((m) => m.id === id)!, timelines: [] })),
+        );
+      },
+    } as unknown as RankedApi;
+    const settle = (id: number) => {
+      pending.get(id)!();
+      pending.delete(id);
+    };
+    const tick = () => new Promise((r) => setTimeout(r, 0));
+
+    const run = fetchCorpusDetails(store, api, { budget: 6 });
+    await tick();
+    expect(started).toHaveLength(4);
+    settle(started[0]!);
+    await tick();
+    expect(started).toHaveLength(5);
+    while (pending.size > 0) {
+      for (const id of [...pending.keys()]) settle(id);
+      await tick();
+    }
+    expect(await run).toBe(6);
+    store.close();
+  });
+
+  it("stops asking for a match the API has no detail for, but retries transient failures", async () => {
+    const store = new Store(":memory:");
+    store.upsertMatches(page);
+    const [goneId, flakyId] = store.detailCandidates({ window: 2000, limit: 2, completedOnly: true });
+    const asked: number[] = [];
+    const api = {
+      async getMatch(id: number) {
+        asked.push(id);
+        if (id === goneId) throw new ApiError("no data", 400, `/matches/${id}`);
+        if (id === flakyId) throw new ApiError("server error 502", 502, `/matches/${id}`);
+        return { ...page.find((m) => m.id === id)!, timelines: [] };
+      },
+    } as unknown as RankedApi;
+    const unavailable = new Set<number>();
+
+    expect(await fetchCorpusDetails(store, api, { budget: 3, unavailable })).toBe(1);
+    expect([...unavailable]).toEqual([goneId]);
+
+    asked.length = 0;
+    await fetchCorpusDetails(store, api, { budget: 3, unavailable });
+    expect(asked).not.toContain(goneId);
+    expect(asked).toContain(flakyId);
+    // The place the missing match held goes to the next candidate.
+    expect(asked).toHaveLength(3);
     store.close();
   });
 });

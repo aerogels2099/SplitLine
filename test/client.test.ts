@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { ApiError, RankedClient } from "../src/api/client.js";
+import { ApiError, RankedClient, RateBudgetError } from "../src/api/client.js";
 
 const ok = (data: unknown) =>
   new Response(JSON.stringify({ status: "success", data }), { status: 200 });
@@ -86,6 +86,62 @@ describe("RankedClient", () => {
     });
     await expect(c.get("/matches")).resolves.toBe("done");
     expect(sleeps).toEqual([2000]);
+  });
+
+  it("turns down a retry-after too long to wait out", async () => {
+    const sleeps: number[] = [];
+    const fetchImpl = vi.fn(
+      async () => new Response("slow down", { status: 429, headers: { "retry-after": "600" } }),
+    );
+    const c = new RankedClient({
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      sleepImpl: async (ms) => {
+        sleeps.push(ms);
+      },
+    });
+    await expect(c.get("/matches")).rejects.toThrowError(RateBudgetError);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    expect(sleeps).toEqual([]);
+  });
+
+  it("frees its request slot while backing off", async () => {
+    const seen: string[] = [];
+    const fetchImpl = vi.fn(async (url: string) => {
+      seen.push(url);
+      return url.endsWith("/free") ? ok("free") : new Response("slow down", { status: 429 });
+    });
+    const c = new RankedClient({
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      sleepImpl: () => new Promise(() => {}),
+    });
+    // Eight is the concurrency limit; every one of these is left sleeping on a 429.
+    for (let i = 0; i < 8; i++) void c.get(`/busy/${i}`).catch(() => {});
+    await new Promise((r) => setTimeout(r, 0));
+    await expect(c.get("/free")).resolves.toBe("free");
+    expect(seen).toHaveLength(9);
+  });
+
+  it("reports a network failure as an upstream error once retries run out", async () => {
+    const fetchImpl = vi.fn(async () => {
+      throw new TypeError("fetch failed");
+    });
+    const c = new RankedClient({ fetchImpl: fetchImpl as unknown as typeof fetch, sleepImpl: noSleep });
+    const failure = await c.get("/matches").catch((e: unknown) => e);
+    expect(failure).toBeInstanceOf(ApiError);
+    expect((failure as ApiError).httpStatus).toBe(0);
+    expect((failure as ApiError).message).toContain("fetch failed");
+    expect(fetchImpl).toHaveBeenCalledTimes(4);
+  });
+
+  it("returns raw bodies unwrapped and fails a raw 4xx without retrying", async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ up: true }), { status: 200 }))
+      .mockResolvedValueOnce(new Response("<html>missing</html>", { status: 404 }));
+    const c = new RankedClient({ fetchImpl: fetchImpl as unknown as typeof fetch, sleepImpl: noSleep });
+    await expect(c.getRaw("/status")).resolves.toEqual({ up: true });
+    await expect(c.getRaw("/gone")).rejects.toThrowError(ApiError);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
   it("drops expired entries, so the cache does not grow across TTL cycles", async () => {

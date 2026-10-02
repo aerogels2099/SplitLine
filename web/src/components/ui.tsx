@@ -135,58 +135,6 @@ export function StatTile(props: {
   );
 }
 
-export function Meter({ value, label }: { value: number; label?: string }) {
-  const pct = Math.max(0, Math.min(1, value)) * 100;
-  return (
-    <div title={label}>
-      <div className="meter">
-        <div style={{ width: `${pct}%` }} />
-      </div>
-    </div>
-  );
-}
-
-export function Ring({
-  value,
-  size = 104,
-  stroke = 9,
-  hot = false,
-  children,
-}: {
-  value: number;
-  size?: number;
-  stroke?: number;
-  hot?: boolean;
-  children?: ReactNode;
-}) {
-  const v = Math.max(0, Math.min(1, value));
-  const r = (size - stroke) / 2;
-  const c = 2 * Math.PI * r;
-  const cx = size / 2;
-  return (
-    <div style={{ position: "relative", width: size, height: size }}>
-      <svg width={size} height={size} style={{ transform: "rotate(-90deg)", display: "block" }}>
-        <circle cx={cx} cy={cx} r={r} fill="none" stroke="var(--slot)" strokeWidth={stroke} />
-        <circle
-          cx={cx}
-          cy={cx}
-          r={r}
-          fill="none"
-          stroke={hot ? "var(--gold-hot)" : "var(--gold)"}
-          strokeWidth={stroke}
-          strokeLinecap="butt"
-          strokeDasharray={c}
-          strokeDashoffset={c * (1 - v)}
-          style={hot ? { filter: "drop-shadow(0 0 5px var(--gold-glow))" } : undefined}
-        />
-      </svg>
-      <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", textAlign: "center" }}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
 export function Legend({ items }: { items: { label: string; color: string }[] }) {
   return (
     <div className="legend">

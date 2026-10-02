@@ -44,11 +44,13 @@ export class AppContext {
   private seasonFailures = new Map<string, { tries: number; nextAt: number }>();
   // Where each season leaves the first page, so its walk does not fetch that page again.
   private seasonResume = new Map<string, number>();
+  private unavailableDetails = new Set<number>();
   private corpus: {
     version: number;
     builtAt: number;
     runs: RunSplits[];
     banded: Record<string, SplitDistribution[]>;
+    pooled: SplitDistribution[] | null;
     winProb: BandedWinProbModel | null;
   } | null = null;
 
@@ -70,7 +72,7 @@ export class AppContext {
       return cached.user;
     }
     // By uuid when known, so a nickname and a uuid lookup share one ingest.
-    const key = cached?.user.uuid ?? identifier.toLowerCase();
+    const key = cached?.user.uuid ?? identifier.replace(/-/g, "").toLowerCase();
     let pending = this.ingesting.get(key);
     if (!pending) {
       pending = ingestPlayer(this.store, this.api, identifier).then((r) => {
@@ -78,7 +80,9 @@ export class AppContext {
           this.seasonResume.set(`${r.user.uuid}:${season}`, id);
         }
         this.startJob(this.detailJobs, r.user.uuid, () =>
-          fetchPlayerDetails(this.store, this.api, r.user.uuid),
+          fetchPlayerDetails(this.store, this.api, r.user.uuid, {
+            unavailable: this.unavailableDetails,
+          }),
         );
         return r.user;
       });
@@ -97,7 +101,10 @@ export class AppContext {
       running = true;
       try {
         await crawlMatches(this.store, this.api, { pages: 1 });
-        await fetchCorpusDetails(this.store, this.api, { budget: CRAWL_DETAILS });
+        await fetchCorpusDetails(this.store, this.api, {
+          budget: CRAWL_DETAILS,
+          unavailable: this.unavailableDetails,
+        });
       } catch (err) {
         onError(err);
       } finally {
@@ -183,7 +190,7 @@ export class AppContext {
   }
 
   private peerCorpus() {
-    const version = this.store.detailCount();
+    const version = this.store.detailVersion();
     // Rebuilt at most once a minute while details are still arriving.
     const held = this.corpus;
     if (!held || (held.version !== version && Date.now() - held.builtAt >= CORPUS_REFRESH_MS)) {
@@ -193,6 +200,7 @@ export class AppContext {
         builtAt: Date.now(),
         runs,
         banded: buildBandedDistributions(runs),
+        pooled: null,
         winProb: null,
       };
     }
@@ -266,7 +274,7 @@ export class AppContext {
         ),
         model: lookup.model,
         // The pooled "all" model has no banded splits.
-        splits: corpus.banded[lookup.band] ?? buildSplitDistributions(corpus.runs),
+        splits: corpus.banded[lookup.band] ?? (corpus.pooled ??= buildSplitDistributions(corpus.runs)),
         band: lookup.band,
       };
     };

@@ -89,23 +89,6 @@ export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> 
   return body as T;
 }
 
-export async function apiPost<T>(path: string, payload: unknown): Promise<T> {
-  const res = await fetch(path, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload ?? {}),
-  });
-  const body = (await res.json().catch(() => null)) as { error?: string } | T | null;
-  if (!res.ok) {
-    const msg =
-      body && typeof body === "object" && "error" in body && typeof body.error === "string"
-        ? body.error
-        : `request failed (${res.status})`;
-    throw new HttpError(msg, res.status);
-  }
-  return body as T;
-}
-
 /** loading and stale track visible loads only, never background polls. */
 const responseCache = new Map<string, { data: unknown; time: number }>();
 const RESPONSE_TTL = 60_000;

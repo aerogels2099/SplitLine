@@ -68,7 +68,6 @@
   --delta-down: #ff5d55;
 
   --seq-track: #23303f;
-  --seq-fill: #3987e5;
 
   --tier-coal: #9a9a94;
   --tier-iron: #d4d9dd;
@@ -127,8 +126,6 @@ body *:where(:not(svg, svg *)) {
 .tier-chip .dot,
 .legend .swatch,
 .game-outcome,
-.meter,
-.meter > div,
 .tug,
 .tug > * {
   border-radius: var(--r-pill);
@@ -141,7 +138,6 @@ body *:where(:not(svg, svg *)) {
 .card-actions,
 .split-actions,
 .game,
-.meter,
 .tug,
 .podium-card,
 .player-hero,
@@ -580,19 +576,6 @@ table.data tbody tr:hover {
   background: rgba(255, 204, 51, 0.07);
 }
 
-.meter {
-  height: 10px;
-  background: var(--slot);
-  border: 2px solid var(--border);
-  box-shadow: var(--bevel-in);
-  position: relative;
-  overflow: hidden;
-}
-.meter > div {
-  height: 100%;
-  background: var(--seq-fill);
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25);
-}
 .legend {
   display: flex;
   gap: 14px;
@@ -1106,24 +1089,6 @@ table.data tbody tr:hover {
   font-size: 9px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-}
-
-.meter {
-  height: 12px;
-  background: var(--slot);
-  border: 2px solid var(--border);
-  box-shadow: var(--bevel-in);
-  position: relative;
-  overflow: hidden;
-  padding: 2px;
-}
-.meter > div {
-  height: 100%;
-  background: var(--gold);
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.28);
-}
-.meter::after {
-  content: none;
 }
 
 .player-bar {

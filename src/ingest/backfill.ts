@@ -1,6 +1,7 @@
+import { ApiError } from "../api/client.js";
 import type { MatchListParams, RankedApi } from "../api/endpoints.js";
 import type { Store } from "../db/db.js";
-import type { MatchInfo, MatchType, UserDetails } from "../shared/types.js";
+import type { MatchType, UserDetails } from "../shared/types.js";
 
 /** A page is 100 matches, the most the API will return at once. */
 const PAGE = 100;
@@ -35,36 +36,51 @@ export async function ingestPlayer(
 ): Promise<PlayerIngestResult> {
   const type = opts.type ?? DEFAULT_TYPE;
   const known = store.getPlayer(identifier);
-  const newest = known ? store.newestMatchForPlayer(known.user.uuid) : null;
+  const cursor = known ? store.ingestCursor(known.user.uuid) : null;
 
-  if (newest) {
+  if (known && cursor) {
     const user = await api.getUser(identifier);
     store.upsertPlayer(user);
 
-    // lastRanked equals the newest ranked game's date, so nothing newer means nothing to fetch.
-    if (user.timestamp.lastRanked <= newest.date) {
-      return {
-        user,
-        matchesFetched: 0,
-        matchesStored: 0,
-        mode: "skipped",
-        complete: true,
-        cursor: null,
-        seasonCursors: {},
-      };
-    }
+    // A nickname that has passed to another player starts that player from scratch.
+    if (user.uuid === known.user.uuid) {
+      // lastRanked equals the newest ranked game's date, so nothing newer means nothing to fetch.
+      if (user.timestamp.lastRanked <= cursor.date) {
+        return {
+          user,
+          matchesFetched: 0,
+          matchesStored: 0,
+          mode: "skipped",
+          complete: true,
+          cursor: null,
+          seasonCursors: {},
+        };
+      }
 
-    const fresh = await api.getUserMatches(identifier, {
-      count: PAGE,
-      after: newest.id,
-      type,
-      season: opts.season,
-    });
-    const stored = store.upsertMatches(fresh);
-    if (fresh.length < PAGE) {
+      // `after` alone returns the newest page, so a longer gap is walked down to the cursor.
+      let before: number | undefined;
+      let newest = cursor.id;
+      let fetched = 0;
+      let stored = 0;
+      for (;;) {
+        const page = await api.getUserMatches(identifier, {
+          count: PAGE,
+          after: cursor.id,
+          before,
+          type,
+          season: opts.season,
+        });
+        fetched += page.length;
+        stored += store.upsertMatches(page);
+        newest = Math.max(newest, ...page.map((m) => m.id));
+        if (page.length < PAGE) break;
+        before = page[page.length - 1]!.id;
+      }
+      // Only once the whole gap is stored, so a walk that fails retries it from the old cursor.
+      store.advanceIngestCursor(user.uuid, newest);
       return {
         user,
-        matchesFetched: fresh.length,
+        matchesFetched: fetched,
         matchesStored: stored,
         mode: "incremental",
         complete: true,
@@ -72,7 +88,6 @@ export async function ingestPlayer(
         seasonCursors: {},
       };
     }
-    // A full page means the delta has a hole; fall through to a full walk.
   }
 
   const [user, firstPage, seasons] = await Promise.all([
@@ -85,6 +100,9 @@ export async function ingestPlayer(
     store.setPlayedSeasons(user.uuid, Object.keys(seasons.seasonResults).map(Number));
   }
   const stored = store.upsertMatches(firstPage);
+  if (firstPage.length > 0) {
+    store.advanceIngestCursor(user.uuid, Math.max(...firstPage.map((m) => m.id)));
+  }
   const complete = firstPage.length < PAGE;
   const seasonCursors: Record<number, number> = {};
   for (const m of firstPage) {
@@ -126,33 +144,55 @@ export async function ingestSeason(
 }
 
 /** Below the client's concurrency limit, so background work leaves slots free. */
-const CHUNK = 4;
+const WORKERS = 4;
 
-async function fetchDetails(store: Store, api: RankedApi, ids: number[]): Promise<number> {
+/** Records matches the API has no detail for, since a retry won't change that. */
+async function fetchDetails(
+  store: Store,
+  api: RankedApi,
+  ids: number[],
+  unavailable?: Set<number>,
+): Promise<number> {
+  let next = 0;
   let fetched = 0;
-  for (let i = 0; i < ids.length; i += CHUNK) {
-    const results = await Promise.allSettled(ids.slice(i, i + CHUNK).map((id) => api.getMatch(id)));
-    const details = results
-      .filter((r): r is PromiseFulfilledResult<MatchInfo> => r.status === "fulfilled")
-      .map((r) => r.value);
-    if (details.length > 0) store.upsertDetails(details);
-    fetched += details.length;
-  }
+  const worker = async () => {
+    while (next < ids.length) {
+      const id = ids[next++]!;
+      try {
+        store.upsertDetail(await api.getMatch(id));
+        fetched++;
+      } catch (err) {
+        if (err instanceof ApiError && err.httpStatus >= 400 && err.httpStatus < 500 && err.httpStatus !== 429) {
+          unavailable?.add(id);
+        }
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(WORKERS, ids.length) }, worker));
   return fetched;
+}
+
+/** Over-asks by the number skipped, so unavailable matches don't shrink the batch. */
+function candidates(
+  store: Store,
+  opts: Parameters<Store["detailCandidates"]>[0],
+  unavailable: Set<number> = new Set(),
+): number[] {
+  return store
+    .detailCandidates({ ...opts, limit: opts.limit + unavailable.size })
+    .filter((id) => !unavailable.has(id))
+    .slice(0, opts.limit);
 }
 
 export async function fetchPlayerDetails(
   store: Store,
   api: RankedApi,
   uuid: string,
-  detailTarget = 40,
+  opts: { target?: number; unavailable?: Set<number> } = {},
 ): Promise<number> {
-  const ids = store.detailCandidates({
-    uuid,
-    window: detailTarget * 2,
-    limit: detailTarget,
-  });
-  return fetchDetails(store, api, ids);
+  const target = opts.target ?? 40;
+  const ids = candidates(store, { uuid, window: target * 2, limit: target }, opts.unavailable);
+  return fetchDetails(store, api, ids, opts.unavailable);
 }
 
 export interface CrawlResult {
@@ -183,12 +223,12 @@ export async function crawlMatches(
 export async function fetchCorpusDetails(
   store: Store,
   api: RankedApi,
-  opts: { budget?: number } = {},
+  opts: { budget?: number; unavailable?: Set<number> } = {},
 ): Promise<number> {
-  const ids = store.detailCandidates({
-    window: 2000,
-    limit: opts.budget ?? 50,
-    completedOnly: true,
-  });
-  return fetchDetails(store, api, ids);
+  const ids = candidates(
+    store,
+    { window: 2000, limit: opts.budget ?? 50, completedOnly: true },
+    opts.unavailable,
+  );
+  return fetchDetails(store, api, ids, opts.unavailable);
 }

@@ -1,6 +1,5 @@
 import { DatabaseSync, type StatementSync } from "node:sqlite";
-import { readFileSync } from "node:fs";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { extractRunSplits, type RunSplits } from "../analysis/splits.js";
@@ -10,7 +9,7 @@ import type { CompletionEntry, MatchInfo, TimelineEntry, UserDetails } from "../
 const HERE = dirname(fileURLToPath(import.meta.url));
 
 /** Bumped when stored rows, not just table definitions, need rewriting. */
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 
 const INSERT_MATCH = `INSERT OR IGNORE INTO matches
    (id, season, type, date, forfeited, decayed, winner_uuid, result_time,
@@ -39,6 +38,7 @@ function splitAdvanced(m: MatchInfo): { list: MatchInfo; advanced: AdvancedField
 export class Store {
   readonly db: DatabaseSync;
   private statements = new Map<string, StatementSync>();
+  private detailWrites = 0;
 
   constructor(path: string = ":memory:") {
     if (path !== ":memory:") mkdirSync(dirname(path), { recursive: true });
@@ -50,6 +50,11 @@ export class Store {
     this.db.exec(readFileSync(join(HERE, "schema.sql"), "utf8"));
     // An older cache may still carry an index this project no longer creates.
     this.db.exec("DROP INDEX IF EXISTS idx_matches_type_date");
+    // CREATE TABLE IF NOT EXISTS won't add a column to an older cache's table either.
+    const playerColumns = this.db.prepare("PRAGMA table_info(players)").all() as { name: string }[];
+    if (!playerColumns.some((c) => c.name === "ingest_cursor")) {
+      this.db.exec("ALTER TABLE players ADD COLUMN ingest_cursor INTEGER");
+    }
     this.migrate();
     this.optimize();
   }
@@ -107,6 +112,8 @@ export class Store {
         this.db.exec("DELETE FROM runs");
         for (const d of details) this.insertRuns(d);
       }
+      // The old ingest could leave holes behind crawled games, so every stored season is walked again.
+      if (from < 5) this.db.exec("UPDATE player_seasons SET ingested_at = NULL");
       this.db.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`);
     });
   }
@@ -172,6 +179,12 @@ export class Store {
         this.insertRuns(d);
       }
     });
+    this.detailWrites++;
+  }
+
+  /** Bumped on every detail write, since counting the rows scans the whole table. */
+  detailVersion(): number {
+    return this.detailWrites;
   }
 
   private insertRuns(detail: MatchInfo) {
@@ -295,13 +308,19 @@ export class Store {
     return rows.map((r) => r.season);
   }
 
-  newestMatchForPlayer(uuid: string): { id: number; date: number } | null {
+  /** Where incremental ingest resumes; crawled games say nothing about the games below them. */
+  ingestCursor(uuid: string): { id: number; date: number } | null {
     const row = this.stmt(
-      `SELECT m.id AS id, m.date AS date FROM matches m
-       JOIN match_players p ON p.match_id = m.id
-       WHERE p.uuid = ? ORDER BY m.date DESC, m.id DESC LIMIT 1`,
+      `SELECT m.id AS id, m.date AS date FROM players p
+       JOIN matches m ON m.id = p.ingest_cursor WHERE p.uuid = ?`,
     ).get(uuid) as { id: number; date: number } | undefined;
     return row ?? null;
+  }
+
+  advanceIngestCursor(uuid: string, matchId: number) {
+    this.stmt(
+      `UPDATE players SET ingest_cursor = MAX(COALESCE(ingest_cursor, 0), ?) WHERE uuid = ?`,
+    ).run(matchId, uuid);
   }
 
   getMatches(opts: { type?: number } = {}): MatchInfo[] {
@@ -377,9 +396,11 @@ export class Store {
 
   getPlayer(identifier: string): { user: UserDetails; lastIngest: number } | null {
     const norm = identifier.replace(/-/g, "");
+    // A released nickname stays on its old holder's row, so the latest refresh decides.
     const row = this.stmt(
       `SELECT data, last_ingest FROM players
-       WHERE uuid = ? OR nickname = ? COLLATE NOCASE`,
+       WHERE uuid = ? OR nickname = ? COLLATE NOCASE
+       ORDER BY last_ingest DESC LIMIT 1`,
     ).get(norm, identifier) as { data: string; last_ingest: number | null } | undefined;
     if (!row || !row.data) return null;
     return { user: JSON.parse(row.data) as UserDetails, lastIngest: row.last_ingest ?? 0 };

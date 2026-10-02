@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useApi, type GameRecord, type GameSplits } from "../../api";
 import { usePlayer } from "../Player";
@@ -49,6 +49,11 @@ export default function GameHistory() {
     setOpenMatch(matchId);
     pendingJump.current = matchId;
   };
+  // Stable, so memoised rows don't re-render when another row opens or more load.
+  const toggleMatch = useCallback(
+    (matchId: number) => setOpenMatch((m) => (m === matchId ? null : matchId)),
+    [],
+  );
   useEffect(() => setShownRows(CHUNK), [season]);
   useEffect(() => {
     const el = sentinel.current;
@@ -104,7 +109,7 @@ export default function GameHistory() {
               id={id}
               game={g}
               open={openMatch === g.matchId}
-              onToggle={() => setOpenMatch((m) => (m === g.matchId ? null : g.matchId))}
+              onToggle={toggleMatch}
             />
           ))}
           {shownRows < games.length && (
@@ -127,11 +132,11 @@ const GameRow = memo(function GameRow({
   id: string;
   game: GameRecord;
   open: boolean;
-  onToggle: () => void;
+  onToggle: (matchId: number) => void;
 }) {
   return (
     <div className={`game${open ? " open" : ""}`} data-match={game.matchId}>
-      <button type="button" className="game-head" onClick={onToggle}>
+      <button type="button" className="game-head" onClick={() => onToggle(game.matchId)}>
         <span className={`game-outcome ${game.outcome}`}>
           {game.decayed ? "decay" : game.outcome}
         </span>

@@ -22,8 +22,9 @@ export function usePlayer() {
 
 export default function Player() {
   const { id = "" } = useParams();
-  // unset until the reader picks one, which leaves the server to choose the latest
-  const [season, setSeason] = useState<number | undefined>(undefined);
+  // unset until the reader picks one for this player, so the server picks the latest
+  const [picked, setPicked] = useState<{ id: string; season: number } | null>(null);
+  const season = picked?.id === id ? picked.season : undefined;
   // The server fills older pages after responding; poll until it says complete.
   const [poll, setPoll] = useState<number | undefined>(undefined);
   const query = season === undefined ? "" : `?season=${season}`;
@@ -51,7 +52,7 @@ export default function Player() {
         current={u?.nickname}
         season={data?.season}
         seasons={seasons}
-        onSeason={setSeason}
+        onSeason={(s) => setPicked({ id, season: s })}
       />
       <div className="player-main">
         {error ? (
