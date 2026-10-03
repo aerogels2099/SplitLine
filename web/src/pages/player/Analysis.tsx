@@ -34,6 +34,10 @@ export default function Analysis() {
   const { data: run } = useApi<GameSplits>(
     match ? `/api/players/${encodeURIComponent(id)}/games/${match}` : null,
   );
+  // The game list's scroll offset carries over, which can leave the run's card, at the top, off-screen.
+  useEffect(() => {
+    if (match) window.scrollTo(0, 0);
+  }, [match]);
 
   if (error) return <ErrorBox message={error} />;
   if (loading && !data) return <LoadingNote text="Reconstructing runs from match timelines…" />;

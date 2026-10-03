@@ -62,6 +62,7 @@ export async function ingestPlayer(
       let newest = cursor.id;
       let fetched = 0;
       let stored = 0;
+      const seen = new Set<number>();
       for (;;) {
         const page = await api.getUserMatches(identifier, {
           count: PAGE,
@@ -73,10 +74,17 @@ export async function ingestPlayer(
         fetched += page.length;
         stored += store.upsertMatches(page);
         newest = Math.max(newest, ...page.map((m) => m.id));
+        for (const m of page) seen.add(m.season);
         if (page.length < PAGE) break;
         before = page[page.length - 1]!.id;
       }
-      // Only once the whole gap is stored, so a walk that fails retries it from the old cursor.
+      // A new season since the last visit isn't listed yet, so the list is refreshed from the API.
+      const listed = new Set(store.playedSeasons(user.uuid));
+      if ([...seen].some((s) => !listed.has(s))) {
+        const summary = await api.getUserSeasons(identifier);
+        store.setPlayedSeasons(user.uuid, Object.keys(summary.seasonResults).map(Number));
+      }
+      // Only after the gap and its seasons are stored, so a failure retries both from the old cursor.
       store.advanceIngestCursor(user.uuid, newest);
       return {
         user,

@@ -26,6 +26,8 @@ export function LadderSidebar({
   const here = current?.toLowerCase();
   const at = season === undefined ? -1 : seasons.indexOf(season);
   const pickable = onSeason !== undefined && seasons.length > 0 && season !== undefined;
+  // A season still running links without one, so a copied link keeps meaning "current" after it ends.
+  const linkQuery = !data || data.season.endsAt > Date.now() / 1000 ? "" : `?season=${data.season.number}`;
 
   const centredFor = useRef<string | undefined>(undefined);
   useEffect(() => {
@@ -81,7 +83,7 @@ export function LadderSidebar({
           return (
             <Link
               key={u.uuid}
-              to={`/player/${encodeURIComponent(u.nickname)}`}
+              to={`/player/${encodeURIComponent(u.nickname)}${linkQuery}`}
               className={u.nickname.toLowerCase() === here ? "on" : ""}
             >
               <span className="ladder-rank">{u.eloRank ?? "—"}</span>

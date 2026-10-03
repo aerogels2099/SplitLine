@@ -156,12 +156,12 @@ const GameRow = memo(function GameRow({
           {open ? "▴" : "▾"}
         </span>
       </button>
-      {open && <SplitCard id={id} matchId={game.matchId} />}
+      {open && <SplitCard id={id} matchId={game.matchId} season={game.season} />}
     </div>
   );
 });
 
-function SplitCard({ id, matchId }: { id: string; matchId: number }) {
+function SplitCard({ id, matchId, season }: { id: string; matchId: number; season: number }) {
   // Fetched on open: timelines are one upstream request per match.
   const { data, error } = useApi<GameSplits>(
     `/api/players/${encodeURIComponent(id)}/games/${matchId}`,
@@ -203,7 +203,7 @@ function SplitCard({ id, matchId }: { id: string; matchId: number }) {
         </tbody>
       </table>
       <div className="split-actions">
-        <Link to={`/player/${encodeURIComponent(id)}/analysis?match=${matchId}`}>
+        <Link to={`/player/${encodeURIComponent(id)}/analysis?season=${season}&match=${matchId}`}>
           Analyse this run →
         </Link>
       </div>

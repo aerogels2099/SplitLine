@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, useOutletContext, useParams } from "react-router-dom";
+import { NavLink, Outlet, useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useApi, type PlayerHistory } from "../api";
 import { fmtDateTime, flag } from "../format";
 import { Avatar, TierChip } from "../components/Avatar";
@@ -13,6 +13,8 @@ export interface PlayerContext {
   id: string;
   history: PlayerHistory;
   season: number;
+  /** The URL's season, for links that should stay in it; empty when the server chose. */
+  search: string;
   filling: boolean;
 }
 
@@ -22,9 +24,10 @@ export function usePlayer() {
 
 export default function Player() {
   const { id = "" } = useParams();
-  // unset until the reader picks one for this player, so the server picks the latest
-  const [picked, setPicked] = useState<{ id: string; season: number } | null>(null);
-  const season = picked?.id === id ? picked.season : undefined;
+  const [params, setParams] = useSearchParams();
+  // set by a pick or a season's ladder link; otherwise the server picks the latest
+  const raw = params.get("season");
+  const season = raw !== null && /^\d+$/.test(raw) ? Number(raw) : undefined;
   // The server fills older pages after responding; poll until it says complete.
   const [poll, setPoll] = useState<number | undefined>(undefined);
   const query = season === undefined ? "" : `?season=${season}`;
@@ -52,7 +55,13 @@ export default function Player() {
         current={u?.nickname}
         season={data?.season}
         seasons={seasons}
-        onSeason={(s) => setPicked({ id, season: s })}
+        onSeason={(s) =>
+          setParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set("season", String(s));
+            return next;
+          })
+        }
       />
       <div className="player-main">
         {error ? (
@@ -87,13 +96,13 @@ export default function Player() {
 
             <div className="player-bar">
               <nav className="tabs">
-                <NavLink to={`/player/${encodeURIComponent(id)}`} end>
+                <NavLink to={`/player/${encodeURIComponent(id)}${query}`} end>
                   Games
                 </NavLink>
-                <NavLink to={`/player/${encodeURIComponent(id)}/analysis`}>
+                <NavLink to={`/player/${encodeURIComponent(id)}/analysis${query}`}>
                   Pacing &amp; seeds
                 </NavLink>
-                <NavLink to={`/player/${encodeURIComponent(id)}/versus`}>Versus</NavLink>
+                <NavLink to={`/player/${encodeURIComponent(id)}/versus${query}`}>Versus</NavLink>
               </nav>
 
               <span className="season-tally">
@@ -104,7 +113,7 @@ export default function Player() {
 
             <Outlet
               context={
-                { id, history: data, season: data.season, filling } satisfies PlayerContext
+                { id, history: data, season: data.season, search: query, filling } satisfies PlayerContext
               }
             />
           </>

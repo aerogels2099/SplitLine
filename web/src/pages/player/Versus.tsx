@@ -13,7 +13,7 @@ type Profile = PlayerMatchup["a"];
 type SeedRow = PlayerMatchup["bastion"][number];
 
 export default function Versus() {
-  const { id, history } = usePlayer();
+  const { id, history, search } = usePlayer();
   const { other } = useParams();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
@@ -30,7 +30,7 @@ export default function Versus() {
   }, [history.games]);
 
   const open = (name: string) =>
-    navigate(`/player/${encodeURIComponent(id)}/versus/${encodeURIComponent(name)}`);
+    navigate(`/player/${encodeURIComponent(id)}/versus/${encodeURIComponent(name)}${search}`);
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     const q = query.trim();

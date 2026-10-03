@@ -34,7 +34,11 @@ const withLastRanked = (u: UserDetails, lastRanked: number): UserDetails => ({
 });
 
 /** Answers like the API: newest first, `after` and `before` bounding an exclusive range. */
-function rangeApi(user: UserDetails, server: MatchInfo[], failOnCall?: number) {
+function rangeApi(
+  user: UserDetails,
+  server: MatchInfo[],
+  opts: { failOnCall?: number; seasons?: number[] } = {},
+) {
   const calls: MatchListParams[] = [];
   const api = {
     async getUser() {
@@ -42,14 +46,16 @@ function rangeApi(user: UserDetails, server: MatchInfo[], failOnCall?: number) {
     },
     async getUserMatches(_id: string, params: MatchListParams = {}) {
       calls.push(params);
-      if (calls.length === failOnCall) throw new Error("upstream down");
+      if (calls.length === opts.failOnCall) throw new Error("upstream down");
       return server
         .filter((m) => m.id > (params.after ?? -Infinity) && m.id < (params.before ?? Infinity))
         .sort((a, b) => b.id - a.id)
         .slice(0, params.count ?? 20);
     },
     async getUserSeasons() {
-      return { ...user, seasonResults: {} };
+      const seasonResults: Record<string, unknown> = {};
+      for (const n of opts.seasons ?? []) seasonResults[String(n)] = {};
+      return { ...user, seasonResults };
     },
   };
   return { api: api as unknown as RankedApi, calls };
@@ -93,6 +99,8 @@ describe("ingestPlayer", () => {
     store.upsertMatches(sorted.slice(1));
     const newest = newestOf(sorted.slice(1));
     store.advanceIngestCursor(user.uuid, newest.id);
+    // Every season it fetches is already listed, so the season list costs no request.
+    store.setPlayedSeasons(user.uuid, [...new Set(ranked.map((m) => m.season))]);
 
     const { api, calls } = fakeApi({
       user: withLastRanked(user, missing.date),
@@ -131,6 +139,22 @@ describe("ingestPlayer", () => {
     store.close();
   });
 
+  it("lists a season that started since the player was last ingested", async () => {
+    const store = new Store(":memory:");
+    const user = userA();
+    const server = Array.from({ length: 6 }, (_, i) => ({ ...make(1000 + i), season: i < 3 ? 12 : 13 }));
+    store.upsertPlayer(user);
+    store.setPlayedSeasons(user.uuid, [11, 12]);
+    store.upsertMatches(server.slice(0, 3));
+    store.advanceIngestCursor(user.uuid, 1002);
+
+    const { api } = rangeApi(withLastRanked(user, server[5]!.date), server, { seasons: [11, 12, 13] });
+    await ingestPlayer(store, api, user.nickname);
+
+    expect(store.playedSeasons(user.uuid)).toEqual([13, 12, 11]);
+    store.close();
+  });
+
   it("walks a gap of more than one page down to the cursor", async () => {
     const store = new Store(":memory:");
     const user = userA();
@@ -162,7 +186,7 @@ describe("ingestPlayer", () => {
     store.upsertMatches([server[0]!]);
     store.advanceIngestCursor(user.uuid, 1000);
 
-    const { api } = rangeApi(withLastRanked(user, server[250]!.date), server, 2);
+    const { api } = rangeApi(withLastRanked(user, server[250]!.date), server, { failOnCall: 2 });
     await expect(ingestPlayer(store, api, user.nickname)).rejects.toThrow("upstream down");
     expect(store.ingestCursor(user.uuid)?.id).toBe(1000);
     store.close();
