@@ -164,9 +164,9 @@ export interface FinishProjection {
 
 function fromCurve(curve: SurvivalCurve, elapsedMs: number, stuckMs: number): [number, number] {
   const c = conditionalRemaining(curve, stuckMs);
-  // Stuck longer than any recorded run took, so the curve has nothing left to say.
-  if (!c) return [elapsedMs + SD_FLOOR_MS, 2 * SD_FLOOR_MS];
-  return [elapsedMs + c.mean, Math.max(c.sd, SD_FLOOR_MS)];
+  // Stuck past every recorded run, so at least the whole stage is taken to be still ahead.
+  const r = c && stuckMs < curve.times.at(-1)! ? c : conditionalRemaining(curve, 0)!;
+  return [elapsedMs + r.mean, Math.max(r.sd, SD_FLOOR_MS)];
 }
 
 /** Conditioned on the time since the last event, or since the start when there is none. */

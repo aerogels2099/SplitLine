@@ -442,3 +442,26 @@ describe("timing evidence is capped", () => {
     expect(stronger).toBeGreaterThan(even);
   });
 });
+
+describe("a runner stuck past every recorded run", () => {
+  const model = buildWinProbModel(
+    Array.from({ length: 30 }, (_, i) => syntheticRun(1850, 9 * 60_000 + i * 1000, i)),
+  );
+  const nether = (time: number): LiveRunState => ({ lastEventType: "story.enter_the_nether", lastEventTime: time });
+
+  it("still has the whole stage ahead, not a finish moments away", () => {
+    const fresh = projectFinish(model, nether(2 * 60_000), 2 * 60_000);
+    const stuck = projectFinish(model, nether(2 * 60_000), 30 * 60_000);
+    expect(stuck.meanMs - 30 * 60_000).toBeCloseTo(fresh.meanMs - 2 * 60_000, 6);
+  });
+
+  it("trails a runner who reached the same stage a minute ago", () => {
+    const t = 30 * 60_000;
+    const { pA } = headToHeadWinProb(
+      { model, state: nether(2 * 60_000), elo: 1850 },
+      { model, state: nether(t - 60_000), elo: 1850 },
+      t,
+    );
+    expect(pA).toBeLessThan(0.5);
+  });
+});
