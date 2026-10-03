@@ -144,7 +144,6 @@ body *:where(:not(svg, svg *)) {
 .game,
 .meter,
 .tug,
-.podium-card,
 .player-hero,
 .cmdk,
 .avatar,
