@@ -12,12 +12,15 @@ import type { GameRecord, LabelledRun } from "../../src/analysis/history.js";
 import type { MatchupPrediction } from "../../src/analysis/matchup.js";
 import type { PacingComparison, SplitDistribution } from "../../src/analysis/pacing.js";
 import type { ArchetypeStats } from "../../src/analysis/seeds.js";
+import type { Bucket, Session, SessionReport } from "../../src/analysis/sessions.js";
 
 export type {
   ArchetypeStats,
   GameRecord,
   LabelledRun,
   PacingComparison,
+  Session,
+  Bucket as SessionBucket,
   SplitDistribution,
   Leaderboard,
   MatchInfo,
@@ -52,6 +55,13 @@ export interface PlayerAnalysis {
   bandedDistributions: Record<string, SplitDistribution[]>;
   byBastion: ArchetypeStats[];
   byOverworld: ArchetypeStats[];
+  complete: boolean;
+}
+
+export interface PlayerSessions extends SessionReport {
+  user: UserDetails;
+  seasons: number[];
+  season: number;
   complete: boolean;
 }
 

@@ -102,6 +102,7 @@ export default function Player() {
                 <NavLink to={`/player/${encodeURIComponent(id)}/analysis${query}`}>
                   Pacing &amp; seeds
                 </NavLink>
+                <NavLink to={`/player/${encodeURIComponent(id)}/sessions${query}`}>Sessions</NavLink>
                 <NavLink to={`/player/${encodeURIComponent(id)}/versus${query}`}>Versus</NavLink>
               </nav>
 

@@ -108,6 +108,13 @@ app.get("/api/players/:id/analysis", async (req, reply) => {
   return analysis;
 });
 
+app.get("/api/players/:id/sessions", async (req, reply) => {
+  const { season } = req.query as { season?: string };
+  const report = await ctx.playerSessions((req.params as { id: string }).id, intParam(season));
+  reply.header("cache-control", report.complete ? "public, max-age=30" : "no-store");
+  return report;
+});
+
 app.get("/api/players/:id/games/:matchId", async (req, reply) => {
   const p = req.params as { id: string; matchId: string };
   const matchId = intParam(p.matchId);

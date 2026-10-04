@@ -17,6 +17,7 @@ import {
   type SplitDistribution,
 } from "../analysis/pacing.js";
 import { bastionOf, overworldOf, performanceByBastion, performanceByOverworld } from "../analysis/seeds.js";
+import { sessionReport } from "../analysis/sessions.js";
 import { extractRunSplits, type RunSplits } from "../analysis/splits.js";
 import { buildBandedWinProbModels, modelForElo, type BandedWinProbModel } from "../analysis/winprob.js";
 import { nowEpochSeconds } from "../shared/brand.js";
@@ -233,6 +234,21 @@ export class AppContext {
       bandedDistributions: corpus.banded,
       byBastion: performanceByBastion(matches, user.uuid),
       byOverworld: performanceByOverworld(matches, user.uuid),
+      complete: settled && !this.refreshing(user.uuid),
+    };
+  }
+
+  async playerSessions(identifier: string, season?: number) {
+    const user = await this.ensurePlayer(identifier);
+    const seasons = await this.seasonsFor(identifier, user.uuid);
+    const active = season ?? seasons[0] ?? 0;
+    const settled = this.ensureSeason(identifier, user.uuid, active);
+    const matches = this.store.getMatchesForPlayer(user.uuid, { type: 2, season: active });
+    return {
+      user,
+      seasons,
+      season: active,
+      ...sessionReport(matches, user.uuid),
       complete: settled && !this.refreshing(user.uuid),
     };
   }
