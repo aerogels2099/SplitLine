@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { NavLink, Outlet, useOutletContext, useParams, useSearchParams } from "react-router-dom";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  NavLink,
+  Outlet,
+  useLocation,
+  useOutletContext,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { useApi, type PlayerHistory } from "../api";
 import { fmtDateTime, flag } from "../format";
 import { Avatar, TierChip } from "../components/Avatar";
@@ -95,16 +102,7 @@ export default function Player() {
             </div>
 
             <div className="player-bar">
-              <nav className="tabs">
-                <NavLink to={`/player/${encodeURIComponent(id)}${query}`} end>
-                  Games
-                </NavLink>
-                <NavLink to={`/player/${encodeURIComponent(id)}/analysis${query}`}>
-                  Pacing &amp; seeds
-                </NavLink>
-                <NavLink to={`/player/${encodeURIComponent(id)}/sessions${query}`}>Sessions</NavLink>
-                <NavLink to={`/player/${encodeURIComponent(id)}/versus${query}`}>Versus</NavLink>
-              </nav>
+              <PlayerTabs base={`/player/${encodeURIComponent(id)}`} query={query} />
 
               <span className="season-tally">
                 {wins}–{losses} in {real.length} ranked games
@@ -112,14 +110,50 @@ export default function Player() {
               </span>
             </div>
 
-            <Outlet
-              context={
-                { id, history: data, season: data.season, search: query, filling } satisfies PlayerContext
-              }
-            />
+            <div className="tab-view">
+              <Outlet
+                context={
+                  { id, history: data, season: data.season, search: query, filling } satisfies PlayerContext
+                }
+              />
+            </div>
           </>
         )}
       </div>
     </div>
+  );
+}
+
+function PlayerTabs({ base, query }: { base: string; query: string }) {
+  const ref = useRef<HTMLElement>(null);
+  const { pathname } = useLocation();
+  useLayoutEffect(() => {
+    const nav = ref.current;
+    if (!nav) return;
+    const place = () => {
+      const tab = nav.querySelector<HTMLElement>("a.active");
+      if (!tab) return;
+      nav.style.setProperty("--tab-x", `${tab.offsetLeft}px`);
+      nav.style.setProperty("--tab-y", `${tab.offsetTop}px`);
+      nav.style.setProperty("--tab-w", `${tab.offsetWidth}px`);
+      nav.style.setProperty("--tab-h", `${tab.offsetHeight}px`);
+      // Shown in the same style change as its first position, so it doesn't slide in from the corner.
+      nav.dataset.placed = "";
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, [pathname]);
+
+  return (
+    <nav className="tabs sliding" ref={ref}>
+      <NavLink to={`${base}${query}`} end>
+        Games
+      </NavLink>
+      <NavLink to={`${base}/analysis${query}`}>Pacing &amp; seeds</NavLink>
+      <NavLink to={`${base}/sessions${query}`}>Sessions</NavLink>
+      <NavLink to={`${base}/versus${query}`}>Versus</NavLink>
+    </nav>
   );
 }

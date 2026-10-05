@@ -33,6 +33,18 @@ export function fmtDate(epochSeconds: number): string {
   });
 }
 
+const DAY = 86_400;
+const MONTH = 30 * DAY;
+
+export function fmtAgo(epochSeconds: number, nowSeconds: number): string {
+  const s = Math.max(nowSeconds - epochSeconds, 0);
+  if (s < 60) return "now";
+  if (s < 3600) return `${Math.floor(s / 60)}m`;
+  if (s < DAY) return `${Math.floor(s / 3600)}h`;
+  if (s < MONTH) return `${Math.floor(s / DAY)}d`;
+  return `${Math.floor(s / MONTH)}mo`;
+}
+
 export function fmtDateTime(epochSeconds: number): string {
   return new Date(epochSeconds * 1000).toLocaleString(undefined, {
     month: "short",

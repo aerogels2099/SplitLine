@@ -195,20 +195,30 @@ export function EloChart({
           </text>
 
           <g clipPath="url(#plot)">
-            <path d={areaPath} fill="url(#eloArea)" />
-            <path d={linePath} fill="none" stroke="var(--gold)" strokeWidth={2} strokeLinejoin="round" />
-            {sorted.filter((p) => p.decayed).map((p, i) => sq(p.X, p.Y, 7, "var(--behind)", i))}
+            <path className="elo-area" d={areaPath} fill="url(#eloArea)" />
+            <path
+              className="elo-line"
+              d={linePath}
+              pathLength={1}
+              fill="none"
+              stroke="var(--gold)"
+              strokeWidth={2}
+              strokeLinejoin="round"
+            />
+            <g className="elo-marks">
+              {sorted.filter((p) => p.decayed).map((p, i) => sq(p.X, p.Y, 7, "var(--behind)", i))}
+            </g>
           </g>
 
           {peak !== last && (
-            <g>
+            <g className="elo-marks">
               {sq(peak.X, peak.Y, 7, "var(--gold-hot)")}
               <text x={peak.X} y={peak.Y - 10} textAnchor="middle" fontSize={9} fontFamily="var(--font-label)" fill="var(--gold-hot)">
                 PB {peak.elo}
               </text>
             </g>
           )}
-          <g>
+          <g className="elo-marks">
             {sq(floor.X, floor.Y, 7, "var(--text-muted)")}
             <text x={floor.X} y={floor.Y + 18} textAnchor="middle" fontSize={9} fontFamily="var(--font-label)" fill="var(--text-muted)">
               LOW {floor.elo}
@@ -219,7 +229,7 @@ export function EloChart({
 
     // Drawn after the crosshair, so it stays on top of it.
     const badge = (
-          <g>
+          <g className="elo-marks">
             {sq(last.X, last.Y, 8, "var(--gold)")}
             <rect x={last.X + 9} y={last.Y - 12} width={52} height={22} rx={5} fill="var(--gold)" stroke="var(--void)" strokeWidth={2} />
             <text x={last.X + 35} y={last.Y + 4} textAnchor="middle" fontSize={12} fontWeight={700} fontFamily="var(--font-mono)" fill="#171205">

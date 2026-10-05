@@ -29,6 +29,7 @@ export function HBars({ items, max }: { items: HBarItem[]; max?: number }) {
           </span>
           <div style={{ position: "relative", height: 16 }}>
             <div
+              className="bar"
               style={{
                 position: "absolute",
                 insetBlock: 0,
@@ -83,6 +84,7 @@ export function DivergingBars({ items, posColor, negColor }: {
             <div style={{ position: "relative", height: 16 }}>
               <div style={{ position: "absolute", left: "50%", top: -2, bottom: -2, width: 1, background: "var(--baseline)" }} />
               <div
+                className={it.value >= 0 ? "bar" : "bar neg"}
                 style={{
                   position: "absolute",
                   insetBlock: 0,

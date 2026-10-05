@@ -149,7 +149,7 @@ function Headline({ m, filling }: { m: PlayerMatchup; filling: boolean }) {
         aria-label={`${m.a.nickname} ${fmtPct(m.pBase)}, ${m.b.nickname} ${fmtPct(1 - m.pBase)}`}
       >
         <div className="side-b" />
-        <div className="side-a" style={{ transform: `scaleX(${m.pBase})` }} />
+        <div className="side-a" style={{ "--p": m.pBase } as React.CSSProperties} />
         <span className="pct a">{fmtPct(m.pBase)}</span>
         <span className="pct b">{fmtPct(1 - m.pBase)}</span>
       </div>

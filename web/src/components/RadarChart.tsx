@@ -73,56 +73,58 @@ export function RadarChart({
           {fmtValue(max)}
         </text>
 
-        {series.map((s) => {
-          const poly = axes
-            .map((_, i) => {
-              const v = s.values[i];
-              return pt(i, v ?? 0).join(",");
-            })
-            .join(" ");
-          return (
-            <g key={s.name}>
-              <polygon points={poly} fill={s.color} fillOpacity={series.length > 1 ? 0.14 : 0.2} stroke={s.color} strokeWidth={2} />
-            </g>
-          );
-        })}
-        {/* above the fills, so they can be hovered */}
-        {series.map((s) =>
-          axes.map((ax, i) => {
-            const v = s.values[i];
-            const [x, y] = pt(i, v ?? 0);
-            const hollow = v == null;
+        <g className="radar-shape" style={{ transformOrigin: `${CX}px ${CY}px` }}>
+          {series.map((s) => {
+            const poly = axes
+              .map((_, i) => {
+                const v = s.values[i];
+                return pt(i, v ?? 0).join(",");
+              })
+              .join(" ");
             return (
-              <rect
-                key={`${s.name}-${ax}`}
-                x={x - 4}
-                y={y - 4}
-                width={8}
-                height={8}
-                rx={2}
-                fill={hollow ? "var(--slot)" : s.color}
-                stroke={s.color}
-                strokeWidth={2}
-                shapeRendering="crispEdges"
-                style={{ cursor: "default" }}
-                onMouseMove={(e) =>
-                  tt.show(e, (
-                    <div>
-                      <div className="tt-title">
-                        {s.name} · {ax}
-                      </div>
-                      <div>
-                        {v == null ? "no games" : <b style={{ color: "var(--text-primary)" }}>{fmtValue(v)}</b>}
-                        {s.counts && s.counts[i] != null ? ` · ${s.counts[i]} games` : ""}
-                      </div>
-                    </div>
-                  ))
-                }
-                onMouseLeave={tt.hide}
-              />
+              <g key={s.name}>
+                <polygon points={poly} fill={s.color} fillOpacity={series.length > 1 ? 0.14 : 0.2} stroke={s.color} strokeWidth={2} />
+              </g>
             );
-          }),
-        )}
+          })}
+          {/* above the fills, so they can be hovered */}
+          {series.map((s) =>
+            axes.map((ax, i) => {
+              const v = s.values[i];
+              const [x, y] = pt(i, v ?? 0);
+              const hollow = v == null;
+              return (
+                <rect
+                  key={`${s.name}-${ax}`}
+                  x={x - 4}
+                  y={y - 4}
+                  width={8}
+                  height={8}
+                  rx={2}
+                  fill={hollow ? "var(--slot)" : s.color}
+                  stroke={s.color}
+                  strokeWidth={2}
+                  shapeRendering="crispEdges"
+                  style={{ cursor: "default" }}
+                  onMouseMove={(e) =>
+                    tt.show(e, (
+                      <div>
+                        <div className="tt-title">
+                          {s.name} · {ax}
+                        </div>
+                        <div>
+                          {v == null ? "no games" : <b style={{ color: "var(--text-primary)" }}>{fmtValue(v)}</b>}
+                          {s.counts && s.counts[i] != null ? ` · ${s.counts[i]} games` : ""}
+                        </div>
+                      </div>
+                    ))
+                  }
+                  onMouseLeave={tt.hide}
+                />
+              );
+            }),
+          )}
+        </g>
       </svg>
       {tt.el}
     </div>
