@@ -1590,3 +1590,14 @@ table.data tbody tr:hover {
     display: none;
   }
 }
+.live-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 260px) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  color: var(--text-primary);
+}
+.live-row:hover {
+  text-decoration: none;
+  border-color: var(--gold-dim);
+}

@@ -13,6 +13,8 @@ import type { MatchupPrediction } from "../../src/analysis/matchup.js";
 import type { PacingComparison, SplitDistribution } from "../../src/analysis/pacing.js";
 import type { ArchetypeStats } from "../../src/analysis/seeds.js";
 import type { Bucket, Session, SessionReport } from "../../src/analysis/sessions.js";
+import type { LiveRunner } from "../../src/analysis/winprob.js";
+import type { LiveMatchView, LivePoint, LiveView } from "../../src/server/live.js";
 
 export type {
   ArchetypeStats,
@@ -21,6 +23,10 @@ export type {
   PacingComparison,
   Session,
   Bucket as SessionBucket,
+  LiveMatchView,
+  LivePoint,
+  LiveRunner,
+  LiveView,
   SplitDistribution,
   Leaderboard,
   MatchInfo,

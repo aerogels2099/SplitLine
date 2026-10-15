@@ -7,6 +7,7 @@ const GameHistory = lazy(() => import("./pages/player/GameHistory"));
 const Analysis = lazy(() => import("./pages/player/Analysis"));
 const Sessions = lazy(() => import("./pages/player/Sessions"));
 const Versus = lazy(() => import("./pages/player/Versus"));
+const Live = lazy(() => import("./pages/Live"));
 
 function Logo() {
   return (
@@ -43,6 +44,10 @@ export default function App() {
             Split<em>Line</em>
           </span>
         </NavLink>
+        <nav className="topnav">
+          <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/live">Live</NavLink>
+        </nav>
         <form className="search" onSubmit={onSearch}>
           <input
             value={query}
@@ -55,9 +60,10 @@ export default function App() {
       </header>
       <Suspense fallback={<div className="card">Loading…</div>}>
       <Routes>
-        {/* the dashboard is the home page; normalize the URL so the nav highlights */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Home />} />
+        <Route path="/live" element={<Live />} />
+        <Route path="/live/:key" element={<Live />} />
         <Route path="/player/:id" element={<Player />}>
           <Route index element={<GameHistory />} />
           <Route path="analysis" element={<Analysis />} />
