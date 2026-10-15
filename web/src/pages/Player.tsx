@@ -20,7 +20,6 @@ export interface PlayerContext {
   id: string;
   history: PlayerHistory;
   season: number;
-  /** The URL's season, for links that should stay in it; empty when the server chose. */
   search: string;
   filling: boolean;
 }
@@ -32,10 +31,8 @@ export function usePlayer() {
 export default function Player() {
   const { id = "" } = useParams();
   const [params, setParams] = useSearchParams();
-  // set by a pick or a season's ladder link; otherwise the server picks the latest
   const raw = params.get("season");
   const season = raw !== null && /^\d+$/.test(raw) ? Number(raw) : undefined;
-  // The server fills older pages after responding; poll until it says complete.
   const [poll, setPoll] = useState<number | undefined>(undefined);
   const query = season === undefined ? "" : `?season=${season}`;
   const { data, error, loading } = useApi<PlayerHistory>(
@@ -49,7 +46,6 @@ export default function Player() {
 
   const u = data?.user;
   const tier = tierOf(u?.eloRate);
-  // the API lists seasons newest-first; show them left to right as a timeline
   const seasons = data ? [...data.seasons].reverse() : [];
   const real = data?.games.filter((g) => !g.decayed) ?? [];
   const wins = real.filter((g) => g.outcome === "win").length;
@@ -57,7 +53,6 @@ export default function Player() {
 
   return (
     <div className="player-layout">
-      {/* Outside the loading branch: the ladder does not depend on this request. */}
       <LadderSidebar
         current={u?.nickname}
         season={data?.season}
@@ -137,7 +132,6 @@ function PlayerTabs({ base, query }: { base: string; query: string }) {
       nav.style.setProperty("--tab-y", `${tab.offsetTop}px`);
       nav.style.setProperty("--tab-w", `${tab.offsetWidth}px`);
       nav.style.setProperty("--tab-h", `${tab.offsetHeight}px`);
-      // Shown in the same style change as its first position, so it doesn't slide in from the corner.
       nav.dataset.placed = "";
     };
     place();
@@ -149,11 +143,17 @@ function PlayerTabs({ base, query }: { base: string; query: string }) {
   return (
     <nav className="tabs sliding" ref={ref}>
       <NavLink to={`${base}${query}`} end>
-        Games
+        <span>Games</span>
       </NavLink>
-      <NavLink to={`${base}/analysis${query}`}>Pacing &amp; seeds</NavLink>
-      <NavLink to={`${base}/sessions${query}`}>Sessions</NavLink>
-      <NavLink to={`${base}/versus${query}`}>Versus</NavLink>
+      <NavLink to={`${base}/analysis${query}`}>
+        <span>Pacing &amp; seeds</span>
+      </NavLink>
+      <NavLink to={`${base}/sessions${query}`}>
+        <span>Sessions</span>
+      </NavLink>
+      <NavLink to={`${base}/versus${query}`}>
+        <span>Versus</span>
+      </NavLink>
     </nav>
   );
 }

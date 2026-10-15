@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { RankedApi } from "../src/api/endpoints.js";
 import { AppContext } from "../src/server/context.js";
-import { liveData, recentMatches } from "./helpers.js";
+import { liveData, recentMatches, userA, userAMatches } from "./helpers.js";
 
 const MINUTE = 60_000;
 
@@ -121,6 +121,51 @@ describe("live matches", () => {
     const view = await ctx.liveMatches();
     expect(calls.count).toBe(2);
     expect(view.matches.length).toBeGreaterThan(0);
+    ctx.store.close();
+  });
+});
+
+function staleContext(delayMs: number) {
+  vi.setSystemTime(new Date("2026-10-01T12:00:00Z"));
+  const ctx = new AppContext(":memory:");
+  const user = userA();
+  const ranked = userAMatches().filter((m) => m.type === 2);
+  ctx.store.upsertPlayer(user);
+  ctx.store.upsertMatches(ranked);
+  ctx.store.setPlayedSeasons(user.uuid, [...new Set(ranked.map((m) => m.season))]);
+  ctx.store.advanceIngestCursor(user.uuid, Math.max(...ranked.map((m) => m.id)));
+  vi.setSystemTime(new Date("2026-10-01T12:20:00Z"));
+  const newest = ranked.reduce((a, b) => (a.id > b.id ? a : b));
+  const fresh = { ...newest, id: newest.id + 1, date: (newest.date + 600) as typeof newest.date };
+  const later = <T,>(value: T) => new Promise<T>((resolve) => setTimeout(() => resolve(value), delayMs));
+  const api = {
+    getUser: () => later({ ...user, timestamp: { ...user.timestamp, lastRanked: fresh.date } }),
+    getUserMatches: async () => [fresh],
+  };
+  (ctx as unknown as { api: RankedApi }).api = api as unknown as RankedApi;
+  const held = () => ctx.store.getMatchesForPlayer(user.uuid, { type: 2 }).some((m) => m.id === fresh.id);
+  return { ctx, name: user.nickname, held };
+}
+
+describe("opening a player looked up before", () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  it("waits for a quick refresh, so the page opens on the newest games", async () => {
+    const { ctx, name, held } = staleContext(300);
+    const opened = ctx.ensurePlayer(name).then(held);
+    await vi.advanceTimersByTimeAsync(300);
+    expect(await opened).toBe(true);
+    ctx.store.close();
+  });
+
+  it("serves the stored games when the refresh is slow", async () => {
+    const { ctx, name, held } = staleContext(5_000);
+    const opened = ctx.ensurePlayer(name).then(held);
+    await vi.advanceTimersByTimeAsync(1_500);
+    expect(await opened).toBe(false);
+    await vi.advanceTimersByTimeAsync(3_500);
+    expect(held()).toBe(true);
     ctx.store.close();
   });
 });

@@ -25,6 +25,7 @@ import { LiveTracker, type LiveView } from "./live.js";
 import type { UserDetails } from "../shared/types.js";
 
 const INGEST_STALE_SECONDS = 10 * 60;
+const REFRESH_WAIT_MS = 1500;
 const SEASON_MAX_TRIES = 3;
 const SEASON_RETRY_BASE_MS = 30_000;
 const CORPUS_REFRESH_MS = 60_000;
@@ -42,7 +43,6 @@ export class AppContext {
   private detailJobs = new Map<string, Promise<number>>();
   private seasonJobs = new Map<string, Promise<number>>();
   private seasonFailures = new Map<string, { tries: number; nextAt: number }>();
-  // Where each season leaves the first page, so its walk does not fetch that page again.
   private seasonResume = new Map<string, number>();
   private unavailableDetails = new Set<number>();
   private live = new LiveTracker();
@@ -73,7 +73,6 @@ export class AppContext {
     if (cached && nowEpochSeconds() - cached.lastIngest < INGEST_STALE_SECONDS) {
       return cached.user;
     }
-    // By uuid when known, so a nickname and a uuid lookup share one ingest.
     const key = cached?.user.uuid ?? identifier.replace(/-/g, "").toLowerCase();
     let pending = this.ingesting.get(key);
     if (!pending) {
@@ -91,11 +90,14 @@ export class AppContext {
       this.ingesting.set(key, pending);
       pending.finally(() => this.ingesting.delete(key)).catch(() => {});
     }
-    // A known player is served from the store while the refresh runs behind it.
-    return cached ? cached.user : pending;
+    if (!cached) return pending;
+    const stored = cached.user;
+    return Promise.race([
+      pending.catch(() => stored),
+      new Promise<UserDetails>((resolve) => setTimeout(() => resolve(stored), REFRESH_WAIT_MS)),
+    ]);
   }
 
-  /** So peers and models reflect ranked play at large, not just looked-up players. */
   startCorpusCrawl(onError: (err: unknown) => void): () => void {
     let running = false;
     const tick = async () => {
@@ -141,7 +143,7 @@ export class AppContext {
     }
   }
 
-  /** True once the season will not change: stored, never played, or given up on. */
+  /** True once the season will not change. */
   private ensureSeason(identifier: string, uuid: string, season: number): boolean {
     if (this.store.isSeasonIngested(uuid, season)) return true;
     const known = this.store.playedSeasons(uuid);
@@ -193,7 +195,6 @@ export class AppContext {
 
   private peerCorpus() {
     const version = this.store.detailVersion();
-    // Rebuilt at most once a minute while details are still arriving.
     const held = this.corpus;
     if (!held || (held.version !== version && Date.now() - held.builtAt >= CORPUS_REFRESH_MS)) {
       const runs = this.store.getRuns({ limit: CORPUS_MATCHES });
@@ -301,7 +302,6 @@ export class AppContext {
           this.store.getMatchesForPlayer(user.uuid, { type: 2, season }),
         ),
         model: lookup.model,
-        // The pooled "all" model has no banded splits.
         splits: corpus.banded[lookup.band] ?? (corpus.pooled ??= buildSplitDistributions(corpus.runs)),
         band: lookup.band,
       };

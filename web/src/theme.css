@@ -679,8 +679,11 @@ table.data tbody tr:hover {
 }
 .tabs.sliding a {
   position: relative;
-  z-index: 1;
   transition: color 0.25s var(--ease-out);
+}
+.tabs.sliding a > span {
+  position: relative;
+  z-index: 2;
 }
 .tabs.sliding a.active {
   background: none;
@@ -689,7 +692,9 @@ table.data tbody tr:hover {
 }
 .tabs.sliding[data-placed]::before {
   content: "";
+  box-sizing: border-box;
   position: absolute;
+  z-index: 1;
   left: 0;
   top: 0;
   width: var(--tab-w);
