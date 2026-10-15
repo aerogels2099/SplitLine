@@ -10,9 +10,11 @@ import {
   type LiveRunState,
   type WinProbModel,
   projectFinish,
+  scoreLiveMatch,
 } from "../src/analysis/winprob.js";
 import { eloExpectedScore, logistic } from "../src/analysis/stats.js";
-import { matchDetails } from "./helpers.js";
+import type { LiveMatch } from "../src/shared/types.js";
+import { liveData, matchDetails } from "./helpers.js";
 
 const average = (xs: number[]) => xs.reduce((s, x) => s + x, 0) / xs.length;
 
@@ -463,5 +465,50 @@ describe("a runner stuck past every recorded run", () => {
       t,
     );
     expect(pA).toBeLessThan(0.5);
+  });
+});
+
+describe("scoring a live match", () => {
+  const banded = buildBandedWinProbModels(extractAllRuns(matchDetails()));
+  const live = liveData().liveMatches;
+
+  it("gives both runners of every real live match a chance, summing to one", () => {
+    expect(live.some((m) => m.players.some((p) => p.eloRate === null))).toBe(true);
+    for (const m of live) {
+      const s = scoreLiveMatch(banded, m)!;
+      expect(s.players[0].winProb + s.players[1].winProb).toBeCloseTo(1, 10);
+      for (const p of s.players) {
+        expect(p.winProb).toBeGreaterThan(0);
+        expect(p.winProb).toBeLessThan(1);
+        expect(p.projectedFinishMs).toBeGreaterThan(s.currentTimeMs);
+        expect(p.lastEventType).toBe(m.data[p.uuid]?.timeline?.type ?? null);
+      }
+    }
+  });
+
+  it("is the same race whichever order the players are listed in", () => {
+    for (const m of live) {
+      const s = scoreLiveMatch(banded, m)!;
+      const swapped = scoreLiveMatch(banded, { ...m, players: [m.players[1]!, m.players[0]!] })!;
+      expect(swapped.players[0].uuid).toBe(s.players[1].uuid);
+      expect(swapped.players[0].winProb).toBeCloseTo(s.players[1].winProb, 6);
+    }
+  });
+
+  it("favours the runner further along at equal rating", () => {
+    const [x, y] = live[0]!.players.map((p) => ({ ...p, eloRate: 1500 }));
+    const match: LiveMatch = {
+      currentTime: asMillis(8 * 60_000),
+      players: [x!, y!],
+      data: {
+        [x!.uuid]: { liveUrl: null, timeline: { time: asMillis(7 * 60_000), type: "story.follow_ender_eye" } },
+        [y!.uuid]: { liveUrl: null, timeline: { time: asMillis(4 * 60_000), type: "nether.find_bastion" } },
+      },
+    };
+    expect(scoreLiveMatch(banded, match)!.players[0].winProb).toBeGreaterThan(0.5);
+  });
+
+  it("leaves anything but a two-player race unscored", () => {
+    expect(scoreLiveMatch(banded, { ...live[0]!, players: live[0]!.players.slice(0, 1) })).toBeNull();
   });
 });

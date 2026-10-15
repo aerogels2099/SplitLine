@@ -1,3 +1,4 @@
+import type { LiveMatch } from "../shared/types.js";
 import { eloBand } from "./pacing.js";
 import { MILESTONES, milestoneForEvent, type MilestoneKey, type RunSplits } from "./splits.js";
 import {
@@ -247,4 +248,64 @@ export function headToHeadWinProb(
   const pElo = a.elo !== null && b.elo !== null ? eloExpectedScore(a.elo, b.elo) : 0.5;
   const pA = logistic(logit(pElo) + timingEvidence(z, cap));
   return { pA: Math.min(0.99, Math.max(0.01, pA)), projA, projB };
+}
+
+export interface LiveRunner {
+  uuid: string;
+  nickname: string;
+  elo: number | null;
+  liveUrl: string | null;
+  lastEventType: string | null;
+  lastEventTimeMs: number | null;
+  milestone: MilestoneKey | null;
+  projectedFinishMs: number;
+  winProb: number;
+}
+
+export interface LiveScore {
+  currentTimeMs: number;
+  players: [LiveRunner, LiveRunner];
+}
+
+export function scoreLiveMatch(banded: BandedWinProbModel, match: LiveMatch): LiveScore | null {
+  if (match.players.length !== 2) return null;
+  const elapsed = Number(match.currentTime);
+  const [a, b] = match.players.map((p) => {
+    const snap = match.data[p.uuid];
+    return {
+      profile: p,
+      liveUrl: snap?.liveUrl ?? null,
+      side: {
+        model: modelForElo(banded, p.eloRate).model,
+        state: {
+          lastEventType: snap?.timeline?.type ?? null,
+          lastEventTime: snap?.timeline ? Number(snap.timeline.time) : null,
+        },
+        // The current rating, which mid-match is still the pre-match one (gotcha 10).
+        elo: p.eloRate,
+      } satisfies RunSide,
+    };
+  }) as [Runner, Runner];
+  const { pA, projA, projB } = headToHeadWinProb(a.side, b.side, elapsed);
+  return { currentTimeMs: elapsed, players: [liveRunner(a, projA, pA), liveRunner(b, projB, 1 - pA)] };
+}
+
+interface Runner {
+  profile: LiveMatch["players"][number];
+  liveUrl: string | null;
+  side: RunSide;
+}
+
+function liveRunner(r: Runner, proj: FinishProjection, winProb: number): LiveRunner {
+  return {
+    uuid: r.profile.uuid,
+    nickname: r.profile.nickname,
+    elo: r.profile.eloRate,
+    liveUrl: r.liveUrl,
+    lastEventType: r.side.state.lastEventType,
+    lastEventTimeMs: r.side.state.lastEventTime,
+    milestone: proj.milestone,
+    projectedFinishMs: Math.round(proj.meanMs),
+    winProb,
+  };
 }

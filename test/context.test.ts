@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { RankedApi } from "../src/api/endpoints.js";
 import { AppContext } from "../src/server/context.js";
-import { recentMatches } from "./helpers.js";
+import { liveData, recentMatches } from "./helpers.js";
 
 const MINUTE = 60_000;
 
@@ -77,6 +77,50 @@ describe("corpus crawl schedule", () => {
     await vi.advanceTimersByTimeAsync(2 * MINUTE);
     expect(errors).toEqual([boom]);
     stop();
+    ctx.store.close();
+  });
+});
+
+function liveContext(fail = { next: false }) {
+  const ctx = new AppContext(":memory:");
+  const calls = { count: 0 };
+  const api = {
+    async getLive() {
+      calls.count++;
+      if (fail.next) {
+        fail.next = false;
+        throw new Error("upstream down");
+      }
+      return liveData();
+    },
+  };
+  (ctx as unknown as { api: RankedApi }).api = api as unknown as RankedApi;
+  return { ctx, calls };
+}
+
+describe("live matches", () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  it("asks the API at most once every ten seconds however often it is polled", async () => {
+    const { ctx, calls } = liveContext();
+    await Promise.all([ctx.liveMatches(), ctx.liveMatches()]);
+    await vi.advanceTimersByTimeAsync(9_000);
+    await ctx.liveMatches();
+    expect(calls.count).toBe(1);
+    await vi.advanceTimersByTimeAsync(1_000);
+    const view = await ctx.liveMatches();
+    expect(calls.count).toBe(2);
+    expect(view.matches).toHaveLength(liveData().liveMatches.length);
+    ctx.store.close();
+  });
+
+  it("tries again on the next poll after a failure", async () => {
+    const { ctx, calls } = liveContext({ next: true });
+    await expect(ctx.liveMatches()).rejects.toThrow("upstream down");
+    const view = await ctx.liveMatches();
+    expect(calls.count).toBe(2);
+    expect(view.matches.length).toBeGreaterThan(0);
     ctx.store.close();
   });
 });

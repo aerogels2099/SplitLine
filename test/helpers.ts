@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import type {
   Leaderboard,
   MatchInfo,
+  PublicLiveData,
   SuccessEnvelope,
   UserDetails,
   VersusStats,
@@ -26,3 +27,4 @@ export const recentMatches = () => loadFixture<MatchInfo[]>("recent-matches.json
 export const versusMatches = () => loadFixture<MatchInfo[]>("versus-matches.json");
 export const versus = () => loadFixture<VersusStats>("versus.json");
 export const leaderboard = () => loadFixture<Leaderboard>("leaderboard.json");
+export const liveData = () => loadFixture<PublicLiveData>("live.json");

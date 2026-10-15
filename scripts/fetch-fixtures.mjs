@@ -53,5 +53,6 @@ for (const id of detailIds) {
 await save("match-details.json", { status: "success", data: details });
 
 await save("recent-matches.json", await get("/matches?count=100&type=2"));
+await save("live.json", await get("/live"));
 
 console.log("done");

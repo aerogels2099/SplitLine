@@ -21,20 +21,19 @@ import { sessionReport } from "../analysis/sessions.js";
 import { extractRunSplits, type RunSplits } from "../analysis/splits.js";
 import { buildBandedWinProbModels, modelForElo, type BandedWinProbModel } from "../analysis/winprob.js";
 import { nowEpochSeconds } from "../shared/brand.js";
+import { LiveTracker, type LiveView } from "./live.js";
 import type { UserDetails } from "../shared/types.js";
 
 const INGEST_STALE_SECONDS = 10 * 60;
 const SEASON_MAX_TRIES = 3;
 const SEASON_RETRY_BASE_MS = 30_000;
 const CORPUS_REFRESH_MS = 60_000;
-/** A few days of crawling, so the corpus spans every time of day. */
 const CORPUS_MATCHES = 5000;
-/** Delayed so a watch-mode restart doesn't crawl on every save. */
 const CRAWL_FIRST_MS = 2 * 60_000;
 const CRAWL_EVERY_MS = 30 * 60_000;
 const CRAWL_DETAILS = 25;
-/** Leaves most of the rate budget to player lookups. */
 const CRAWL_MIN_BUDGET = 300;
+const LIVE_REFRESH_MS = 10_000;
 
 export class AppContext {
   readonly store: Store;
@@ -46,6 +45,8 @@ export class AppContext {
   // Where each season leaves the first page, so its walk does not fetch that page again.
   private seasonResume = new Map<string, number>();
   private unavailableDetails = new Set<number>();
+  private live = new LiveTracker();
+  private liveView: { at: number; view: Promise<LiveView> } | null = null;
   private corpus: {
     version: number;
     builtAt: number;
@@ -236,6 +237,17 @@ export class AppContext {
       byOverworld: performanceByOverworld(matches, user.uuid),
       complete: settled && !this.refreshing(user.uuid),
     };
+  }
+
+  liveMatches(): Promise<LiveView> {
+    const held = this.liveView;
+    if (held && Date.now() - held.at < LIVE_REFRESH_MS) return held.view;
+    const view = this.api.getLive().then((data) => this.live.update(data, this.winProbModels()));
+    this.liveView = { at: Date.now(), view };
+    view.catch(() => {
+      if (this.liveView?.view === view) this.liveView = null;
+    });
+    return view;
   }
 
   async playerSessions(identifier: string, season?: number) {

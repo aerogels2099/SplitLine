@@ -80,10 +80,14 @@ app.get("/api/overview", async (_req, reply) => {
   };
 });
 
+app.get("/api/live", async (_req, reply) => {
+  reply.header("cache-control", "no-store");
+  return ctx.liveMatches();
+});
+
 app.get("/api/leaderboard", async (req, reply) => {
   const { season, country } = req.query as { season?: string; country?: string };
   reply.header("cache-control", "public, max-age=30");
-  // Season zero means the current season, so a missing one must be told apart from it.
   return ctx.api.getLeaderboard(intParam(season), country);
 });
 

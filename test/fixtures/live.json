@@ -1,0 +1,292 @@
+{
+ "status": "success",
+ "data": {
+  "players": 922,
+  "liveMatches": [
+   {
+    "currentTime": 373033,
+    "players": [
+     {
+      "uuid": "27d45dbf79e44b2188d354d6e8d3c22c",
+      "nickname": "Hik_Amy",
+      "roleType": 1,
+      "eloRate": 1408,
+      "eloRank": 1500,
+      "country": "cn"
+     },
+     {
+      "uuid": "770bb89990e54ff4a9575d35122195ad",
+      "nickname": "slujish",
+      "roleType": 0,
+      "eloRate": 1409,
+      "eloRank": 1364,
+      "country": "mm"
+     }
+    ],
+    "data": {
+     "27d45dbf79e44b2188d354d6e8d3c22c": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 179524,
+       "type": "nether.find_bastion"
+      }
+     },
+     "770bb89990e54ff4a9575d35122195ad": {
+      "liveUrl": "https://twitch.tv/slujish",
+      "timeline": {
+       "time": 241923,
+       "type": "nether.find_bastion"
+      }
+     }
+    }
+   },
+   {
+    "currentTime": 623431,
+    "players": [
+     {
+      "uuid": "5cd1e83a92c34360b089755a183f4993",
+      "nickname": "grq_",
+      "roleType": 1,
+      "eloRate": 1681,
+      "eloRank": 303,
+      "country": "fr"
+     },
+     {
+      "uuid": "8f3907ce068c433f8fbb39875bba20be",
+      "nickname": "hausterr",
+      "roleType": 1,
+      "eloRate": 1742,
+      "eloRank": 242,
+      "country": "mx"
+     }
+    ],
+    "data": {
+     "5cd1e83a92c34360b089755a183f4993": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 575780,
+       "type": "story.enter_the_end"
+      }
+     },
+     "8f3907ce068c433f8fbb39875bba20be": {
+      "liveUrl": "https://twitch.tv/ihausty",
+      "timeline": {
+       "time": 564913,
+       "type": "story.enter_the_end"
+      }
+     }
+    }
+   },
+   {
+    "currentTime": 593458,
+    "players": [
+     {
+      "uuid": "bc560fb8bca7403f9985fa0a65e8a5be",
+      "nickname": "Zloynk",
+      "roleType": 1,
+      "eloRate": 1535,
+      "eloRank": 774,
+      "country": "ca"
+     },
+     {
+      "uuid": "6d7f618c768943e48d5663cab837e0e1",
+      "nickname": "Yossysand",
+      "roleType": 0,
+      "eloRate": 1559,
+      "eloRank": 671,
+      "country": "jp"
+     }
+    ],
+    "data": {
+     "bc560fb8bca7403f9985fa0a65e8a5be": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 507575,
+       "type": "story.follow_ender_eye"
+      }
+     },
+     "6d7f618c768943e48d5663cab837e0e1": {
+      "liveUrl": "https://twitch.tv/yoss_sand",
+      "timeline": {
+       "time": 569710,
+       "type": "story.follow_ender_eye"
+      }
+     }
+    }
+   },
+   {
+    "currentTime": 482185,
+    "players": [
+     {
+      "uuid": "8d948536990042bca53048f69418335b",
+      "nickname": "knealine",
+      "roleType": 1,
+      "eloRate": 1528,
+      "eloRank": 637,
+      "country": "us"
+     },
+     {
+      "uuid": "c80ab6637058487bb6758ed6acdbce47",
+      "nickname": "Asthetiks",
+      "roleType": 1,
+      "eloRate": 1487,
+      "eloRank": 1037,
+      "country": "kh"
+     }
+    ],
+    "data": {
+     "8d948536990042bca53048f69418335b": {
+      "liveUrl": "https://twitch.tv/knealine",
+      "timeline": {
+       "time": 474167,
+       "type": "projectelo.timeline.blind_travel"
+      }
+     },
+     "c80ab6637058487bb6758ed6acdbce47": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 477838,
+       "type": "projectelo.timeline.blind_travel"
+      }
+     }
+    }
+   },
+   {
+    "currentTime": 283441,
+    "players": [
+     {
+      "uuid": "cde0cb17d29d4f2d9eafdf67c7f3a484",
+      "nickname": "EEt_mEEt",
+      "roleType": 0,
+      "eloRate": 1368,
+      "eloRank": 1515,
+      "country": "au"
+     },
+     {
+      "uuid": "00b6f00569f5482696c2bde8595ce7a5",
+      "nickname": "Iriq",
+      "roleType": 1,
+      "eloRate": 1313,
+      "eloRank": 2406,
+      "country": "vn"
+     }
+    ],
+    "data": {
+     "cde0cb17d29d4f2d9eafdf67c7f3a484": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 118012,
+       "type": "nether.find_bastion"
+      }
+     },
+     "00b6f00569f5482696c2bde8595ce7a5": {
+      "liveUrl": "https://twitch.tv/iriqgx",
+      "timeline": {
+       "time": 155313,
+       "type": "nether.find_bastion"
+      }
+     }
+    }
+   },
+   {
+    "currentTime": 203290,
+    "players": [
+     {
+      "uuid": "4513dd81583940bb8816ce416e8fc253",
+      "nickname": "Vexl_",
+      "roleType": 0,
+      "eloRate": 1071,
+      "eloRank": 6517,
+      "country": "kz"
+     },
+     {
+      "uuid": "431371b4d7e44ffaa37870329650ad53",
+      "nickname": "Rkuma002",
+      "roleType": 1,
+      "eloRate": 1058,
+      "eloRank": 7259,
+      "country": null
+     }
+    ],
+    "data": {
+     "4513dd81583940bb8816ce416e8fc253": {
+      "liveUrl": null,
+      "timeline": {
+       "time": 146452,
+       "type": "story.enter_the_nether"
+      }
+     },
+     "431371b4d7e44ffaa37870329650ad53": {
+      "liveUrl": "https://twitch.tv/rakugaki12345",
+      "timeline": {
+       "time": 150089,
+       "type": "story.enter_the_nether"
+      }
+     }
+    }
+   },
+   {
+    "currentTime": 74023,
+    "players": [
+     {
+      "uuid": "16a45c3e54c84de3ac259b960342062b",
+      "nickname": "nei1019",
+      "roleType": 0,
+      "eloRate": 1159,
+      "eloRank": 4346,
+      "country": "jp"
+     },
+     {
+      "uuid": "0ea362aee89342819227e30277293395",
+      "nickname": "YanHuoX",
+      "roleType": 0,
+      "eloRate": null,
+      "eloRank": null,
+      "country": null
+     }
+    ],
+    "data": {
+     "16a45c3e54c84de3ac259b960342062b": {
+      "liveUrl": "https://twitch.tv/nei1019",
+      "timeline": null
+     },
+     "0ea362aee89342819227e30277293395": {
+      "liveUrl": null,
+      "timeline": null
+     }
+    }
+   },
+   {
+    "currentTime": 69617,
+    "players": [
+     {
+      "uuid": "9b49f9a39edb42cca4e9a2971978171d",
+      "nickname": "ElinorePls",
+      "roleType": 1,
+      "eloRate": 1477,
+      "eloRank": 938,
+      "country": "cx"
+     },
+     {
+      "uuid": "9fd3c3f3d68449eb9f5e9d598129fc46",
+      "nickname": "Octob_r",
+      "roleType": 2,
+      "eloRate": 1477,
+      "eloRank": 939,
+      "country": "us"
+     }
+    ],
+    "data": {
+     "9b49f9a39edb42cca4e9a2971978171d": {
+      "liveUrl": "https://twitch.tv/elinorepls",
+      "timeline": null
+     },
+     "9fd3c3f3d68449eb9f5e9d598129fc46": {
+      "liveUrl": "https://twitch.tv/octobb_r",
+      "timeline": null
+     }
+    }
+   }
+  ]
+ }
+}

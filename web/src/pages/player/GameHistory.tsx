@@ -50,12 +50,8 @@ export default function GameHistory() {
     return { points: pts };
   }, [games]);
 
-  const effective = range !== 0 && range < points.length ? range : 0;
   // games arrive newest first, so the most recent ones are at the head, not the tail
-  const shown = useMemo(
-    () => (effective === 0 ? points : points.slice(0, effective)),
-    [points, effective],
-  );
+  const shown = useMemo(() => (range === 0 ? points : points.slice(0, range)), [points, range]);
 
   const openFromChart = (matchId: number) => {
     // The row has to exist before the effect below can scroll to it.
@@ -132,18 +128,18 @@ export default function GameHistory() {
       {points.length > 1 && (
         <ChartCard
           title={`Season ${season} rating`}
-          actions={RANGES.filter((n) => n === 0 || n < points.length).map((n) => (
+          actions={RANGES.filter((n) => n !== 100 || points.length > 50).map((n) => (
             <button
               key={n}
               type="button"
-              className={n === effective ? "on" : ""}
+              className={n === range ? "on" : ""}
               onClick={() => setWindow(n)}
             >
               {n === 0 ? "All" : `Last ${n}`}
             </button>
           ))}
         >
-          <EloChart key={`${season}:${effective}`} points={shown} height={260} onSelect={openFromChart} />
+          <EloChart key={`${season}:${range}`} points={shown} height={260} onSelect={openFromChart} />
         </ChartCard>
       )}
 

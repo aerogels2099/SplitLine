@@ -166,6 +166,7 @@ describe("replaying a timeline", () => {
       at("a", 30_000, "story.smelt_iron"),
       at("a", 90_000, "story.enter_the_nether"),
       at("a", 150_000, "nether.find_bastion"),
+      at("a", 160_000, "nether.loot_bastion"),
       at("a", 200_000, RESET_EVENT),
       at("a", 260_000, "story.enter_the_nether"),
       at("b", 100_000, "story.enter_the_nether"),
@@ -182,6 +183,13 @@ describe("replaying a timeline", () => {
       lastEventTime: 90_000,
     });
     expect(replayState(detail, "a", 170_000)).toEqual({
+      lastEventType: "nether.find_bastion",
+      lastEventTime: 150_000,
+    });
+  });
+
+  it("skips alias events, which a live poll never reports", () => {
+    expect(replayState(detail, "a", 190_000)).toEqual({
       lastEventType: "nether.find_bastion",
       lastEventTime: 150_000,
     });

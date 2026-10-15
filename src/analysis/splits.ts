@@ -13,6 +13,10 @@ export const MILESTONES = [
 
 export type MilestoneKey = (typeof MILESTONES)[number]["key"];
 
+export const SPLIT_EVENTS: ReadonlySet<string> = new Set(
+  MILESTONES.flatMap((m) => (m.event === null ? [] : [m.event])),
+);
+
 export const SEGMENTS = [
   { key: "overworld", from: null, to: "nether_enter", label: "Overworld" },
   { key: "nether_to_bastion", from: "nether_enter", to: "bastion", label: "Nether → Bastion" },

@@ -8,7 +8,7 @@ import {
   type ScenarioKey,
 } from "./matchup.js";
 import { eloBand } from "./pacing.js";
-import { extractRunSplits, milestoneForEvent, MILESTONES, RESET_EVENT } from "./splits.js";
+import { extractRunSplits, MILESTONES, RESET_EVENT, SPLIT_EVENTS } from "./splits.js";
 import { eloExpectedScore } from "./stats.js";
 import {
   buildWinProbModel,
@@ -203,7 +203,7 @@ export function replayState(detail: MatchInfo, uuid: string, at: number): LiveRu
   let latest: { type: string; time: number } | null = null;
   for (const t of seen) {
     const time = Number(t.time);
-    if (time <= reset || milestoneForEvent(t.type) === null) continue;
+    if (time <= reset || !SPLIT_EVENTS.has(t.type)) continue;
     if (latest === null || time >= latest.time) latest = { type: t.type, time };
   }
   return latest
